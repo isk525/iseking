@@ -328,3 +328,27 @@
     padding: 35px 20px;
   }
 }
+
+.lookup-choice {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.lookup-choice .step {
+  display: flex;
+  min-height: 145px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 26px 20px;
+}
+
+.lookup-choice .step b {
+  margin-bottom: 12px;
+  font-size: 13px;
+}
+
+@media (max-width: 680px) {
+  .lookup-choice {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="VLOOKUP・HLOOKUPよりXLOOKUPが便利な理由を、実務目線で分かりやすく紹介します。左方向の検索、列番号不要、列追加への強さ、エラー表示などを解説します。">
+  <meta name="theme-color" content="#f97316">
+  <title>VLOOKUP・HLOOKUPよりXLOOKUPが便利な理由 | イセキングのDX日和</title>
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/article.css">
+</head>
+<body class="article-page">
+  <a class="skip-link" href="#article-main">本文へ移動</a>
+
+  <header class="site-header article-header">
+    <div class="container">
+      <a class="article-back" href="../index.html">← トップへ戻る</a>
+    </div>
+  </header>
+
+  <main id="article-main">
+    <section class="article-hero">
+      <div class="article-hero-inner">
+        <span class="article-category">Excel活用術</span>
+        <h1>VLOOKUP・HLOOKUPより<br>XLOOKUPが便利な理由</h1>
+        <p class="article-subtitle">いまから覚えるなら、XLOOKUPだけでいいと思う話</p>
+        <div class="article-meta">
+          <span>📅 公開日：2026.09.09</span>
+          <span>⏱ 読了目安：5分</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="article-layout">
+      <article class="article-content">
+        <section class="article-summary" aria-labelledby="summary-title">
+          <h2 id="summary-title">この記事で分かること</h2>
+          <ul>
+            <li>XLOOKUPがVLOOKUP・HLOOKUPより使いやすい理由</li>
+            <li>左方向の検索や列追加に強い仕組み</li>
+            <li>見つからない場合の表示を簡単に設定する方法</li>
+            <li>VLOOKUPとXLOOKUPの使い分け</li>
+          </ul>
+        </section>
+
+        <p>こんにちは、イセキングです。</p>
+
+        <p>Excelを使いよると、「VLOOKUP」という関数は一度は見たことがあると思います。<br>
+        別のシートから情報を取ってきたい時は、とりあえずVLOOKUP。<br>
+        そんな時代が結構長かった気がします。</p>
+
+        <p>ただ、正直なところ、今から新しく覚えるなら<br>「XLOOKUPだけでいいんじゃないか」と思っています。</p>
+
+        <p>今回は、僕がXLOOKUPをおすすめする理由を書いてみます。</p>
+
+        <h2>そもそもXLOOKUPって何？</h2>
+
+        <p>ざっくり言うと、VLOOKUPやHLOOKUPでやっていた検索を、もっと分かりやすく書ける関数です。例えば、社員番号を入力したら、氏名や所属、電話番号などを自動で表示したい。そんなときに使います。</p>
+
+        <div class="point-box">
+          XLOOKUPは「どこで探すか」と「どこから返すか」を直接指定できる。これがシンプルで、かなり分かりやすいんです。
+        </div>
+
+        <h2>理由① 左方向にも検索できる</h2>
+
+        <p>VLOOKUPを使ったことがある人なら、一度は「検索したい列が左にある」問題に出会ったことがあると思います。</p>
+
+        <p>例えば、次のような表があるとします。</p>
+
+        <ul>
+          <li>A列：氏名</li>
+          <li>B列：社員番号</li>
+        </ul>
+
+        <p>B列の社員番号から、左側にあるA列の氏名を取得したい。<br>
+        でもVLOOKUPは、基本的に検索列より右側の値を返す形なので、そのままでは扱えない。<br>結局A列の氏名をC列に入れないといけない...</p>
+
+        <p>それが、『XLOOKUP』なら、何も加工せず普通にできます。</p>
+
+        <div class="point-box">
+          =XLOOKUP(A2, B:B, A:A)
+        </div>
+
+        <p>「A2の値をB列で探して、見つかった行のA列を返す」という意味です。<br>
+「あれ？ 普通にできるやん」という感じですよね。</p>
+
+        <h2>理由② 列番号を数えなくていい</h2>
+
+        <p>個人的には、これが一番大きいです。<br>
+例えば、VLOOKUPではこんな式を書きます。</p>
+
+        <div class="point-box">
+          =VLOOKUP(A2, B:G, 5, FALSE)
+        </div>
+        <p>これを見たとき、僕は毎回思うんです。</p>
+
+        <div class="mission-box">5列目って<br>どこやったっけ？</div>
+
+        <p>対象範囲の左端から列を数えて、「1、2、3、4、5」と確認する。<br>
+        表が横に長くなるほど、これが地味に面倒です。</p>
+
+        <p>XLOOKUPなら、こう書けます。</p>
+
+        <div class="point-box">
+          =XLOOKUP(A2, B:B, F:F)
+        </div>
+
+        <p>見た瞬間に、「A2の値をB列で探して、F列から返す」と分かります。<br>
+列番号を数えんでいいし、後から見返したときも読みやすい。<br>
+この分かりやすさは、実務ではかなり助かります。</p>
+
+        <h2>理由③ HLOOKUPを分けて覚えなくていい</h2>
+
+        <p>VLOOKUPは縦方向、HLOOKUPは横方向。<br>
+        昔は、表の向きによって関数を使い分ける必要がありました。</p>
+
+        <p>でもXLOOKUPなら、検索する範囲と返す範囲を指定するので、縦でも横でも考え方は同じです。</p>
+
+        <ul>
+          <li>縦方向を検索するときもXLOOKUP</li>
+          <li>横方向を検索するときもXLOOKUP</li>
+          <li>覚える基本形が一つで済む</li>
+        </ul>
+
+        <p>VLOOKUPとHLOOKUPを別々に覚えるより、「探す範囲」と「返す範囲」を指定する考え方だけ覚えた方が、僕は分かりやすいと思っています。</p>
+
+        <h2>理由④ 列を追加しても壊れにくい</h2>
+
+        <p>Excelでよくあるのが、途中に列を追加したことで、意図しない値を返してしまう問題です。<br>VLOOKUPでは返す列を数字で指定します。</p>
+
+        <div class="point-box">
+          =VLOOKUP(A2, B:G, 5, FALSE)
+        </div>
+
+        <p>この「5」が、検索範囲の左端から数えた5列目という意味です。<br>
+        列を追加したときには、検索範囲を変えたり、返す列も見直さないといけません。</p>
+<p>一方でXLOOKUPは、返したい列を直接指定しています。</p>
+
+        <div class="point-box">
+          =XLOOKUP(A2, B:B, F:F)
+        </div>
+
+        <p>この場合、列を追加・削除しても、検索範囲、返す範囲も自動で変更されるので、わざわざ関数を直す必要がありません。</p>
+
+        <h2>理由⑤ 見つからないときの表示が簡単</h2>
+
+        <p>VLOOKUPで検索対象が見つからないと、「#N/A」と表示されます。<br>
+そのままだと不格好なので、IFERRORを組み合わせて、こんな式を書くことがありますよね。</p>
+
+        <div class="point-box">
+          =IFERROR(VLOOKUP(A2, B:C, 2, FALSE), "該当なし")
+        </div>
+
+        <p>XLOOKUPなら、見つからなかったときの表示を、関数の中でそのまま指定できます。</p>
+
+        <div class="point-box">
+          =XLOOKUP(A2, B:B, C:C, "該当なし")
+        </div>
+
+        <p>IFERRORを外側に重ねなくていいので、式が短くなります。<br>
+        空欄にしたいなら、「該当なし」の代わりに「""」を指定すればOKです。</p>
+
+        <h2>じゃあ、VLOOKUPは覚えなくていいの？</h2>
+
+        <p>そういうわけではありません。<br>
+職場には、今もVLOOKUPやHLOOKUPを使ったExcelファイルがたくさんあるはず。<br>
+        なので、既存の式を読んだり修正したりできる程度には、知っておいた方がいいです。</p>
+
+        <p>ただ、これから自分で新しく作るなら、XLOOKUPを使えば十分な場面が多いと思います。</p>
+
+<div class="steps lookup-choice" aria-label="おすすめの使い分け">
+
+  <div class="step">
+    <b>既存ファイル</b>
+    VLOOKUP・HLOOKUPを<br>読めるようにしておく
+  </div>
+
+  <div class="step">
+    <b>新しく作るなら</b>
+    XLOOKUPを使う
+  </div>
+
+</div>
+
+        <h2>おわりに</h2>
+
+        <p>VLOOKUPは、長い間Excelを支えてきた有名な関数です。僕自身も、かなりお世話になりました。<br>
+ただ、Excelもどんどん進化しています。<br>
+新しく覚えるなら、より分かりやすく、後から見返しやすい関数を使った方が楽です。</p>
+
+        <div class="mission-box">今から新しく覚えるなら<br>XLOOKUPでいい</div>
+
+        <p>VLOOKUPやHLOOKUPは、昔からあるファイルを読むために知っておく。<br>
+        自分で新しく作るときは、XLOOKUPを使う。</p>
+
+        <p>それが一番いいんじゃないかなと思っています。</p>
+      </article>
+
+      <nav class="article-footer-nav" aria-label="記事下部ナビゲーション">
+        <a class="article-home-button" href="../index.html">トップページへ戻る</a>
+      </nav>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container footer-inner">
+      <div>
+        <strong>イセキングのDX日和</strong>
+        <p>仕事をもっと楽しく、もっと楽に。</p>
+      </div>
+      <small>© 2026 イセキングのDX日和</small>
+    </div>
+  </footer>
+</body>
+</html>
