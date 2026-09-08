@@ -1,181 +1,208 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>なぜ私はHTMLで業務アプリを作るのか | イセキングのDX日和</title>
-<meta name="description" content="ノーコードでもExcelでもなくHTMLを選ぶ理由。">
-<link rel="stylesheet" href="../css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="ノーコードでもExcelでもなくHTMLを選ぶ理由。業務改善を実践する中で感じたWebアプリ開発の魅力を紹介します。">
+  <meta name="theme-color" content="#f97316">
+  <title>なぜ私はHTMLで業務アプリを作るのか | イセキングのDX日和</title>
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/article.css">
 </head>
-<body>
-<header class="site-header">
-<div class="container">
-<a href="../index.html">← トップへ戻る</a>
-</div>
-</header>
-<main class="container" style="max-width:900px;padding:60px 20px;">
-<p class="kicker">WEBアプリ作成</p>
-<h1>なぜ私はHTMLで業務アプリを作るのか</h1>
-<p style="color:#666;">ノーコードでもExcelでもなく、HTMLを選ぶ理由</p>
-<p style="color:#999;font-size:14px;">公開日：2026.09.08</p>
-<hr>
+<body class="article-page">
+  <a class="skip-link" href="#article-main">本文へ移動</a>
 
-<p>
-こんにちは、イセキングです。
-</p>
+  <header class="site-header article-header">
+    <div class="container">
+      <a class="article-back" href="../index.html">← トップへ戻る</a>
+    </div>
+  </header>
 
-<p>
-私は業務改善や自治体DXに関わる中で、さまざまなツールやサービスを試してきました。
-</p>
+  <main id="article-main">
+    <section class="article-hero">
+      <div class="article-hero-inner">
+        <span class="article-category">Webアプリ作成</span>
+        <h1>なぜ私はHTMLで<br>業務アプリを作るのか</h1>
+        <p class="article-subtitle">ノーコードでもExcelでもなく、HTMLを選ぶ理由</p>
+        <div class="article-meta">
+          <span>📅 公開日：2026.09.08</span>
+          <span>⏱ 読了目安：5分</span>
+        </div>
+      </div>
+    </section>
 
-<p>
-Excel、Access、kintone、Power Apps、各種ノーコードツールなど、便利な選択肢はたくさんあります。
-</p>
+    <div class="article-layout">
+      <article class="article-content">
+        <section class="article-summary" aria-labelledby="summary-title">
+          <h2 id="summary-title">この記事で分かること</h2>
+          <ul>
+            <li>私がHTMLで業務アプリを作る理由</li>
+            <li>Excelやノーコードツールとの違い</li>
+            <li>GitHub Pagesを活用するメリット</li>
+            <li>小さく作り、改善を繰り返す考え方</li>
+          </ul>
+        </section>
 
-<p>
-そんな中で、最近私が最も多く使っているのは「HTML・CSS・JavaScript」を使ったシンプルなWebアプリです。
-</p>
+        <p>こんにちは、イセキングです。</p>
 
-<p>
-「なぜわざわざHTMLで作るのか？」
-</p>
+        <p>私は業務改善や自治体DXに関わる中で、さまざまなツールやサービスを試してきました。</p>
 
-<p>
-今回はその理由を紹介したいと思います。
-</p>
+        <p>Excel、Access、kintone、Power Apps、各種ノーコードツールなど、便利な選択肢はたくさんあります。</p>
 
-<h2>業務改善を進めると、必ず『ちょっとした困りごと』に出会う</h2>
+        <p>そんな中で、最近私が最も多く使っているのは「HTML・CSS・JavaScript」を使ったシンプルなWebアプリです。</p>
 
-<p>
-業務改善というと大掛かりなシステム導入をイメージされるかもしれません。
-</p>
+        <p>「なぜわざわざHTMLで作るのか？」</p>
 
-<p>
-しかし実際は、
-</p>
+        <p>今回はその理由を紹介したいと思います。</p>
 
-<ul>
-<li>この入力をもう少し楽にしたい</li>
-<li>集計を自動化したい</li>
-<li>メモを共有したい</li>
-<li>一覧で見られるようにしたい</li>
-</ul>
+        <h2>業務改善を進めると、必ず「ちょっとした困りごと」に出会う</h2>
 
-<p>
-といった小さな困りごとの積み重ねです。
-</p>
+        <p>業務改善というと、大掛かりなシステム導入をイメージされるかもしれません。</p>
 
-<h2>Excelは便利。でも限界もある</h2>
+        <p>しかし実際は、次のような小さな困りごとの積み重ねです。</p>
 
-<ul>
-<li>スマホでは使いづらい</li>
-<li>入力フォームが作りにくい</li>
-<li>複数人利用が難しい</li>
-<li>UIが複雑になりやすい</li>
-</ul>
+        <ul>
+          <li>この入力をもう少し楽にしたい</li>
+          <li>集計を自動化したい</li>
+          <li>メモを共有したい</li>
+          <li>一覧で見られるようにしたい</li>
+        </ul>
 
-<h2>ノーコードツールも便利。でも万能ではない</h2>
+        <p>こうした課題のために、大規模なシステムを導入するのは現実的ではありません。だからこそ、素早く試せる仕組みが必要になります。</p>
 
-<ul>
-<li>利用料が発生する</li>
-<li>組織内の契約が必要</li>
-<li>細かなカスタマイズが難しい</li>
-<li>サービスへの依存がある</li>
-</ul>
+        <h2>Excelは便利。でも限界もある</h2>
 
-<h2>HTMLなら自由度が高い</h2>
+        <p>もちろんExcelは非常に優れたツールです。私自身、関数やマクロを活用して多くの改善を行ってきました。</p>
 
-<p>
-必要な画面だけ作る。
-必要な機能だけ作る。
-必要なデータだけ扱う。
-</p>
+        <p>一方で、業務の内容によっては次のような課題もあります。</p>
 
-<p>
-余計な機能を入れず、自分が本当に使いたい仕組みを作れることが大きな魅力です。
-</p>
+        <ul>
+          <li>スマホでは使いづらい</li>
+          <li>入力フォームが作りにくい</li>
+          <li>複数人での利用が難しい</li>
+          <li>機能を増やすほどUIが複雑になりやすい</li>
+        </ul>
 
-<h2>ブラウザがあれば動く</h2>
+        <p>業務が複雑になるほど、Excelだけでは対応しきれない場面が増えてきます。</p>
 
-<ul>
-<li>Windows</li>
-<li>Mac</li>
-<li>iPhone</li>
-<li>Android</li>
-</ul>
+        <h2>ノーコードツールも便利。でも万能ではない</h2>
 
-<p>
-環境を選ばず利用できるため、試しやすいのも魅力です。
-</p>
+        <p>最近は、ノーコード・ローコードツールも非常に充実しています。短時間でアプリを作れることは大きな魅力です。</p>
 
-<h2>GitHub Pagesで無料公開できる</h2>
+        <p>ただし、利用環境によっては次のような制約があります。</p>
 
-<p>
-私がHTMLをよく使う理由の一つがこれです。
-</p>
+        <ul>
+          <li>利用料が発生する</li>
+          <li>組織内で契約や利用許可が必要になる</li>
+          <li>細かなカスタマイズが難しい</li>
+          <li>特定のサービスへの依存度が高くなる</li>
+        </ul>
 
-<p>
-GitHub Pagesを使えば、作成したアプリやサイトを無料で公開できます。
-</p>
+        <p>便利だからこそ、そのツールのルールに合わせて業務を変える必要が出てくることもあります。</p>
 
-<h2>作ること自体が学びになる</h2>
+        <div class="point-box">
+          HTMLは、必要なものだけを小さく作り、使いながら改善するサイクルを速く回せる。私にとって、そこが一番の魅力です。
+        </div>
 
-<ul>
-<li>業務を整理する力</li>
-<li>課題を分析する力</li>
-<li>UIを考える力</li>
-<li>データを扱う力</li>
-</ul>
+        <h2>HTMLなら自由度が高い</h2>
 
-<h2>私が作ってきたもの</h2>
+        <p>HTML・CSS・JavaScriptで作るWebアプリの大きな魅力は、自由度の高さです。</p>
 
-<ul>
-<li>ゴルフ上達支援アプリ</li>
-<li>口コミ管理アプリ</li>
-<li>業務改善支援ツール</li>
-<li>業務量調査関連ツール</li>
-</ul>
+        <ul>
+          <li>必要な画面だけ作る</li>
+          <li>必要な項目だけ置く</li>
+          <li>必要な機能だけ実装する</li>
+        </ul>
 
-<h2>まずは小さく作る</h2>
+        <p>余計な機能を入れず、自分が本当に使いたい仕組みを作れます。</p>
 
-<p>
-私は業務改善において、
-「最初から完璧を目指さない」
-ことを大切にしています。
-</p>
+        <h2>ブラウザがあれば動く</h2>
 
-<p>
-まずは作る。
-使ってみる。
-改善する。
-</p>
+        <p>HTMLで作ったアプリは、基本的にブラウザで動きます。</p>
 
-<p>
-HTMLは、そのサイクルを高速で回すための非常に優れた選択肢だと思っています。
-</p>
+        <ul>
+          <li>Windows</li>
+          <li>Mac</li>
+          <li>iPhone</li>
+          <li>Android</li>
+        </ul>
 
-<h2>おわりに</h2>
+        <p>さまざまな環境で利用でき、インストールせず試せる構成にもできます。「とりあえず使ってみる」までのハードルが低いことも魅力です。</p>
 
-<p>
-DXというと難しく聞こえるかもしれません。
-</p>
+        <h2>GitHub Pagesで無料公開できる</h2>
 
-<p>
-私は、
-</p>
+        <p>私がHTMLをよく使う理由の一つが、GitHub Pagesを活用できることです。</p>
 
-<blockquote>
-目の前の仕事を少し楽にすること
-</blockquote>
+        <p>個人での学習や小規模な公開であれば、作成したアプリやWebサイトを公開する選択肢になります。実際、このサイトもGitHub Pagesで公開しています。</p>
 
-<p>
-こそがDXの第一歩だと考えています。
-</p>
+        <h2>作ること自体が学びになる</h2>
 
-<p>
-このサイトでは、実際に作ったアプリや開発を通して学んだことを発信していきます。
-</p>
+        <p>アプリを作っていると、完成した機能だけではなく、さまざまな力が身につきます。</p>
 
-</main>
+        <ul>
+          <li>業務を整理する力</li>
+          <li>課題を分析する力</li>
+          <li>UIを考える力</li>
+          <li>データを扱う力</li>
+        </ul>
+
+        <p>何を入力し、何を表示し、どう使ってもらうのかを考える過程そのものが、業務を見直す機会になります。</p>
+
+        <h2>私が作ってきたもの</h2>
+
+        <p>これまで、個人で次のようなアプリやツールを作ってきました。</p>
+
+        <ul>
+          <li>ゴルフ上達支援アプリ</li>
+          <li>口コミ管理アプリ</li>
+          <li>業務改善支援ツール</li>
+          <li>業務量調査関連ツール</li>
+        </ul>
+
+        <p>完璧なシステムではありません。それでも、「こんな機能が欲しい」と思ったときに、すぐ試作品を作って検証できることは大きな強みだと感じています。</p>
+
+        <h2>まずは小さく作る</h2>
+
+        <p>私は業務改善において、「最初から完璧を目指さない」ことを大切にしています。</p>
+
+        <div class="steps" aria-label="改善の3ステップ">
+          <div class="step"><b>STEP 01</b>まずは作る</div>
+          <div class="step"><b>STEP 02</b>使ってみる</div>
+          <div class="step"><b>STEP 03</b>改善する</div>
+        </div>
+
+        <p>HTMLは、このサイクルを高速で回すための非常に優れた選択肢だと思っています。</p>
+
+        <h2>おわりに</h2>
+
+        <p>DXというと、難しく聞こえるかもしれません。</p>
+
+        <div class="mission-box">目の前の仕事を<br>少し楽にすること</div>
+
+        <p>私は、それこそがDXの第一歩だと考えています。</p>
+
+        <p>HTMLでアプリを作ることは、そのための手段の一つです。</p>
+
+        <p>このサイトでは、実際に作ったアプリや、開発の過程で学んだこと、仕事を楽にするためのアイデアを発信していきたいと思います。</p>
+
+        <p>同じように「業務をもっと楽にしたい」「自分でツールを作ってみたい」と思っている方にとって、何か一つでもヒントになればうれしいです。</p>
+      </article>
+
+      <nav class="article-footer-nav" aria-label="記事下部ナビゲーション">
+        <a class="article-home-button" href="../index.html">トップページへ戻る</a>
+      </nav>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container footer-inner">
+      <div>
+        <strong>イセキングのDX日和</strong>
+        <p>仕事をもっと楽しく、もっと楽に。</p>
+      </div>
+      <small>© 2026 イセキングのDX日和</small>
+    </div>
+  </footer>
 </body>
 </html>
