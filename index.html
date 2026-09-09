@@ -8,158 +8,61 @@
   <title>イセキングのDX日和</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/home-polish.css">
 </head>
 <body>
-  <a class="skip-link" href="#main">本文へ移動</a>
-  <header class="site-header">
-    <div class="container header-inner">
-      <a class="brand" href="#top" aria-label="イセキングのDX日和 トップへ">
-        <span class="brand-mark">DX</span>
-        <span><strong>イセキングのDX日和</strong><small>WORK SMARTER, ENJOY MORE</small></span>
-      </a>
-      <button class="menu-button" type="button" aria-label="メニューを開く" aria-controls="global-nav" aria-expanded="false"><span></span><span></span><span></span></button>
-      <nav id="global-nav" class="global-nav" aria-label="メインメニュー">
-        <a href="#themes">発信テーマ</a><a href="#articles">記事</a><a href="#apps">作ったもの</a><a href="#profile">プロフィール</a><a href="#contact">お問い合わせ</a>
-      </nav>
+<a class="skip-link" href="#main">本文へ移動</a>
+<header class="site-header"><div class="container header-inner">
+  <a class="brand" href="#top" aria-label="イセキングのDX日和 トップへ"><span class="brand-mark">DX</span><span><strong>イセキングのDX日和</strong><small>WORK SMARTER, ENJOY MORE</small></span></a>
+  <button class="menu-button" type="button" aria-label="メニューを開く" aria-controls="global-nav" aria-expanded="false"><span></span><span></span><span></span></button>
+  <nav id="global-nav" class="global-nav" aria-label="メインメニュー"><a href="#themes">発信テーマ</a><a href="#articles">記事</a><a href="#apps">作ったもの</a><a href="#profile">プロフィール</a><a href="#contact">お問い合わせ</a></nav>
+</div></header>
+<main id="main">
+<section id="top" class="hero"><div class="hero-blob blob-one"></div><div class="hero-blob blob-two"></div><div class="container hero-grid">
+  <div class="hero-copy reveal">
+    <p class="eyebrow">自治体DX担当者にも役立つ、実践ノート</p>
+    <h1><span class="hero-line">仕事をもっと楽しく、</span><span class="hero-line">もっと<span class="hero-accent">楽</span>に。</span></h1>
+    <p class="lead">AI・Excel・Webアプリ・業務改善・PC活用。日々の仕事を少し楽にする、実際に試したノウハウを分かりやすく発信します。</p>
+    <div class="hero-actions"><a class="button primary" href="#articles">最新の記事を見る <span>→</span></a><a class="button secondary" href="#profile">イセキングについて</a></div>
+  </div>
+  <aside class="stats-panel reveal" aria-label="サイトの公開状況">
+    <div class="stats-heading"><span class="stats-label">SITE STATUS</span><h2>少しずつ、育てています。</h2><p>実際に試したことを中心に、記事や制作ノウハウを追加していきます。</p></div>
+    <div class="stats-grid">
+      <div class="stat-card"><span id="article-count" class="stat-number">0</span><span class="stat-unit">Articles</span><strong>公開記事</strong></div>
+      <div class="stat-card"><span id="category-count" class="stat-number">0</span><span class="stat-unit">Categories</span><strong>記事カテゴリ</strong></div>
+      <div class="stat-card"><span id="app-count" class="stat-number">0</span><span class="stat-unit">Apps</span><strong>公開アプリ</strong></div>
     </div>
-  </header>
+    <p class="stats-note">※トップページに登録された公開コンテンツから自動集計</p>
+  </aside>
+</div></section>
 
-  <main id="main">
-    <section id="top" class="hero">
-      <div class="hero-blob blob-one"></div><div class="hero-blob blob-two"></div>
-      <div class="container hero-grid">
-        <div class="hero-copy reveal">
-          <p class="eyebrow">自治体DX担当者にも役立つ、実践ノート</p>
-          <h1>仕事をもっと楽しく、<br>もっと<span>楽</span>に。</h1>
-          <p class="lead">AI・Excel・Webアプリ・業務改善・PC活用。日々の仕事を少し楽にする、実際に試したノウハウを分かりやすく発信します。</p>
-          <div class="hero-actions"><a class="button primary" href="#articles">最新の記事を見る <span>→</span></a><a class="button secondary" href="#profile">イセキングについて</a></div>
-        </div>
-        <aside class="hint-card reveal" aria-label="今日の仕事効率化ヒント">
-          <div class="hint-top"><span>TODAY'S HINT</span><span class="bulb">💡</span></div>
-          <p>デジタル活用は、目の前の仕事を少し楽にすることから。</p>
-          <ol><li><b>01</b> 見つける</li><li><b>02</b> 試してみる</li><li><b>03</b> 共有する</li></ol>
-        </aside>
-      </div>
-    </section>
+<section id="themes" class="section"><div class="container"><div class="section-heading"><p class="kicker">THEMES</p><h2>発信しているテーマ</h2><p>難しい理論より、明日から試せること。実務で役立つ情報を5つのテーマで紹介します。</p></div><div class="theme-grid">
+  <article class="theme-card reveal"><span class="theme-icon orange">AI</span><h3>AI活用術</h3><p>Copilotなどの生成AIを、仕事で安全に便利に使うための実践例。</p><a href="#articles">記事を見る →</a></article>
+  <article class="theme-card reveal"><span class="theme-icon green">Excel</span><h3>Excel活用術</h3><p>関数・ピボットテーブル・Power Query・マクロなどの便利機能。</p><a href="#articles">記事を見る →</a></article>
+  <article class="theme-card reveal"><span class="theme-icon blue">&lt;/&gt;</span><h3>Webアプリ作成</h3><p>HTML・CSS・JavaScriptやスマホ向けアプリの作り方を紹介。</p><a href="#articles">記事を見る →</a></article>
+  <article class="theme-card reveal"><span class="theme-icon red">↗</span><h3>業務改善</h3><p>業務可視化やECRSなど、現場ですぐ試せる改善の考え方。</p><a href="#articles">記事を見る →</a></article>
+  <article class="theme-card reveal"><span class="theme-icon purple">⌨</span><h3>PC活用術</h3><p>ショートカットキー・環境変数・Windowsの便利機能を紹介。</p><a href="#articles">記事を見る →</a></article>
+</div></div></section>
 
-    <section id="themes" class="section">
-      <div class="container">
-        <div class="section-heading"><p class="kicker">THEMES</p><h2>発信しているテーマ</h2><p>難しい理論より、明日から試せること。実務で役立つ情報を5つのテーマで紹介します。</p></div>
-        <div class="theme-grid">
-          <article class="theme-card reveal"><span class="theme-icon orange">AI</span><h3>AI活用術</h3><p>Copilotなどの生成AIを、仕事で安全に便利に使うための実践例。</p><a href="#articles">記事を見る →</a></article>
-          <article class="theme-card reveal"><span class="theme-icon green">Excel</span><h3>Excel活用術</h3><p>関数・ピボットテーブル・Power Query・マクロなどの便利機能。</p><a href="#articles">記事を見る →</a></article>
-          <article class="theme-card reveal"><span class="theme-icon blue">&lt;/&gt;</span><h3>Webアプリ作成</h3><p>HTML・CSS・JavaScriptやスマホ向けアプリの作り方を紹介。</p><a href="#articles">記事を見る →</a></article>
-          <article class="theme-card reveal"><span class="theme-icon red">↗</span><h3>業務改善</h3><p>業務可視化やECRSなど、現場ですぐ試せる改善の考え方。</p><a href="#articles">記事を見る →</a></article>
-          <article class="theme-card reveal"><span class="theme-icon purple">⌨</span><h3>PC活用術</h3><p>ショートカットキー・環境変数・Windowsの便利機能を紹介。</p><a href="#articles">記事を見る →</a></article>
-        </div>
-      </div>
-    </section>
+<section id="articles" class="section section-soft"><div class="container"><div class="articles-head"><div class="section-heading"><p class="kicker">ARTICLES</p><h2>最新の記事</h2><p>実際に試して分かったことを、フランクにまとめています。</p></div><label class="search"><span>⌕</span><input id="article-search" type="search" placeholder="記事を検索" aria-label="記事を検索"></label></div>
+<div id="article-list" class="article-grid">
+  <article class="article-card reveal" data-category="Webアプリ作成" data-search="HTML Webアプリ 業務改善"><div class="article-cover blue-cover"><span>&lt;/&gt;</span></div><div class="article-body"><div class="meta"><span>Webアプリ作成</span><time>2026.09.08</time></div><h3>なぜ私はHTMLで業務アプリを作るのか</h3><p>ノーコードでもExcelでもなくHTMLを選ぶ理由。業務改善の現場で感じた魅力を紹介します。</p><a href="articles/why-html-business-app.html">続きを読む →</a></div></article>
+  <article class="article-card reveal" data-category="Excel活用術" data-search="Excel XLOOKUP VLOOKUP HLOOKUP 関数"><div class="article-cover green-cover"><span>Excel</span></div><div class="article-body"><div class="meta"><span>Excel活用術</span><time>2026.09.09</time></div><h3>VLOOKUP・HLOOKUPよりXLOOKUPが便利な理由</h3><p>左方向の検索、列番号、エラー表示。XLOOKUPをおすすめしたい理由を紹介します。</p><a href="articles/xlookup-vs-vlookup.html">続きを読む →</a></div></article>
+  <article class="article-card reveal" data-category="PC活用術" data-search="Windows PC活用 ショートカット クリップボード 仮想デスクトップ"><div class="article-cover orange-cover"><span>Win</span></div><div class="article-body"><div class="meta"><span>PC活用術</span><time>2026.09.09</time></div><h3>毎日使えるWindows便利機能5選</h3><p>クリップボード履歴から仮想デスクトップまで。標準機能だけで仕事を楽にする方法です。</p><a href="articles/windows-standard-tips-5.html">続きを読む →</a></div></article>
+</div><p id="no-results" class="no-results" hidden>該当する記事はありません。</p></div></section>
 
-    <section id="articles" class="section section-soft">
-      <div class="container">
-        <div class="articles-head"><div class="section-heading"><p class="kicker">ARTICLES</p><h2>最新の記事</h2><p>実際に試した内容を、これから記事として追加していきます。</p></div><label class="search"><span>⌕</span><input id="article-search" type="search" placeholder="記事を検索" aria-label="記事を検索"></label></div>
-        <div id="article-list" class="article-grid">
+<section id="apps" class="section"><div class="container apps-grid"><div class="section-heading"><p class="kicker">CREATIONS</p><h2>作ったものから学んだこと</h2><p>個人開発や試作を通じて得た、設計・改善・公開方法の知見も発信します。</p></div><div class="creation-list">
+  <article class="creation" data-public-app="true"><span>01</span><div><h3>スマホ向けWebアプリ</h3><p>入力のしやすさ、データ保存、PWA対応など、実制作で得た工夫を紹介。</p></div></article>
+  <article class="creation" data-public-app="true"><span>02</span><div><h3>HTML業務支援ツール</h3><p>ブラウザだけで動作する、軽量で取り入れやすい便利ツールを紹介。</p></div></article>
+  <article class="creation"><span>03</span><div><h3>Excel効率化ツール</h3><p>関数やマクロを使って、繰り返し作業や確認作業を減らす方法を紹介。</p></div></article>
+</div></div></section>
 
-<article class="article-card reveal">
-  <div class="article-cover blue-cover">
-    <span>&lt;/&gt;</span>
-  </div>
-  <div class="article-body">
-    <div class="meta">
-      <span>Webアプリ作成</span>
-      <time>2026.09.08</time>
-    </div>
-    <h3>なぜ私はHTMLで業務アプリを作るのか</h3>
-    <p>
-      ノーコードでもExcelでもなくHTMLを選ぶ理由。
-      業務改善の現場で感じたWebアプリ開発の魅力を紹介します。
-    </p>
-    <a href="articles/why-html-business-app.html">続きを読む →</a>
-  </div>
-</article>
-
-<article
-  class="article-card reveal"
-  data-search="Excel XLOOKUP VLOOKUP HLOOKUP 関数"
->
-  <div class="article-cover green-cover">
-    <span>Excel</span>
-  </div>
-
-  <div class="article-body">
-    <div class="meta">
-      <span>Excel活用術</span>
-      <time>2026.09.09</time>
-    </div>
-
-    <h3>
-      VLOOKUP・HLOOKUPよりXLOOKUPが便利な理由
-    </h3>
-
-    <p>
-      左方向の検索、列番号、エラー表示。
-      今から覚えるならXLOOKUPをおすすめしたい理由を紹介します。
-    </p>
-
-   <a href="articles/xlookup-vs-vlookup.html">続きを読む →</a>
-  </div>
-</article>
-
-<article
-  class="article-card reveal"
-  data-search="Windows PC活用 ショートカット クリップボード 仮想デスクトップ"
->
-  <div class="article-cover orange-cover">
-    <span>Win</span>
-  </div>
-
-  <div class="article-body">
-    <div class="meta">
-      <span>PC活用術</span>
-      <time>2026.09.09</time>
-    </div>
-
-    <h3>
-      毎日使えるWindows便利機能5選
-    </h3>
-
-    <p>
-      クリップボード履歴から仮想デスクトップまで。
-      Windowsの標準機能だけで仕事を楽にする方法を紹介します。
-    </p>
-<a href="articles/windows-standard-tips-5.html">続きを読む →</a>
-  </div>
-</article>
-          
-            </div>
-        <p id="no-results" class="no-results" hidden>該当する記事はありません。</p>
-      </div>
-    </section>
-
-    <section id="apps" class="section">
-      <div class="container apps-grid">
-        <div class="section-heading"><p class="kicker">CREATIONS</p><h2>作ったものから学んだこと</h2><p>個人開発や試作を通じて得た、設計・改善・公開方法の知見も発信します。</p></div>
-        <div class="creation-list">
-          <article class="creation"><span>01</span><div><h3>スマホ向けWebアプリ</h3><p>入力のしやすさ、データ保存、PWA対応など、実制作で得た工夫を紹介。</p></div></article>
-          <article class="creation"><span>02</span><div><h3>HTML業務支援ツール</h3><p>ブラウザだけで動作する、軽量で取り入れやすい便利ツールを紹介。</p></div></article>
-          <article class="creation"><span>03</span><div><h3>Excel効率化ツール</h3><p>関数やマクロを使って、繰り返し作業や確認作業を減らす方法を紹介。</p></div></article>
-        </div>
-      </div>
-    </section>
-
-    <section id="profile" class="section section-soft">
-      <div class="container profile-grid">
-        <div class="profile-visual"><div class="avatar">IK</div><p>プロフィール写真へ差し替え可能</p></div>
-        <div><p class="kicker">ABOUT</p><h2>こんにちは、イセキングです。</h2><p class="profile-lead">自治体DXや業務改善に関わりながら、AI・Excel・Webアプリを使った「仕事を楽にする仕組みづくり」を実践しています。</p><p>DXを必要以上に難しく考えず、まずは身近な困りごとを小さく改善する。このサイトでは、実際に試して分かったことや失敗したことも含めて、分かりやすく共有していきます。</p><div class="tags"><span>#AI活用</span><span>#Excel</span><span>#Webアプリ</span><span>#業務改善</span><span>#PC活用</span><span>#自治体DX</span></div></div>
-      </div>
-    </section>
-
-    <section id="contact" class="section contact-section">
-      <div class="container contact-card"><span class="mail-icon">✉</span><h2>仕事を楽にするアイデアを、<br>一緒に広げませんか？</h2><p>記事の感想、取り上げてほしいテーマ、研修・セミナーに関するご相談はこちらから。</p><a class="button primary disabled" href="#" aria-disabled="true" title="お問い合わせ先を設定してください">お問い合わせ先は準備中</a></div>
-    </section>
-  </main>
-
-  <footer><div class="container footer-inner"><div><strong>イセキングのDX日和</strong><p>仕事をもっと楽しく、もっと楽に。</p></div><small>© <span id="year"></span> イセキングのDX日和</small></div></footer>
-  <script src="js/main.js"></script>
-</body>
-</html>
+<section id="profile" class="section section-soft"><div class="container profile-grid">
+  <div class="profile-visual profile-photo-wrap"><img class="profile-photo" src="images/profile.jpg" alt="イセキングのプロフィール写真" onerror="this.hidden=true;this.nextElementSibling.hidden=false"><div class="avatar profile-fallback" hidden>IK</div></div>
+  <div><p class="kicker">ABOUT</p><h2>こんにちは、イセキングです。</h2><p class="profile-lead">自治体DXや業務改善に関わりながら、AI・Excel・Webアプリを使った「仕事を楽にする仕組みづくり」を実践しています。</p><p>DXを必要以上に難しく考えず、まずは身近な困りごとを小さく改善する。このサイトでは、実際に試して分かったことや失敗したことも含めて、分かりやすく共有していきます。</p><div class="tags"><span>#AI活用</span><span>#Excel</span><span>#Webアプリ</span><span>#業務改善</span><span>#PC活用</span><span>#自治体DX</span></div></div>
+</div></section>
+<section id="contact" class="section contact-section"><div class="container contact-card"><span class="mail-icon">✉</span><h2>仕事を楽にするアイデアを、<br>一緒に広げませんか？</h2><p>記事の感想、取り上げてほしいテーマ、研修・セミナーに関するご相談はこちらから。</p><a class="button primary disabled" href="#" aria-disabled="true">お問い合わせ先は準備中</a></div></section>
+</main>
+<footer><div class="container footer-inner"><div><strong>イセキングのDX日和</strong><p>仕事をもっと楽しく、もっと楽に。</p></div><small>© <span id="year"></span> イセキングのDX日和</small></div></footer>
+<script src="js/main.js"></script>
+</body></html>
