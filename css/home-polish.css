@@ -10,70 +10,97 @@
   overflow: hidden;
 }
 
-/* 浮遊要素のコンテナ */
+/* ==========================================================================
+   コード＆ロジック・ストリーミング背景
+   ========================================================================== */
+
 .hero-floating-bg {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  pointer-events: none; /* マウス操作を邪魔しない */
+  pointer-events: none;
   z-index: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  padding: 20px 0;
+  opacity: 0.55; /* クリーンな背景を維持する絶妙な透明度 */
 }
 
-/* モジュールの共通デザイン */
-.float-item {
-  position: absolute;
+/* トラック（流れる行）の基本設定 */
+.float-track {
+  display: flex;
+  gap: 32px;
+  white-space: nowrap;
+  width: max-content;
+}
+
+/* 共通コードチップデザイン */
+.code-chip {
+  display: inline-flex;
+  align-items: center;
   padding: 6px 14px;
-  border-radius: 999px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  color: #475569;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
-  opacity: 0.45; /* 絶妙な薄さで配置 */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
-  animation: floatAnim 12s infinite ease-in-out;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
 }
 
-/* カラーバリエーション */
-.float-item.tag-code {
+/* 強調させたい条件式やロジック */
+.code-chip.highlight {
   background: #eff6ff;
+  border-color: #bfdbfe;
   color: #2563eb;
-  border: 1px solid #bfdbfe;
+  font-weight: 700;
 }
 
-.float-item.tag-excel {
-  background: #dcfce7;
-  color: #16a34a;
-  border: 1px solid #bbf7d0;
+/* --- 動的アニメーション（横移動 ＋ 上下ゆらぎ） --- */
+
+/* 1行目: 左から右へ移動しながら上下に漂う */
+.track-1 {
+  animation: streamRight 28s linear infinite, floatY 6s ease-in-out infinite alternate;
 }
 
-.float-item.tag-logic {
-  background: #f3e8ff;
-  color: #9333ea;
-  border: 1px solid #e9d5ff;
+/* 2行目: 右から左へ移動しながら逆に上下に漂う */
+.track-2 {
+  animation: streamLeft 32s linear infinite, floatY 7s ease-in-out infinite alternate-reverse;
 }
 
-.float-item.tag-accent {
-  background: #ffedd5;
-  color: #ea580c;
-  border: 1px solid #fed7aa;
+/* 3行目: ゆっくり左から右へ移動 */
+.track-3 {
+  animation: streamRight 36s linear infinite, floatY 8s ease-in-out infinite alternate;
 }
 
-/* 画面上の配置位置とアニメーションのタイミング */
-.pos-1 { top: 12%; left: 8%; animation-delay: 0s; }
-.pos-2 { top: 65%; left: 5%; animation-delay: -3s; }
-.pos-3 { top: 20%; right: 38%; animation-delay: -6s; }
-.pos-4 { top: 75%; left: 42%; animation-delay: -2s; }
-.pos-5 { top: 15%; right: 8%; animation-delay: -8s; }
-.pos-6 { top: 70%; right: 6%; animation-delay: -4s; }
+@keyframes streamRight {
+  0% { transform: translateX(-20%); }
+  100% { transform: translateX(10%); }
+}
 
-/* 上下にゆったり揺れるアニメーション */
-@keyframes floatAnim {
-  0%, 100% {
-    transform: translateY(0) rotate(0deg);
+@keyframes streamLeft {
+  0% { transform: translateX(10%); }
+  100% { transform: translateX(-20%); }
+}
+
+@keyframes floatY {
+  0% { margin-top: 0px; }
+  100% { margin-top: 15px; }
+}
+
+/* スマホ表示での調整 */
+@media (max-width: 640px) {
+  .hero-floating-bg {
+    opacity: 0.35; /* 文字と重なっても邪魔にならないよう薄くする */
   }
-  50% {
-    transform: translateY(-18px) rotate(2deg);
+  .code-chip {
+    font-size: 9px;
+    padding: 4px 8px;
   }
 }
 
