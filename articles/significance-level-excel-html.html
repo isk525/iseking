@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="同僚の奥さん（プロの機関投資家）から聞いた「有意水準」の話。実際の入力例や、ブラウザで動く簡易Webツールの作り方まで分かりやすく紹介します。">
+  <meta name="description" content="同僚の奥さん（プロの機関投資家）から聞いた「有意水準」の話。Excelでの関数表現や、グラフ描画付きの簡易Webツールの作り方まで分かりやすく紹介します。">
   <meta name="theme-color" content="#f97316">
   <title>機関投資家から学んだ「有意水準」とは？Excelでの検証とHTMLで作る簡易Webツール | イセキングのDX日和</title>
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
@@ -51,14 +51,17 @@
       border-left: 4px solid #0284c7;
       border-radius: 4px;
     }
-    .code-block {
-      background: #1e293b;
-      color: #f8fafc;
-      padding: 16px;
-      border-radius: 6px;
-      overflow-x: auto;
-      font-size: 0.9rem;
-      line-height: 1.5;
+    .chart-container {
+      margin-top: 15px;
+      background: #fff;
+      padding: 10px;
+      border: 1px solid #e2e8f0;
+      border-radius: 4px;
+      text-align: center;
+    }
+    canvas {
+      max-width: 100%;
+      height: auto;
     }
     .dl-btn {
       display: inline-block;
@@ -89,7 +92,7 @@
       <div class="article-hero-inner">
         <span class="article-category">Webアプリ作成</span>
         <h1>機関投資家から学んだ「有意水準」とは？<br>Excelでの検証とHTMLで作る簡易Webツール</h1>
-        <p class="article-subtitle">「たまたま」に騙されない！数字を入力してサクッと検証してみよう</p>
+        <p class="article-subtitle">「たまたま」に騙されない！数字を入力してグラフでサクッと確認してみよう</p>
         <div class="article-meta">
           <span>📅 公開日：2026.09.20</span>
           <span>⏱ 読了目安：6分</span>
@@ -103,8 +106,9 @@
           <h2 id="summary-title">この記事で分かること</h2>
           <ul>
             <li>機関投資家というプロの凄さと「有意水準」の考え方</li>
+            <li>Excelの関数（T.TEST）でパッと表す方法</li>
             <li>「何を入力すればいいん？」が分かる具体的な活用例</li>
-            <li>HTMLとJavaScriptで作る簡易検証ツール（ダウンロード可）</li>
+            <li>HTMLとJavaScriptで作るグラフ付き検証ツール（ダウンロード可）</li>
           </ul>
         </section>
 
@@ -117,34 +121,42 @@
 
         <h2>それにしても「機関投資家」って凄すぎん？</h2>
         <p>そもそも機関投資家って、誰でもなれるような仕事じゃないですよね。<br/>
-        個人のお金ではなく、顧客から預かった数百億〜数兆円という桁違いの超巨大な資金を運用する、まさに金融界のエリート中のエリートです。</p>
+        個人のお金ではなく、顧客から預かった数百億〜数兆円という桁違いの超巨大な資金を運用する、まさに金融界のエリート中のエリートのようです。</p>
 
         <p>知人や身近に機関投資家がいるだけでも「え、すご…！」って自慢したくなるレベルなんですが、そんなプロが大切にしているのが<b>「感や度胸に頼らず、数値的な根拠を持つこと」</b>なのだそうです。<br/>
         「なんとなく上がりそうだから買いました」なんて口が裂けても言えませんからね。</p>
 
-        <p>そのプロの現場で、「その成果はたまたまか、それとも本当の実力（効果）か」を客観的に見極めるために使われているのが「有意水準」なんです。</p>
+        <p>そのプロの現場で、「その成果はたまたまか、それとも本当の実力（効果）か」を客観的に見極めるために使われているのが「有意水準」という考え方のようです。</p>
 
         <h2>ざっくり言うと「たまたま（偶然）」を見抜く基準</h2>
-        <p>難しそうな名前がついていますが、要するに<b>「たまたま起きた確率が何%あるか」</b>を計算するだけです。</p>
+        <p>難しそうな名前がついていますが、要するに<b>「たまたま起きた確率が何%あるか」</b>を計算する仕組みのようです。</p>
 
         <p>例えば、新しいやり方を試して結果が良くなったとします。<br/>
-        統計学では「たまたま偶然起きた確率（p値）」が<b>5%未満（0.05未満）</b>であれば、<b>「これは偶然じゃない！明確な効果があったと言っていい！」</b>と判断します。この基準になる値のことを「有意水準」と呼んでいます。</p>
+        統計学の世界では「たまたま偶然起きた確率（p値）」が<b>5%未満（0.05未満）</b>であれば、<b>「これは偶然じゃない！明確な効果があったと言っていい！」</b>と判断することが多いみたいです。この基準になる値のことを「有意水準」と呼んでいるようです。</p>
 
         <div class="point-box">
-          「たまたまのラッキー」か「本当の成果」かを見極めて、自信を持って意思決定するための道具なんです。
+          「たまたまのラッキー」か「本当の成果」かを見極めて、自信を持って意思決定するための道具になっているようです。
         </div>
+
+        <h2>Excelの関数なら「T.TEST」で一瞬で表せる</h2>
+        <p>この有意水準（確率）の計算ですが、Excelを使うなら「T.TEST」という関数を使えば一瞬で結果が出せるようです。</p>
+
+        <p>例えば、A列に「変更前のデータ」、B列に「変更後のデータ」が入っている場合、空いているセルに以下のように入力します。</p>
+
+        <p><code>=T.TEST(A2:A10, B2:B10, 2, 2)</code></p>
+
+        <p>この関数の結果として表示された数値が「0.05」を下回っていれば、「たまたまではなく効果があった！」と判断できるみたいですね。Excelなら難しい計算式を覚えなくても関数1つで表せるのが便利です。</p>
 
         <h2>「で、具体的に何を入力すればええの？」実例で紹介！</h2>
         <p>「考え方は分かったけど、実際にツールを使うとき何を入力したらいいか分からん！」となりますよね。<br/>
         場面別の具体的な入力データのイメージはこんな感じです。</p>
 
         <h3>1. 機関投資家の場合（ファンドの運用成績）</h3>
-        <p>新しいAI運用アルゴリズムを導入したとき、過去の運用利回り（%）を入力して比較します。</p>
+        <p>新しいAI運用アルゴリズムを導入したとき、過去の運用利回り（%）を入力して比較するようです。</p>
         <ul>
           <li><b>従来の運用（%）：</b>2.1, 1.8, 2.5, 1.9, 2.0, 2.2</li>
           <li><b>新AI運用（%）：</b>3.5, 2.8, 3.2, 3.0, 2.9, 3.4</li>
         </ul>
-        <p>利回りの平均が上がっていても、「たまたま相場が良かっただけ」の可能性を排除するために検定を行います。</p>
 
         <h3>2. 電子申請や業務改善の場合（処理にかかる時間）</h3>
         <p>紙の申請から電子申請システムに変えて、職員1名あたりの処理時間（分）を測定した場合です。</p>
@@ -152,22 +164,20 @@
           <li><b>紙での処理時間（分）：</b>15, 18, 12, 16, 20, 14</li>
           <li><b>電子申請の処理時間（分）：</b>10, 11, 9, 12, 8, 10</li>
         </ul>
-        <p>平均処理時間が短くなったとき、「入力慣れでたまたま早かっただけ」ではなく「システム導入の効果として有意に縮んだ」と言えるかを確かめます。</p>
 
-        <h3>3. Webサイトやアンケートの場合（回答率や満足度スコア）</h3>
-        <p>アンケートの画面デザインを変更して、ユーザーが回答を終えるまでの離脱率や、10点満点の満足度を入力します。</p>
+        <h3>3. Webサイトやアンケートの場合（満足度スコア）</h3>
+        <p>アンケートの画面デザインを変更して、10点満点の満足度を入力した場合です。</p>
         <ul>
           <li><b>旧デザインの満足度：</b>6, 7, 5, 6, 7, 6</li>
           <li><b>新デザインの満足度：</b>8, 9, 7, 8, 9, 8</li>
         </ul>
-        <p>これで「有意差あり」となれば、自信を持って新デザインを正式採用できます！</p>
 
-        <h2>HTMLとJavaScriptでツールを作ってみた</h2>
-        <p>上記で紹介したような「変更前」と「変更後」の数値をカンマ区切りで入れるだけで、サクッと判定できるツールをこのページにも埋め込んでみました！</p>
+        <h2>HTMLとJavaScriptでツールを作ってみた（グラフ表示付き）</h2>
+        <p>入力した数値の平均値を比較する棒グラフも同時に表示されるツールを作成し、このページに埋め込んでみました！</p>
 
         <!-- 実際に動く簡易ツール -->
         <div class="tool-box">
-          <h3>【体験版】簡易・有意差チェッカー</h3>
+          <h3>【体験版】グラフ付き・簡易有意差チェッカー</h3>
           <p style="font-size:0.85rem; color:#64748b;">※数値をカンマ（,）区切りで入力してボタンを押してみてください</p>
 
           <label>変更前のデータ（処理時間・スコアなど）:</label>
@@ -176,10 +186,14 @@
           <label style="margin-top:10px;">変更後のデータ（処理時間・スコアなど）:</label>
           <textarea id="dataB">10, 11, 9, 12, 8, 10</textarea>
 
-          <button type="button" class="tool-btn" onclick="runTTTest()">有意差を判定する</button>
+          <button type="button" class="tool-btn" onclick="runTTTest()">有意差を判定してグラフ表示</button>
 
           <div id="toolResult" class="tool-result">
             ここに判定結果が表示されます。
+          </div>
+
+          <div class="chart-container">
+            <canvas id="resultChart" width="400" height="200"></canvas>
           </div>
         </div>
 
@@ -189,7 +203,7 @@
         <a id="downloadBtn" class="dl-btn" href="#" download="significance-checker.html">HTMLファイルをダウンロード</a>
 
         <h2>おわりに</h2>
-        <p>機関投資家というプロの世界で使われている考え方も、紐解いてみれば僕たちの日常の「これって本当に良くなったん？」という疑問をすっきり解決してくれる知識でした。</p>
+        <p>機関投資家というプロの世界で使われている考え方も、紐解いてみれば僕たちの日常の「これって本当に良くなったん？」という疑問をすっきり解決してくれる知識のようです。</p>
 
         <p>数字を扱うのはちょっと難しそうに見えますが、こうやってHTMLでサクッとツールにしてしまえば、誰でも手軽に使えますよね。<br/>
         「たまたま」に惑わされず、根拠を持って仕事を楽にしていきましょう！</p>
@@ -212,6 +226,44 @@
   </footer>
 
   <script>
+    function drawChart(mA, mB) {
+      const canvas = document.getElementById('resultChart');
+      if (!canvas || !canvas.getContext) return;
+      const ctx = canvas.getContext('2d');
+      
+      // クリア
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const maxVal = Math.max(mA, mB, 1) * 1.2;
+      const chartHeight = 140;
+      const startY = 160;
+
+      // 軸を描く
+      ctx.beginPath();
+      ctx.strokeStyle = '#94a3b8';
+      ctx.moveTo(50, 20);
+      ctx.lineTo(50, startY);
+      ctx.lineTo(350, startY);
+      ctx.stroke();
+
+      // 棒A
+      const hA = (mA / maxVal) * chartHeight;
+      ctx.fillStyle = '#64748b';
+      ctx.fillRect(90, startY - hA, 70, hA);
+      ctx.fillStyle = '#1e293b';
+      ctx.font = '14px sans-serif';
+      ctx.fillText('変更前', 100, startY + 20);
+      ctx.fillText(mA.toFixed(2), 105, startY - hA - 8);
+
+      // 棒B
+      const hB = (mB / maxVal) * chartHeight;
+      ctx.fillStyle = '#f97316';
+      ctx.fillRect(220, startY - hB, 70, hB);
+      ctx.fillStyle = '#1e293b';
+      ctx.fillText('変更後', 230, startY + 20);
+      ctx.fillText(mB.toFixed(2), 235, startY - hB - 8);
+    }
+
     function runTTTest() {
       const parse = val => val.split(',').map(n => parseFloat(n.trim())).filter(n => !isNaN(n));
       const A = parse(document.getElementById('dataA').value);
@@ -240,30 +292,37 @@
 
       document.getElementById('toolResult').innerHTML = 
         `<strong>平均値:</strong> 変更前 = ${mA.toFixed(2)}, 変更後 = ${mB.toFixed(2)}<br>` +
-        `<strong>判定結果:</strong> ${isSignificant ? '<span style="color:#059669; font-weight:bold;">【有意差あり】偶然のブレではなく、明確な効果・変化があったと言えます！</span>' : '<span style="color:#d97706; font-weight:bold;">【有意差なし】たまたまの誤差（ブレ）の可能性があります。</span>'}`;
+        `<strong>判定結果:</strong> ${isSignificant ? '<span style="color:#059669; font-weight:bold;">【有意差あり】偶然のブレではなく、明確な効果・変化があったと言えそうです！</span>' : '<span style="color:#d97706; font-weight:bold;">【有意差なし】たまたまの誤差（ブレ）の可能性が高いようです。</span>'}`;
+
+      drawChart(mA, mB);
     }
 
+    // 初期描画とダウンロードボタン作成
     document.addEventListener('DOMContentLoaded', () => {
+      runTTTest();
+
       const htmlContent = `<!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>簡易有意差チェッカー</title>
+  <title>簡易有意差チェッカー（グラフ付き）</title>
   <style>
     body { font-family: sans-serif; padding: 20px; max-width: 600px; margin: auto; line-height: 1.6; }
     textarea { width: 100%; height: 60px; margin-bottom: 10px; }
     button { background: #f97316; color: #fff; border: none; padding: 10px 20px; cursor: pointer; border-radius: 4px; font-weight: bold; }
     .result { margin-top: 15px; padding: 12px; background: #e0f2fe; border-radius: 4px; }
+    .chart { text-align: center; margin-top: 15px; }
   </style>
 </head>
 <body>
-  <h2>簡易・有意差チェッカー</h2>
+  <h2>簡易・有意差チェッカー（グラフ付き）</h2>
   <label>変更前のデータ（カンマ区切り）:</label>
   <textarea id="a">15, 18, 12, 16, 20, 14</textarea>
   <label>変更後のデータ（カンマ区切り）:</label>
   <textarea id="b">10, 11, 9, 12, 8, 10</textarea>
-  <button onclick="calc()">判定する</button>
+  <button onclick="calc()">判定してグラフ描画</button>
   <div id="res" class="result">結果がここに表示されます</div>
+  <div class="chart"><canvas id="c" width="400" height="200"></canvas></div>
 
   <script>
     function calc() {
@@ -286,8 +345,21 @@
 
       document.getElementById('res').innerHTML = 
         \`<b>平均（前）:</b> \${mA.toFixed(2)} | <b>平均（後）:</b> \${mB.toFixed(2)}<br>\` +
-        \`<b>判定:</b> \${isSignificant ? '【有意差あり】偶然ではなく明確な効果があったと言えます！' : '【有意差なし】たまたまの誤差の範囲内かもしれません。'}\`;
+        \`<b>判定:</b> \${isSignificant ? '【有意差あり】偶然ではなく明確な効果があったと言えそうです！' : '【有意差なし】たまたまの誤差の範囲内かもしれません。'}\`;
+
+      // Canvas描画
+      const cvs = document.getElementById('c'), ctx = cvs.getContext('2d');
+      ctx.clearRect(0,0,400,200);
+      const max = Math.max(mA, mB, 1) * 1.2;
+      ctx.beginPath(); ctx.moveTo(50,20); ctx.lineTo(50,160); ctx.lineTo(350,160); ctx.stroke();
+      
+      const hA = (mA/max)*140; ctx.fillStyle='#64748b'; ctx.fillRect(90, 160-hA, 70, hA);
+      ctx.fillStyle='#000'; ctx.fillText('変更前', 100, 180); ctx.fillText(mA.toFixed(2), 105, 150-hA);
+      
+      const hB = (mB/max)*140; ctx.fillStyle='#f97316'; ctx.fillRect(220, 160-hB, 70, hB);
+      ctx.fillStyle='#000'; ctx.fillText('変更後', 230, 180); ctx.fillText(mB.toFixed(2), 235, 150-hB);
     }
+    window.onload = calc;
   <\/script>
 </body>
 </html>`;
