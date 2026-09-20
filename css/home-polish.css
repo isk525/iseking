@@ -11,7 +11,7 @@
 }
 
 /* ==========================================================================
-   コード＆ロジック・ストリーミング背景
+   コード＆ロジック・ストリーミング背景（滑らか無限ループ版）
    ========================================================================== */
 
 .hero-floating-bg {
@@ -25,82 +25,87 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
-  padding: 20px 0;
-  opacity: 0.55; /* クリーンな背景を維持する絶妙な透明度 */
+  justify-content: space-evenly;
+  padding: 10px 0;
+  /* 背景の文字がメインコピーの邪魔をしないよう薄く調整 */
+  opacity: 0.35;
+  /* 両端をほんのりフェードアウトさせて自然に見せる */
+  mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
 }
 
-/* トラック（流れる行）の基本設定 */
+/* 1行ごとの枠組み */
 .float-track {
   display: flex;
-  gap: 32px;
-  white-space: nowrap;
   width: max-content;
+}
+
+/* ループ用グループ */
+.track-group {
+  display: flex;
+  gap: 24px;
+  padding-right: 24px;
 }
 
 /* 共通コードチップデザイン */
 .code-chip {
   display: inline-flex;
   align-items: center;
-  padding: 6px 14px;
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
+  padding: 5px 12px;
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
   color: #475569;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   font-size: 11px;
   font-weight: 600;
-  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+  white-space: nowrap;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
 }
 
-/* 強調させたい条件式やロジック */
+/* 強調要素 */
 .code-chip.highlight {
-  background: #eff6ff;
-  border-color: #bfdbfe;
+  background: rgba(239, 246, 255, 0.9);
+  border-color: #93c5fd;
   color: #2563eb;
   font-weight: 700;
 }
 
-/* --- 動的アニメーション（横移動 ＋ 上下ゆらぎ） --- */
+/* --- 滑らかな無限ループアニメーション --- */
 
-/* 1行目: 左から右へ移動しながら上下に漂う */
+/* 1行目: 右から左へ滑らかに流れる */
 .track-1 {
-  animation: streamRight 28s linear infinite, floatY 6s ease-in-out infinite alternate;
+  animation: infiniteScrollLeft 35s linear infinite;
 }
 
-/* 2行目: 右から左へ移動しながら逆に上下に漂う */
+/* 2行目: 左から右へ滑らかに流れる */
 .track-2 {
-  animation: streamLeft 32s linear infinite, floatY 7s ease-in-out infinite alternate-reverse;
+  animation: infiniteScrollRight 40s linear infinite;
 }
 
-/* 3行目: ゆっくり左から右へ移動 */
+/* 3行目: 右から左へゆっくり流れる */
 .track-3 {
-  animation: streamRight 36s linear infinite, floatY 8s ease-in-out infinite alternate;
+  animation: infiniteScrollLeft 48s linear infinite;
 }
 
-@keyframes streamRight {
-  0% { transform: translateX(-20%); }
-  100% { transform: translateX(10%); }
+@keyframes infiniteScrollLeft {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }
 
-@keyframes streamLeft {
-  0% { transform: translateX(10%); }
-  100% { transform: translateX(-20%); }
+@keyframes infiniteScrollRight {
+  0% { transform: translateX(-50%); }
+  100% { transform: translateX(0); }
 }
 
-@keyframes floatY {
-  0% { margin-top: 0px; }
-  100% { margin-top: 15px; }
-}
-
-/* スマホ表示での調整 */
+/* スマホ表示での微調整 */
 @media (max-width: 640px) {
   .hero-floating-bg {
-    opacity: 0.35; /* 文字と重なっても邪魔にならないよう薄くする */
+    opacity: 0.2; /* スマホではさらに薄くして可読性を最優先 */
   }
   .code-chip {
     font-size: 9px;
-    padding: 4px 8px;
+    padding: 3px 8px;
   }
 }
 
