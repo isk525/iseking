@@ -275,53 +275,53 @@ body, html {
 }
 
 /* カテゴリごとのカラー識別 */
-[data-category="excel"] .meta span,
+[data-category="Excel活用術"] .meta span,
 .tag-excel {
   background-color: #dcfce7 !important;
   color: #15803d !important;
   border: 1px solid #bbf7d0 !important;
 }
-.article-card[data-category="excel"] .article-cover span {
+.article-card[data-category="Excel活用術"] .article-cover span {
   color: #16a34a !important;
 }
 
-[data-category="ai"] .meta span,
+[data-category="AI活用術"] .meta span,
 .tag-ai {
   background-color: #f3e8ff !important;
   color: #7e22ce !important;
   border: 1px solid #e9d5ff !important;
 }
-.article-card[data-category="ai"] .article-cover span {
+.article-card[data-category="AI活用術"] .article-cover span {
   color: #9333ea !important;
 }
 
-[data-category="webapp"] .meta span,
+[data-category="Webアプリ作成"] .meta span,
 .tag-webapp {
   background-color: #eff6ff !important;
   color: #1d4ed8 !important;
   border: 1px solid #bfdbfe !important;
 }
-.article-card[data-category="webapp"] .article-cover span {
+.article-card[data-category="Webアプリ作成"] .article-cover span {
   color: #2563eb !important;
 }
 
-[data-category="process"] .meta span,
+[data-category="業務改善"] .meta span,
 .tag-process {
   background-color: #ffedd5 !important;
   color: #c2410c !important;
   border: 1px solid #fed7aa !important;
 }
-.article-card[data-category="process"] .article-cover span {
+.article-card[data-category="業務改善"] .article-cover span {
   color: #ea580c !important;
 }
 
-[data-category="pc"] .meta span,
+[data-category="PC活用術"] .meta span,
 .tag-pc {
   background-color: #e0f2fe !important;
   color: #0369a1 !important;
   border: 1px solid #bae6fd !important;
 }
-.article-card[data-category="pc"] .article-cover span {
+.article-card[data-category="PC活用術"] .article-cover span {
   color: #0284c7 !important;
 }
 
