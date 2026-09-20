@@ -205,7 +205,7 @@
           </div>
 
           <div class="chart-container">
-            <canvas id="resultChart" width="400" height="220"></canvas>
+            <canvas id="resultChart" width="400" height="240"></canvas>
           </div>
         </div>
 
@@ -246,9 +246,9 @@
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       const allVals = [...A, ...B];
-      const maxVal = Math.max(...allVals, 1) * 1.2;
+      const maxVal = Math.max(...allVals, 1) * 1.25;
       const chartHeight = 150;
-      const startY = 170;
+      const startY = 190;
 
       // 軸
       ctx.beginPath();
@@ -262,17 +262,21 @@
       const hA = (mA / maxVal) * chartHeight;
       ctx.fillStyle = '#e2e8f0';
       ctx.fillRect(90, startY - hA, 70, hA);
+      
+      // ラベル・平均値テキスト（棒の上に十分な余白を確保）
       ctx.fillStyle = '#1e293b';
-      ctx.font = '14px sans-serif';
-      ctx.fillText('変更前', 100, startY + 20);
-      ctx.fillText(`平均:${mA.toFixed(1)}`, 95, startY - hA - 8);
+      ctx.font = '13px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('変更前', 125, startY + 20);
+      ctx.fillText(`平均 ${mA.toFixed(1)}`, 125, Math.min(startY - hA - 12, startY - 10));
 
-      // 個別データAのドット描画
-      ctx.fillStyle = '#475569';
-      A.forEach(val => {
+      // 個別データAのドット描画（左右に少しバラけさせて重なり防止）
+      ctx.fillStyle = 'rgba(71, 85, 105, 0.7)';
+      A.forEach((val, i) => {
         const y = startY - (val / maxVal) * chartHeight;
+        const xOffset = ((i % 3) - 1) * 12; // -12px, 0px, 12px に分散
         ctx.beginPath();
-        ctx.arc(125, y, 5, 0, Math.PI * 2);
+        ctx.arc(125 + xOffset, y, 4.5, 0, Math.PI * 2);
         ctx.fill();
       });
 
@@ -280,18 +284,22 @@
       const hB = (mB / maxVal) * chartHeight;
       ctx.fillStyle = '#ffedd5';
       ctx.fillRect(220, startY - hB, 70, hB);
+      
       ctx.fillStyle = '#1e293b';
-      ctx.fillText('変更後', 230, startY + 20);
-      ctx.fillText(`平均:${mB.toFixed(1)}`, 225, startY - hB - 8);
+      ctx.fillText('変更後', 255, startY + 20);
+      ctx.fillText(`平均 ${mB.toFixed(1)}`, 255, Math.min(startY - hB - 12, startY - 10));
 
-      // 個別データBのドット描画
-      ctx.fillStyle = '#ea580c';
-      B.forEach(val => {
+      // 個別データBのドット描画（左右に少しバラけさせて重なり防止）
+      ctx.fillStyle = 'rgba(234, 88, 12, 0.8)';
+      B.forEach((val, i) => {
         const y = startY - (val / maxVal) * chartHeight;
+        const xOffset = ((i % 3) - 1) * 12; // -12px, 0px, 12px に分散
         ctx.beginPath();
-        ctx.arc(255, y, 5, 0, Math.PI * 2);
+        ctx.arc(255 + xOffset, y, 4.5, 0, Math.PI * 2);
         ctx.fill();
       });
+
+      ctx.textAlign = 'left'; // リセット
     }
 
     function getPValue(t, df) {
@@ -363,7 +371,7 @@
 
   <button onclick="calc()">判定と確率を計算</button>
   <div id="res" class="result">結果がここに表示されます</div>
-  <div class="chart"><canvas id="c" width="400" height="220"></canvas></div>
+  <div class="chart"><canvas id="c" width="400" height="240"></canvas></div>
 
   <script>
     function getPValue(t, df) {
@@ -400,27 +408,32 @@
         \`<b>判定:</b> \${isSignificant ? '【有意差あり】偶然の可能性が5%未満のため明確な効果と言えます！' : '【有意差なし】たまたまの誤差の範囲内かもしれません。'}\`;
 
       const cvs = document.getElementById('c'), ctx = cvs.getContext('2d');
-      ctx.clearRect(0,0,400,220);
+      ctx.clearRect(0,0,400,240);
       const allVals = [...A, ...B];
-      const max = Math.max(...allVals, 1) * 1.2;
+      const max = Math.max(...allVals, 1) * 1.25;
       
-      ctx.beginPath(); ctx.moveTo(50,20); ctx.lineTo(50,170); ctx.lineTo(350,170); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(50,20); ctx.lineTo(50,190); ctx.lineTo(350,190); ctx.stroke();
       
-      const hA = (mA/max)*150; ctx.fillStyle='#e2e8f0'; ctx.fillRect(90, 170-hA, 70, hA);
-      ctx.fillStyle='#000'; ctx.fillText('変更前', 100, 190); ctx.fillText(\`平均:\${mA.toFixed(1)}\`, 95, 160-hA);
-      ctx.fillStyle='#475569';
-      A.forEach(v => {
-        const y = 170 - (v/max)*150;
-        ctx.beginPath(); ctx.arc(125, y, 5, 0, Math.PI*2); ctx.fill();
+      const hA = (mA/max)*150; ctx.fillStyle='#e2e8f0'; ctx.fillRect(90, 190-hA, 70, hA);
+      ctx.fillStyle='#1e293b'; ctx.font='13px sans-serif'; ctx.textAlign='center';
+      ctx.fillText('変更前', 125, 210); ctx.fillText(\`平均 \${mA.toFixed(1)}\`, 125, Math.min(190-hA-12, 180));
+      ctx.fillStyle='rgba(71, 85, 105, 0.7)';
+      A.forEach((v, i) => {
+        const y = 190 - (v/max)*150;
+        const xOffset = ((i % 3) - 1) * 12;
+        ctx.beginPath(); ctx.arc(125 + xOffset, y, 4.5, 0, Math.PI*2); ctx.fill();
       });
 
-      const hB = (mB/max)*150; ctx.fillStyle='#ffedd5'; ctx.fillRect(220, 170-hB, 70, hB);
-      ctx.fillStyle='#000'; ctx.fillText('変更後', 230, 190); ctx.fillText(\`平均:\${mB.toFixed(1)}\`, 225, 160-hB);
-      ctx.fillStyle='#ea580c';
-      B.forEach(v => {
-        const y = 170 - (v/max)*150;
-        ctx.beginPath(); ctx.arc(255, y, 5, 0, Math.PI*2); ctx.fill();
+      const hB = (mB/max)*150; ctx.fillStyle='#ffedd5'; ctx.fillRect(220, 190-hB, 70, hB);
+      ctx.fillStyle='#1e293b';
+      ctx.fillText('変更後', 255, 210); ctx.fillText(\`平均 \${mB.toFixed(1)}\`, 255, Math.min(190-hB-12, 180));
+      ctx.fillStyle='rgba(234, 88, 12, 0.8)';
+      B.forEach((v, i) => {
+        const y = 190 - (v/max)*150;
+        const xOffset = ((i % 3) - 1) * 12;
+        ctx.beginPath(); ctx.arc(255 + xOffset, y, 4.5, 0, Math.PI*2); ctx.fill();
       });
+      ctx.textAlign='left';
     }
     window.onload = calc;
   <\/script>
