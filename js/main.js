@@ -131,40 +131,51 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 // タイピングアニメーション処理
   const line1Text = "勘と根性を排除する。";
-  const line2Text = "ツールとロジックで仕事を軽くする。";
+  const line2Text = "ツールとロジックで";
+  const line3Text = "仕事を軽くする。";
 
-  const line1Elem = document.querySelectorAll('.hero-line')[0];
-  const line2Elem = document.querySelectorAll('.hero-line')[1];
+  const lines = document.querySelectorAll('.hero-line');
   const leadElem = document.querySelector('.hero-copy .lead');
   const actionsElem = document.querySelector('.hero-actions');
 
-  if (line1Elem && line2Elem) {
-    line1Elem.textContent = '';
-    line2Elem.textContent = '';
+  if (lines.length >= 3) {
+    lines[0].textContent = '';
+    lines[1].textContent = '';
+    lines[2].textContent = '';
 
     const cursor = document.createElement('span');
     cursor.className = 'type-cursor';
 
-    let i = 0;
-    let j = 0;
+    let i = 0, j = 0, k = 0;
 
     function typeLine1() {
-      line1Elem.appendChild(cursor);
+      lines[0].appendChild(cursor);
       if (i < line1Text.length) {
-        line1Elem.insertBefore(document.createTextNode(line1Text.charAt(i)), cursor);
+        lines[0].insertBefore(document.createTextNode(line1Text.charAt(i)), cursor);
         i++;
         setTimeout(typeLine1, 100);
       } else {
-        setTimeout(typeLine2, 300);
+        setTimeout(typeLine2, 250);
       }
     }
 
     function typeLine2() {
-      line2Elem.appendChild(cursor);
+      lines[1].appendChild(cursor);
       if (j < line2Text.length) {
-        line2Elem.insertBefore(document.createTextNode(line2Text.charAt(j)), cursor);
+        lines[1].insertBefore(document.createTextNode(line2Text.charAt(j)), cursor);
         j++;
         setTimeout(typeLine2, 100);
+      } else {
+        setTimeout(typeLine3, 250);
+      }
+    }
+
+    function typeLine3() {
+      lines[2].appendChild(cursor);
+      if (k < line3Text.length) {
+        lines[2].insertBefore(document.createTextNode(line3Text.charAt(k)), cursor);
+        k++;
+        setTimeout(typeLine3, 100);
       } else {
         setTimeout(() => {
           cursor.remove();
