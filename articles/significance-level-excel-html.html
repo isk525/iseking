@@ -240,134 +240,134 @@
   </footer>
 
   <script>
-    function drawDistributionChart(tValue, isSignificant) {
-      const canvas = document.getElementById('resultChart');
-      if (!canvas || !canvas.getContext) return;
-      const ctx = canvas.getContext('2d');
-      
-      const width = canvas.width;
-      const height = canvas.height;
-      ctx.clearRect(0, 0, width, height);
+function drawDistributionChart(tValue, isSignificant) {
+  const canvas = document.getElementById('resultChart');
+  if (!canvas || !canvas.getContext) return;
+  const ctx = canvas.getContext('2d');
+  
+  const width = canvas.width;
+  const height = canvas.height;
+  ctx.clearRect(0, 0, width, height);
 
-      // 上部マージンを広げて重なりを防止
-      const margin = { top: 55, right: 35, bottom: 45, left: 35 };
-      const plotWidth = width - margin.left - margin.right;
-      const plotHeight = height - margin.top - margin.bottom;
-      const zeroX = margin.left + plotWidth / 2;
-      const basey = margin.top + plotHeight;
+  // 上部マージンを広げて重なりを防止
+  const margin = { top: 55, right: 35, bottom: 45, left: 35 };
+  const plotWidth = width - margin.left - margin.right;
+  const plotHeight = height - margin.top - margin.bottom;
+  const zeroX = margin.left + plotWidth / 2;
+  const basey = margin.top + plotHeight;
 
-      // X軸範囲 (-4 〜 +4)
-      const xMin = -4, xMax = 4;
-      const toCanvasX = (x) => margin.left + ((x - xMin) / (xMax - xMin)) * plotWidth;
+  // X軸範囲 (-4 〜 +4)
+  const xMin = -4, xMax = 4;
+  const toCanvasX = (x) => margin.left + ((x - xMin) / (xMax - xMin)) * plotWidth;
 
-      // 標準正規分布関数
-      const pdf = (x) => (1 / Math.sqrt(2 * Math.PI)) * Math.exp(-0.5 * x * x);
-      const maxY = pdf(0);
-      const toCanvasY = (y) => basey - (y / maxY) * (plotHeight - 10);
+  // 標準正規分布関数
+  const pdf = (x) => (1 / Math.sqrt(2 * Math.PI)) * Math.exp(-0.5 * x * x);
+  const maxY = pdf(0);
+  const toCanvasY = (y) => basey - (y / maxY) * (plotHeight - 10);
 
-      // 1. メインタイトルの描画（固定位置）
-      ctx.fillStyle = '#0f172a';
-      ctx.font = 'bold 15px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText('p値と確率分布（t分布）', width / 2, 22);
+  // 1. メインタイトルの描画（固定位置）
+  ctx.fillStyle = '#0f172a';
+  ctx.font = 'bold 15px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('データの偏りと確率分布', width / 2, 22);
 
-      // 2. 棄却域 (両端 2.5% ずつ, x = ±1.96) の塗りつぶし
-      ctx.fillStyle = 'rgba(239, 68, 68, 0.25)';
+  // 2. 5%境界エリア (両端 2.5% ずつ, x = ±1.96) の塗りつぶし
+  ctx.fillStyle = 'rgba(239, 68, 68, 0.25)';
 
-      // 左側 棄却域 (-4 ～ -1.96)
-      ctx.beginPath();
-      ctx.moveTo(toCanvasX(-4), basey);
-      for (let x = -4; x <= -1.96; x += 0.05) {
-        ctx.lineTo(toCanvasX(x), toCanvasY(pdf(x)));
-      }
-      ctx.lineTo(toCanvasX(-1.96), basey);
-      ctx.closePath();
-      ctx.fill();
+  // 左側エリア (-4 ～ -1.96)
+  ctx.beginPath();
+  ctx.moveTo(toCanvasX(-4), basey);
+  for (let x = -4; x <= -1.96; x += 0.05) {
+    ctx.lineTo(toCanvasX(x), toCanvasY(pdf(x)));
+  }
+  ctx.lineTo(toCanvasX(-1.96), basey);
+  ctx.closePath();
+  ctx.fill();
 
-      // 右側 棄却域 (1.96 ～ 4)
-      ctx.beginPath();
-      ctx.moveTo(toCanvasX(1.96), basey);
-      for (let x = 1.96; x <= 4; x += 0.05) {
-        ctx.lineTo(toCanvasX(x), toCanvasY(pdf(x)));
-      }
-      ctx.lineTo(toCanvasX(4), basey);
-      ctx.closePath();
-      ctx.fill();
+  // 右側エリア (1.96 ～ 4)
+  ctx.beginPath();
+  ctx.moveTo(toCanvasX(1.96), basey);
+  for (let x = 1.96; x <= 4; x += 0.05) {
+    ctx.lineTo(toCanvasX(x), toCanvasY(pdf(x)));
+  }
+  ctx.lineTo(toCanvasX(4), basey);
+  ctx.closePath();
+  ctx.fill();
 
-      // 棄却域の文字ラベル
-      ctx.fillStyle = '#dc2626';
-      ctx.font = '11px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText('棄却域(5%)', toCanvasX(-2.8), basey - 15);
-      ctx.fillText('棄却域(5%)', toCanvasX(2.8), basey - 15);
+  // エリアの分かりやすいラベル
+  ctx.fillStyle = '#dc2626';
+  ctx.font = '11px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('「効果あり」エリア', toCanvasX(-2.8), basey - 15);
+  ctx.fillText('「効果あり」エリア', toCanvasX(2.8), basey - 15);
 
-      // 3. 山型曲線の描画
-      ctx.beginPath();
-      ctx.strokeStyle = '#0284c7';
-      ctx.lineWidth = 2.5;
-      for (let x = -4; x <= 4; x += 0.05) {
-        const cx = toCanvasX(x);
-        const cy = toCanvasY(pdf(x));
-        if (x === -4) ctx.moveTo(cx, cy);
-        else ctx.lineTo(cx, cy);
-      }
-      ctx.stroke();
+  // 3. 山型曲線の描画
+  ctx.beginPath();
+  ctx.strokeStyle = '#0284c7';
+  ctx.lineWidth = 2.5;
+  for (let x = -4; x <= 4; x += 0.05) {
+    const cx = toCanvasX(x);
+    const cy = toCanvasY(pdf(x));
+    if (x === -4) ctx.moveTo(cx, cy);
+    else ctx.lineTo(cx, cy);
+  }
+  ctx.stroke();
 
-      // 4. X軸と中央破線 (0)
-      ctx.beginPath();
-      ctx.strokeStyle = '#64748b';
-      ctx.lineWidth = 1;
-      ctx.moveTo(margin.left, basey);
-      ctx.lineTo(width - margin.right, basey);
-      ctx.stroke();
+  // 4. X軸と中央破線 (0)
+  ctx.beginPath();
+  ctx.strokeStyle = '#64748b';
+  ctx.lineWidth = 1;
+  ctx.moveTo(margin.left, basey);
+  ctx.lineTo(width - margin.right, basey);
+  ctx.stroke();
 
-      ctx.setLineDash([4, 4]);
-      ctx.beginPath();
-      ctx.moveTo(zeroX, margin.top);
-      ctx.lineTo(zeroX, basey);
-      ctx.stroke();
-      ctx.setLineDash([]); // リセット
+  ctx.setLineDash([4, 4]);
+  ctx.beginPath();
+  ctx.moveTo(zeroX, margin.top);
+  ctx.lineTo(zeroX, basey);
+  ctx.stroke();
+  ctx.setLineDash([]); // リセット
 
-      ctx.fillStyle = '#334155';
-      ctx.font = '12px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText('0', zeroX, basey + 18);
-      ctx.fillText('-tα/2 (-1.96)', toCanvasX(-1.96), basey + 18);
-      ctx.fillText('tα/2 (1.96)', toCanvasX(1.96), basey + 18);
+  ctx.fillStyle = '#334155';
+  ctx.font = '12px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('0（差なし）', zeroX, basey + 18);
+  ctx.fillText('境界線 (-1.96)', toCanvasX(-1.96), basey + 18);
+  ctx.fillText('境界線 (1.96)', toCanvasX(1.96), basey + 18);
 
-      // 5. 計算されたt値 (検定統計量) の位置を示す矢印とテキスト
-      const clampedT = Math.max(-3.7, Math.min(3.7, tValue)); // キャンバス内枠に収める
-      const tX = toCanvasX(clampedT);
-      const arrowStartY = margin.top + 15;
+  // 5. 今回のデータ位置を示す矢印とテキスト
+  const clampedT = Math.max(-3.7, Math.min(3.7, tValue)); // キャンバス内枠に収める
+  const tX = toCanvasX(clampedT);
+  const arrowStartY = margin.top + 15;
 
-      ctx.strokeStyle = '#d97706';
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.moveTo(tX, arrowStartY);
-      ctx.lineTo(tX, basey);
-      ctx.stroke();
+  ctx.strokeStyle = '#d97706';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(tX, arrowStartY);
+  ctx.lineTo(tX, basey);
+  ctx.stroke();
 
-      // ポインター矢印
-      ctx.fillStyle = '#d97706';
-      ctx.beginPath();
-      ctx.moveTo(tX, arrowStartY + 8);
-      ctx.lineTo(tX - 5, arrowStartY);
-      ctx.lineTo(tX + 5, arrowStartY);
-      ctx.closePath();
-      ctx.fill();
+  // ポインター矢印
+  ctx.fillStyle = '#d97706';
+  ctx.beginPath();
+  ctx.moveTo(tX, arrowStartY + 8);
+  ctx.lineTo(tX - 5, arrowStartY);
+  ctx.lineTo(tX + 5, arrowStartY);
+  ctx.closePath();
+  ctx.fill();
 
-      // 端での文字切れ防止：位置に応じてテキストのアライメントを変更
-      ctx.font = 'bold 12px sans-serif';
-      if (tX < margin.left + 60) {
-        ctx.textAlign = 'left';
-      } else if (tX > width - margin.right - 60) {
-        ctx.textAlign = 'right';
-      } else {
-        ctx.textAlign = 'center';
-      }
-      ctx.fillText(`検定統計量 (t = ${tValue.toFixed(2)})`, tX, arrowStartY - 5);
-      ctx.textAlign = 'left'; // リセット
-    }
+  // 端での文字切れ防止：位置に応じてテキストのアライメントを変更
+  ctx.font = 'bold 12px sans-serif';
+  if (tX < margin.left + 60) {
+    ctx.textAlign = 'left';
+  } else if (tX > width - margin.right - 60) {
+    ctx.textAlign = 'right';
+  } else {
+    ctx.textAlign = 'center';
+  }
+  ctx.fillText(`今回の位置 (t = ${tValue.toFixed(2)})`, tX, arrowStartY - 5);
+  ctx.textAlign = 'left'; // リセット
+}
 
     function getPValue(t, df) {
       let t_stat = Math.abs(t);
