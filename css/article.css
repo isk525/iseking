@@ -348,18 +348,23 @@
 }
 
 /* ==========================================================================
-   記事詳細ページ（PC表示時の本文幅拡大）
+   記事詳細ページ（PC表示時の本文幅拡大修正）
    ========================================================================== */
 
-/* PC表示（画面幅 900px 以上）の時だけ本文領域を 1000px まで拡張 */
 @media (min-width: 900px) {
-  .article-detail-container,
-  .single-post-content,
-  .article-content,
-  .container.article-container {
-    max-width: 1000px !important; /* 広げてサイドの余白を減らす */
-    width: 90%;
-    margin-left: auto;
-    margin-right: auto;
+  /* 外枠の幅制限（850px）を解除して1000pxまで広げる */
+  .article-hero-inner,
+  .article-layout {
+    width: min(1000px, calc(100% - 40px)) !important;
+  }
+
+  /* 本文カード枠および見出しの制限を解除 */
+  .article-content {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+
+  .article-hero h1 {
+    max-width: 100% !important;
   }
 }
