@@ -1,143 +1,165 @@
 /* ==========================================================================
-   トップページ用 統一・修正スタイル
+   トップページ用 クリーンデザイン・スタイル調整
    ========================================================================== */
 
-/* --- 1. フェードイン未発火時の安全対策（テキスト消失防止） --- */
-.fade-in-up {
-  opacity: 1 !important;
-  transform: none !important;
+/* ヒーローエリア */
+.hero {
+  position: relative;
+  background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+  border-bottom: 1px solid #e2e8f0;
 }
 
-/* JavaScriptでis-visibleが付与された際のアニメーション定義（必要な場合） */
-.js-enabled .fade-in-up {
-  opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.js-enabled .fade-in-up.is-visible {
-  opacity: 1;
-  transform: translateY(0);
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  align-items: center;
+  gap: 60px;
+  padding: 80px 0;
 }
 
-/* --- 2. 旧デザイン背景色の上書き（ダークモード統一） --- */
-.hero,
-.section-soft,
-.section {
-  background: #05070d !important;
-  border-color: rgba(255, 255, 255, 0.08) !important;
-}
-
-.hero-blob {
-  display: none !important; /* 旧デザインの背景ブラーを無効化 */
-}
-
-/* --- 3. ヒーローエリア テキスト＆レイアウト調整 --- */
 .hero-copy h1 {
-  max-width: none;
-  color: #f8fafc !important;
+  margin: 16px 0 20px;
+  font-size: clamp(36px, 5vw, 58px);
+  font-weight: 800;
+  line-height: 1.2;
+  color: #0f172a;
 }
 
 .hero-line {
   display: block;
-  white-space: nowrap;
 }
 
+/* 重要要素のブルー強調 */
 .hero-accent {
-  background: linear-gradient(135deg, #38bdf8, #f97316);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: #f97316;
+  color: #2563eb;
 }
 
 .hero-copy .lead {
-  color: #94a3b8 !important;
+  font-size: 17px;
+  line-height: 1.9;
+  color: #64748b;
 }
 
-/* --- 4. 右側ステータスパネルのデザイン統一 --- */
+.hero-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 32px;
+}
+
+/* 右側ステータスパネル */
 .stats-panel {
-  padding: 34px;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  border-radius: 20px !important;
-  background: rgba(13, 18, 30, 0.75) !important;
-  backdrop-filter: blur(20px);
-  color: #fff;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6) !important;
+  padding: 32px;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  background: #ffffff;
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.05);
 }
 
 .stats-label {
-  color: #38bdf8;
+  color: #2563eb;
   font-size: 12px;
   font-weight: 900;
   letter-spacing: 0.13em;
 }
 
 .stats-heading h2 {
-  margin: 12px 0 8px;
-  font-size: 28px;
-  line-height: 1.45;
-  color: #f8fafc !important;
+  margin: 10px 0 8px;
+  font-size: 26px;
+  line-height: 1.4;
+  color: #0f172a;
 }
 
 .stats-heading p {
   margin: 0;
-  color: #94a3b8 !important;
+  color: #64748b;
   font-size: 14px;
-  line-height: 1.8;
+  line-height: 1.7;
 }
 
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 10px;
-  margin-top: 28px;
+  margin-top: 24px;
 }
 
 .stat-card {
-  min-width: 0;
-  padding: 20px 8px 17px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 15px;
-  background: rgba(255, 255, 255, 0.03);
+  padding: 18px 8px 15px;
+  border: 1px solid #f1f5f9;
+  border-radius: 14px;
+  background: #f8fafc;
   text-align: center;
 }
 
 .stat-number {
-  display: inline;
-  color: #38bdf8;
+  display: block;
+  color: #2563eb;
   font-size: 32px;
-  font-weight: 900;
+  font-weight: 800;
   line-height: 1;
 }
 
 .stat-unit {
   display: block;
-  margin-top: 5px;
-  color: #f8fafc;
+  margin-top: 4px;
+  color: #0f172a;
   font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 0.04em;
+  font-weight: 700;
 }
 
 .stat-card strong {
   display: block;
-  margin-top: 13px;
-  color: #94a3b8;
+  margin-top: 10px;
+  color: #64748b;
   font-size: 11px;
 }
 
 .stats-note {
-  margin: 16px 0 0;
-  color: #64748b;
+  margin: 14px 0 0;
+  color: #94a3b8;
   font-size: 10px;
   text-align: right;
 }
 
-/* --- 5. プロフィール・カード類の上書き --- */
+/* カテゴリフィルター */
+.category-filter {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 24px;
+  margin-bottom: 24px;
+}
+
+.filter-btn {
+  padding: 8px 18px;
+  border-radius: 999px;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  color: #64748b;
+  font-size: 0.88rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filter-btn:hover {
+  border-color: #93c5fd;
+  color: #2563eb;
+  background: #eff6ff;
+}
+
+.filter-btn.active {
+  border-color: #2563eb;
+  background: #2563eb;
+  color: #ffffff;
+  font-weight: 700;
+}
+
+/* プロフィール */
 .profile-photo-wrap {
   overflow: hidden;
-  padding: 0;
-  border: 4px solid rgba(255, 255, 255, 0.1) !important;
-  background: rgba(13, 18, 30, 0.65) !important;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
   border-radius: 20px;
 }
 
@@ -146,92 +168,46 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center;
 }
 
 .profile-story {
-  margin: 48px auto 0;
-  max-width: 1200px;
-  width: 100%;
-  padding: 36px 40px;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  border-radius: 24px;
-  background: rgba(13, 18, 30, 0.65) !important;
+  margin: 40px auto 0;
+  padding: 32px 36px;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  background: #ffffff;
 }
 
 .profile-story-label {
   margin: 0 0 6px !important;
-  color: #38bdf8 !important;
+  color: #2563eb !important;
   font-size: 11px;
   font-weight: 900;
   letter-spacing: 0.14em;
 }
 
 .profile-story h3 {
-  margin: 0 0 18px;
-  color: #f8fafc !important;
-  font-size: 21px;
-  line-height: 1.5;
+  margin: 0 0 16px;
+  color: #0f172a;
+  font-size: 20px;
 }
 
 .profile-story p {
-  margin: 0 0 12px;
-  color: #94a3b8 !important;
+  color: #64748b;
   font-size: 14px;
-  line-height: 1.9;
+  line-height: 1.8;
 }
 
-/* --- 6. カテゴリフィルター --- */
-.category-filter {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-bottom: 24px;
-}
-
-.filter-btn {
-  padding: 6px 14px;
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(255, 255, 255, 0.05);
-  color: #94a3b8;
-  font-size: 0.85rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.filter-btn:hover {
-  border-color: #38bdf8;
-  color: #38bdf8;
-}
-
-.filter-btn.active {
-  border-color: #38bdf8;
-  background: #38bdf8;
-  color: #05070d;
-  font-weight: 700;
-}
-
-/* --- 7. レスポンシブ調整 --- */
-@media(max-width:1120px){
-  .hero-line{ white-space: normal; }
-  .hero-copy h1{ font-size: clamp(36px, 5vw, 56px); }
-}
+/* レスポンシブ */
 @media(max-width:900px){
-  .stats-panel{ max-width: 650px; }
-  .hero-line{ white-space: nowrap; }
+  .hero-grid { grid-template-columns: 1fr; gap: 36px; padding: 48px 0; }
+  .hero-line { white-space: normal; }
 }
 @media(max-width:640px){
-  .hero-line{ white-space: normal; }
-  .hero-copy h1{ font-size: 36px; }
-  .stats-panel{ padding: 25px 18px; }
-  .stats-heading h2{ font-size: 22px; }
-  .stats-grid{ gap: 7px; }
-  .stat-number{ font-size: 27px; }
-  .stat-unit{ font-size: 9px; }
-  .stat-card strong{ font-size: 10px; }
-  .profile-photo-wrap{ min-height: 320px; }
-  .stats-note{ text-align: left; }
-  .profile-story{ padding: 22px 20px; }
-  .profile-story h3{ font-size: 19px; }
+  .hero-copy h1 { font-size: 34px; }
+  .hero-actions { flex-direction: column; }
+  .stats-panel { padding: 20px 16px; }
+  .stats-grid { gap: 6px; }
+  .stat-number { font-size: 24px; }
+  .profile-story { padding: 20px; }
 }
