@@ -33,14 +33,36 @@
 
 <main id="main">
 <section id="top" class="hero">
-  <!-- 浮遊モジュール背景（ここを追加） -->
+<!-- 浮遊コード・ロジック背景 -->
   <div class="hero-floating-bg" aria-hidden="true">
-    <div class="float-item tag-code pos-1">P-value &lt; 0.05</div>
-    <div class="float-item tag-excel pos-2">COUNTIF()</div>
-    <div class="float-item tag-logic pos-3">IF / THEN</div>
-    <div class="float-item tag-accent pos-4">DX</div>
-    <div class="float-item tag-code pos-5">RAG</div>
-    <div class="float-item tag-excel pos-6">VLOOKUP</div>
+    <!-- 行1: 左から右へ流れる -->
+    <div class="float-track track-1">
+      <span class="code-chip">Sub ProcessData_v2()</span>
+      <span class="code-chip highlight">p_value &lt; 0.05</span>
+      <span class="code-chip">INDEX(MATCH())</span>
+      <span class="code-chip">RAG.retrieve_context()</span>
+      <span class="code-chip highlight">SMA(20) &gt; EMA(50)</span>
+      <span class="code-chip">Application.ScreenUpdating = False</span>
+    </div>
+
+    <!-- 行2: 右から左へ流れる -->
+    <div class="float-track track-2">
+      <span class="code-chip highlight">Order.Exec(Limit, Spread)</span>
+      <span class="code-chip">Function CalcRisk(volatility)</span>
+      <span class="code-chip">LAMBDA(x, x*1.1)</span>
+      <span class="code-chip highlight">VaR_95 = Quantile(0.05)</span>
+      <span class="code-chip">Set dict = CreateObject()</span>
+      <span class="code-chip">Tick.Delta &gt; Threshold</span>
+    </div>
+
+    <!-- 行3: 左から右へ流れる -->
+    <div class="float-track track-3">
+      <span class="code-chip">vectorized_query(k=3)</span>
+      <span class="code-chip highlight">IF(ISNA(), 0, val)</span>
+      <span class="code-chip">HighFrequency::Execution()</span>
+      <span class="code-chip">WorksheetFunction.VLookUp</span>
+      <span class="code-chip highlight">p &lt; alpha ? reject : retain</span>
+    </div>
   </div>
   <div class="hero-blob blob-one"></div>
   <div class="hero-blob blob-two"></div>
