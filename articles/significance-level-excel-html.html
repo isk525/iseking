@@ -187,7 +187,7 @@
           </div>
 
           <div class="chart-container">
-            <canvas id="resultChart" width="500" height="260"></canvas>
+            <canvas id="resultChart" width="500" height="280"></canvas>
           </div>
         </div>
 
@@ -228,7 +228,8 @@
       const height = canvas.height;
       ctx.clearRect(0, 0, width, height);
 
-      const margin = { top: 40, right: 30, bottom: 50, left: 30 };
+      // 上部マージンを広げて重なりを防止
+      const margin = { top: 55, right: 35, bottom: 45, left: 35 };
       const plotWidth = width - margin.left - margin.right;
       const plotHeight = height - margin.top - margin.bottom;
       const zeroX = margin.left + plotWidth / 2;
@@ -238,13 +239,19 @@
       const xMin = -4, xMax = 4;
       const toCanvasX = (x) => margin.left + ((x - xMin) / (xMax - xMin)) * plotWidth;
 
-      // 標準正規分布関数 (山型)
+      // 標準正規分布関数
       const pdf = (x) => (1 / Math.sqrt(2 * Math.PI)) * Math.exp(-0.5 * x * x);
       const maxY = pdf(0);
-      const toCanvasY = (y) => basey - (y / maxY) * (plotHeight - 20);
+      const toCanvasY = (y) => basey - (y / maxY) * (plotHeight - 10);
 
-      // 1. 棄却域 (両端 2.5% ずつ, x = ±1.96) の塗りつぶし
-      ctx.fillStyle = 'rgba(239, 68, 68, 0.25)'; // 赤色透明
+      // 1. メインタイトルの描画（固定位置）
+      ctx.fillStyle = '#0f172a';
+      ctx.font = 'bold 15px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('p値と確率分布（t分布）', width / 2, 22);
+
+      // 2. 棄却域 (両端 2.5% ずつ, x = ±1.96) の塗りつぶし
+      ctx.fillStyle = 'rgba(239, 68, 68, 0.25)';
 
       // 左側 棄却域 (-4 ～ -1.96)
       ctx.beginPath();
@@ -273,7 +280,7 @@
       ctx.fillText('棄却域(5%)', toCanvasX(-2.8), basey - 15);
       ctx.fillText('棄却域(5%)', toCanvasX(2.8), basey - 15);
 
-      // 2. 山型曲線の描画
+      // 3. 山型曲線の描画
       ctx.beginPath();
       ctx.strokeStyle = '#0284c7';
       ctx.lineWidth = 2.5;
@@ -285,7 +292,7 @@
       }
       ctx.stroke();
 
-      // 3. X軸と中央破線 (0)
+      // 4. X軸と中央破線 (0)
       ctx.beginPath();
       ctx.strokeStyle = '#64748b';
       ctx.lineWidth = 1;
@@ -302,39 +309,43 @@
 
       ctx.fillStyle = '#334155';
       ctx.font = '12px sans-serif';
+      ctx.textAlign = 'center';
       ctx.fillText('0', zeroX, basey + 18);
       ctx.fillText('-tα/2 (-1.96)', toCanvasX(-1.96), basey + 18);
       ctx.fillText('tα/2 (1.96)', toCanvasX(1.96), basey + 18);
 
-      // 4. 計算されたt値 (検定統計量) の位置を示す矢印と線
-      const clampedT = Math.max(-3.8, Math.min(3.8, tValue)); // 画面外対策
+      // 5. 計算されたt値 (検定統計量) の位置を示す矢印とテキスト
+      const clampedT = Math.max(-3.7, Math.min(3.7, tValue)); // キャンバス内枠に収める
       const tX = toCanvasX(clampedT);
-      const tY = toCanvasY(pdf(clampedT));
+      const arrowStartY = margin.top + 15;
 
       ctx.strokeStyle = '#d97706';
       ctx.lineWidth = 2;
       ctx.beginPath();
-      ctx.moveTo(tX, margin.top - 10);
+      ctx.moveTo(tX, arrowStartY);
       ctx.lineTo(tX, basey);
       ctx.stroke();
 
       // ポインター矢印
       ctx.fillStyle = '#d97706';
       ctx.beginPath();
-      ctx.moveTo(tX, margin.top + 5);
-      ctx.lineTo(tX - 5, margin.top - 5);
-      ctx.lineTo(tX + 5, margin.top - 5);
+      ctx.moveTo(tX, arrowStartY + 8);
+      ctx.lineTo(tX - 5, arrowStartY);
+      ctx.lineTo(tX + 5, arrowStartY);
       ctx.closePath();
       ctx.fill();
 
-      // 検定統計量ラベル
+      // 端での文字切れ防止：位置に応じてテキストのアライメントを変更
       ctx.font = 'bold 12px sans-serif';
-      ctx.fillText(`検定統計量 (t = ${tValue.toFixed(2)})`, tX, margin.top - 18);
-      
-      // グラフタイトルの表示
-      ctx.fillStyle = '#0f172a';
-      ctx.font = 'bold 14px sans-serif';
-      ctx.fillText('p値と確率分布（t分布）', width / 2, 20);
+      if (tX < margin.left + 60) {
+        ctx.textAlign = 'left';
+      } else if (tX > width - margin.right - 60) {
+        ctx.textAlign = 'right';
+      } else {
+        ctx.textAlign = 'center';
+      }
+      ctx.fillText(`検定統計量 (t = ${tValue.toFixed(2)})`, tX, arrowStartY - 5);
+      ctx.textAlign = 'left'; // リセット
     }
 
     function getPValue(t, df) {
@@ -366,7 +377,7 @@
       const vA = variance(A);
       const vB = variance(B);
       const se = Math.sqrt((vA / A.length) + (vB / B.length));
-      const t = (mA - mB) / se; // 符号付きt値
+      const t = (mA - mB) / se;
       const df = A.length + B.length - 2;
 
       const pValue = getPValue(t, df);
@@ -406,7 +417,7 @@
 
   <button onclick="calc()">判定と確率を計算</button>
   <div id="res" class="result">結果がここに表示されます</div>
-  <div class="chart"><canvas id="c" width="500" height="260"></canvas></div>
+  <div class="chart"><canvas id="c" width="500" height="280"></canvas></div>
 
   <script>
     function getPValue(t, df) {
@@ -421,7 +432,7 @@
       const width = cvs.width, height = cvs.height;
       ctx.clearRect(0, 0, width, height);
 
-      const margin = { top: 40, right: 30, bottom: 50, left: 30 };
+      const margin = { top: 55, right: 35, bottom: 45, left: 35 };
       const plotWidth = width - margin.left - margin.right;
       const plotHeight = height - margin.top - margin.bottom;
       const zeroX = margin.left + plotWidth / 2;
@@ -429,9 +440,11 @@
 
       const toCanvasX = (x) => margin.left + ((x - (-4)) / 8) * plotWidth;
       const pdf = (x) => (1 / Math.sqrt(2 * Math.PI)) * Math.exp(-0.5 * x * x);
-      const toCanvasY = (y) => basey - (y / pdf(0)) * (plotHeight - 20);
+      const toCanvasY = (y) => basey - (y / pdf(0)) * (plotHeight - 10);
 
-      // 棄却域 (両端)
+      ctx.fillStyle = '#0f172a'; ctx.font = 'bold 15px sans-serif'; ctx.textAlign = 'center';
+      ctx.fillText('p値と確率分布（t分布）', width / 2, 22);
+
       ctx.fillStyle = 'rgba(239, 68, 68, 0.25)';
       ctx.beginPath(); ctx.moveTo(toCanvasX(-4), basey);
       for (let x = -4; x <= -1.96; x += 0.05) ctx.lineTo(toCanvasX(x), toCanvasY(pdf(x)));
@@ -445,7 +458,6 @@
       ctx.fillText('棄却域(5%)', toCanvasX(-2.8), basey - 15);
       ctx.fillText('棄却域(5%)', toCanvasX(2.8), basey - 15);
 
-      // 曲線
       ctx.beginPath(); ctx.strokeStyle = '#0284c7'; ctx.lineWidth = 2.5;
       for (let x = -4; x <= 4; x += 0.05) {
         const cx = toCanvasX(x), cy = toCanvasY(pdf(x));
@@ -453,26 +465,34 @@
       }
       ctx.stroke();
 
-      // 軸
       ctx.beginPath(); ctx.strokeStyle = '#64748b'; ctx.lineWidth = 1;
       ctx.moveTo(margin.left, basey); ctx.lineTo(width - margin.right, basey); ctx.stroke();
 
       ctx.setLineDash([4, 4]); ctx.beginPath();
       ctx.moveTo(zeroX, margin.top); ctx.lineTo(zeroX, basey); ctx.stroke(); ctx.setLineDash([]);
 
-      ctx.fillStyle = '#334155'; ctx.font = '12px sans-serif';
+      ctx.fillStyle = '#334155'; ctx.font = '12px sans-serif'; ctx.textAlign = 'center';
       ctx.fillText('0', zeroX, basey + 18);
       ctx.fillText('-1.96', toCanvasX(-1.96), basey + 18);
       ctx.fillText('1.96', toCanvasX(1.96), basey + 18);
 
-      // t値の位置
-      const clampedT = Math.max(-3.8, Math.min(3.8, tValue));
+      const clampedT = Math.max(-3.7, Math.min(3.7, tValue));
       const tX = toCanvasX(clampedT);
-      ctx.strokeStyle = '#d97706'; ctx.lineWidth = 2;
-      ctx.beginPath(); ctx.moveTo(tX, margin.top - 10); ctx.lineTo(tX, basey); ctx.stroke();
+      const arrowStartY = margin.top + 15;
 
-      ctx.fillStyle = '#d97706'; ctx.font = 'bold 12px sans-serif';
-      ctx.fillText(\`t = \${tValue.toFixed(2)}\`, tX, margin.top - 15);
+      ctx.strokeStyle = '#d97706'; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(tX, arrowStartY); ctx.lineTo(tX, basey); ctx.stroke();
+
+      ctx.fillStyle = '#d97706'; ctx.beginPath();
+      ctx.moveTo(tX, arrowStartY + 8); ctx.lineTo(tX - 5, arrowStartY); ctx.lineTo(tX + 5, arrowStartY); ctx.closePath(); ctx.fill();
+
+      ctx.font = 'bold 12px sans-serif';
+      if (tX < margin.left + 60) ctx.textAlign = 'left';
+      else if (tX > width - margin.right - 60) ctx.textAlign = 'right';
+      else ctx.textAlign = 'center';
+
+      ctx.fillText(\`検定統計量 (t = \${tValue.toFixed(2)})\`, tX, arrowStartY - 5);
+      ctx.textAlign = 'left';
     }
 
     function calc() {
