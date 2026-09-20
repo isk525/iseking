@@ -129,3 +129,57 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
 });
+// タイピングアニメーション処理
+  const line1Text = "仕事をもっと楽しく、";
+  const line2Text = "もっと楽に。";
+
+  const line1Elem = document.querySelectorAll('.hero-line')[0];
+  const line2Elem = document.querySelectorAll('.hero-line')[1];
+  const leadElem = document.querySelector('.hero-copy .lead');
+  const actionsElem = document.querySelector('.hero-actions');
+
+  if (line1Elem && line2Elem) {
+    // 初期状態をクリア
+    line1Elem.textContent = '';
+    line2Elem.textContent = '';
+
+    // カーソル要素を作成
+    const cursor = document.createElement('span');
+    cursor.className = 'type-cursor';
+
+    let i = 0;
+    let j = 0;
+
+    // 1行目のタイピング
+    function typeLine1() {
+      line1Elem.appendChild(cursor);
+      if (i < line1Text.length) {
+        line1Elem.insertBefore(document.createTextNode(line1Text.charAt(i)), cursor);
+        i++;
+        setTimeout(typeLine1, 120); // 打鍵スピード（ミリ秒数値を大きくすると遅くなります）
+      } else {
+        // 1行目完了後、少し待って2行目へ
+        setTimeout(typeLine2, 400);
+      }
+    }
+
+    // 2行目のタイピング
+    function typeLine2() {
+      line2Elem.appendChild(cursor);
+      if (j < line2Text.length) {
+        line2Elem.insertBefore(document.createTextNode(line2Text.charAt(j)), cursor);
+        j++;
+        setTimeout(typeLine2, 120);
+      } else {
+        // タイピング完了後にカーソルを消し、下部のテキストとボタンを表示
+        setTimeout(() => {
+          cursor.remove();
+          if (leadElem) leadElem.classList.add('is-visible');
+          if (actionsElem) actionsElem.classList.add('is-visible');
+        }, 500);
+      }
+    }
+
+    // 画面表示後少し置いてからスタート
+    setTimeout(typeLine1, 300);
+  }
