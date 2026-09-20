@@ -187,7 +187,7 @@
     </div>
 
     <div id="article-list" class="article-grid">
-      <article class="article-card card fade-in-up" data-category="webapp" data-search="HTML Webアプリ 統計学 有意水準 機関投資家 Excel データ分析">
+      <article class="article-card card fade-in-up" data-category="Webアプリ作成" data-search="HTML Webアプリ 統計学 有意水準 機関投資家 Excel データ分析">
         <div class="article-cover"><span>&lt;/&gt;</span></div>
         <div class="article-body">
           <div class="meta"><span>Webアプリ作成</span><time>2026.09.20</time></div>
@@ -197,7 +197,7 @@
         </div>
       </article>
 
-      <article class="article-card card fade-in-up" data-category="webapp" data-search="HTML Webアプリ 業務改善">
+      <article class="article-card card fade-in-up" data-category="Webアプリ作成" data-search="HTML Webアプリ 業務改善">
         <div class="article-cover"><span>&lt;/&gt;</span></div>
         <div class="article-body">
           <div class="meta"><span>Webアプリ作成</span><time>2026.09.08</time></div>
@@ -207,7 +207,7 @@
         </div>
       </article>
 
-      <article class="article-card card fade-in-up" data-category="excel" data-search="Excel XLOOKUP VLOOKUP HLOOKUP 関数">
+      <article class="article-card card fade-in-up" data-category="Excel活用術" data-search="Excel XLOOKUP VLOOKUP HLOOKUP 関数">
         <div class="article-cover"><span>Excel</span></div>
         <div class="article-body">
           <div class="meta"><span>Excel活用術</span><time>2026.09.09</time></div>
@@ -217,7 +217,7 @@
         </div>
       </article>
 
-      <article class="article-card card fade-in-up" data-category="pc" data-search="Windows PC活用 ショートカット クリップボード 仮想デスクトップ">
+      <article class="article-card card fade-in-up" data-category="PC活用術" data-search="Windows PC活用 ショートカット クリップボード 仮想デスクトップ">
         <div class="article-cover"><span>Win</span></div>
         <div class="article-body">
           <div class="meta"><span>PC活用術</span><time>2026.09.09</time></div>
@@ -327,5 +327,63 @@
 </footer>
 
 <script src="js/main.js"></script>
+  <script>
+document.addEventListener('DOMContentLoaded', () => {
+  const filterBtns = document.querySelectorAll('.category-filter .filter-btn');
+  const articleCards = document.querySelectorAll('#article-list .article-card');
+  const searchInput = document.getElementById('article-search');
+  const noResults = document.getElementById('no-results');
+
+  let currentCategory = 'すべて';
+  let currentKeyword = '';
+
+  // 記事の表示/非表示を更新する関数
+  function filterArticles() {
+    let visibleCount = 0;
+
+    articleCards.forEach(card => {
+      const category = card.getAttribute('data-category') || '';
+      const searchData = (card.getAttribute('data-search') || '') + ' ' + card.textContent;
+      
+      // カテゴリ一致判定
+      const matchesCategory = (currentCategory === 'すべて' || category === currentCategory);
+      
+      // 検索キーワード一致判定
+      const matchesKeyword = !currentKeyword || searchData.toLowerCase().includes(currentKeyword);
+
+      if (matchesCategory && matchesKeyword) {
+        card.style.display = '';
+        visibleCount++;
+      } else {
+        card.style.display = 'none';
+      }
+    });
+
+    // 0件の時のメッセージ制御
+    if (noResults) {
+      noResults.hidden = (visibleCount > 0);
+    }
+  }
+
+  // カテゴリボタンのクリックイベント
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      
+      currentCategory = btn.textContent.trim();
+      filterArticles();
+    });
+  });
+
+  // 検索入力イベント
+  if (searchInput) {
+    searchInput.addEventListener('input', (e) => {
+      currentKeyword = e.target.value.toLowerCase().trim();
+      filterArticles();
+    });
+  }
+});
+</script>
 </body>
 </html>
