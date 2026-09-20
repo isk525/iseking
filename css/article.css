@@ -348,23 +348,38 @@
 }
 
 /* ==========================================================================
-   記事詳細ページ（PC表示時の本文幅拡大修正）
+   記事詳細ページ 幅調整（PC表示の拡大 ＆ スマホ表示の適正化）
    ========================================================================== */
 
-@media (min-width: 900px) {
-  /* 外枠の幅制限（850px）を解除して1000pxまで広げる */
+/* --- 画面幅 1024px 以上の大型画面（PC表示） --- */
+@media (min-width: 1024px) {
+  /* 外枠を1100pxまで拡張 */
   .article-hero-inner,
   .article-layout {
-    width: min(1000px, calc(100% - 40px)) !important;
+    width: min(1100px, calc(100% - 40px)) !important;
   }
 
-  /* 本文カード枠および見出しの制限を解除 */
+  /* 本文カード枠の幅制限解除 ＆ 内側余白の最適化 */
   .article-content {
     max-width: 100% !important;
     width: 100% !important;
+    padding: 48px 40px 60px !important; /* 左右の余白を64px→40pxに削って本文領域を確保 */
   }
 
+  /* 見出しの幅制限解除 */
   .article-hero h1 {
     max-width: 100% !important;
+  }
+}
+
+/* --- 画面幅 1023px 以下の画面（スマホ・タブレット表示） --- */
+@media (max-width: 1023px) {
+  .article-hero-inner,
+  .article-layout {
+    width: min(100% - 32px, 800px) !important;
+  }
+
+  .article-content {
+    padding: 28px 18px 40px !important; /* スマホ時の余白を詰めて幅いっぱいに表示 */
   }
 }
