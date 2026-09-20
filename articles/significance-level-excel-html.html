@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="同僚の奥さん（プロの機関投資家）から聞いた「有意水準」の話。Excelでの関数表現や、グラフ描画付きの簡易Webツールの作り方まで分かりやすく紹介します。">
+  <meta name="description" content="同僚の奥さん（プロの機関投資家）から聞いた「有意水準」の話。Excelでの関数表現や、データプロット付き簡易Webツールの作り方まで分かりやすく紹介します。">
   <meta name="theme-color" content="#f97316">
   <title>機関投資家から学んだ「有意水準」とは？Excelでの検証とHTMLで作る簡易Webツール | イセキングのDX日和</title>
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
@@ -105,10 +105,11 @@
         <section class="article-summary" aria-labelledby="summary-title">
           <h2 id="summary-title">この記事で分かること</h2>
           <ul>
-            <li>機関投資家というプロの凄さと「有意水準」の考え方</li>
+            <li>機関投資家というプロの凄さと「有意水準」「有意差」の考え方</li>
             <li>「偶然」と「効果（必然）」を見分ける身近なイメージ（コイン投げの例）</li>
+            <li>「何を入力すればいいん？」が分かる具体的な活用例</li>
             <li>Excelの関数（T.TEST）でパッと算出する方法</li>
-            <li>HTMLで作るグラフ＆確率（p値）表示ツール（ダウンロード可）</li>
+            <li>HTMLで作るデータ散布描画＆確率（p値）表示ツール（ダウンロード可）</li>
           </ul>
         </section>
 
@@ -128,8 +129,8 @@
 
         <p>そのプロの現場で、「その成果はたまたまか、それとも本当の実力（効果）か」を客観的に見極めるために使われているのが「有意水準」という考え方なのだと受け止めました。</p>
 
-        <h2>身近な例え：「コイン投げ」で考える偶然と必然</h2>
-        <p>「有意水準」なんて難しい名前がついていますが、<b>「コイン投げでイカサマを疑うライン」</b>と考えると一気にイメージしやすくなります。</p>
+        <h2>身近な例え：「コイン投げ」で考える「有意水準」と「有意差」</h2>
+        <p>難しそうな名前がついていますが、<b>「コイン投げでイカサマを疑うライン」</b>と考えると一気にイメージしやすくなります。</p>
 
         <p>普通のコインを投げたとき、表が出るか裏が出るかは50%（半分）ですよね。<br/>
         もし目の前でコインを投げて、連続で表が出たとします。</p>
@@ -142,22 +143,13 @@
 
         <p>3回連続くらいなら「たまたまのラッキー（偶然）」で納得できますが、<b>5回も6回も連続で表が出ると、「いやいや、そのコイン仕掛けがあるでしょ（仕掛けという原因・効果がある）！」</b>と疑いたくなりますよね。</p>
 
-        <p>統計学では、この「たまたま起きる確率」が<b>5%未満（0.05未満）</b>になったとき、「偶然とは言い切れない！仕掛け（明確な変更効果）があったんだ！」と判断します。</p>
+        <p>統計学では、この「たまたま起きる確率（＝<b>p値</b>）」が<b>5%未満（0.05未満）</b>になったとき、「偶然とは言い切れない！仕掛け（明確な変更効果）があったんだ！」と判断します。</p>
 
-        <p>この「たまたま起きる確率のこと」を<b>「p値」</b>と呼び、判定の基準線（5%＝0.05）のことを<b>「有意水準」</b>と呼んでいるわけです。</p>
+        <p>この判定の基準線（5%＝0.05）のことを<b>「有意水準」</b>と呼び、その基準をクリアして「明確な差がある！」と判断できた状態のことを<b>「有意差がある（有意差あり）」</b>と表現します。</p>
 
         <div class="point-box">
-          「5回連続でコインの表が出るくらいの珍しいことが起きたら、たまたまではなく効果があったと認めよう！」という約束事が有意水準です。
+          判定基準が「有意水準」、判定結果が「有意差あり/なし」と覚えると分かりやすいですね！
         </div>
-
-        <h2>Excelの関数なら「T.TEST」で一瞬で算出できる</h2>
-        <p>この偶然起きた確率（p値）の計算ですが、Excelを使うなら「T.TEST」という関数を使えば一瞬で結果が出せます。</p>
-
-        <p>例えば、A列に「変更前のデータ」、B列に「変更後のデータ」が入っている場合、空いているセルに以下のように入力します。</p>
-
-        <p><code>=T.TEST(A2:A10, B2:B10, 2, 2)</code></p>
-
-        <p>この関数の結果として表示される数値こそが「p値（偶然起きた確率）」そのものです。表示された数値が「0.05（5%）」を下回っていれば、「たまたまではなく明確な効果があった！」と判断できます。</p>
 
         <h2>「で、具体的に何を入力すればええの？」実例で紹介！</h2>
         <p>場面別の具体的な入力データのイメージはこんな感じです。</p>
@@ -183,16 +175,24 @@
           <li><b>新デザインの満足度：</b>8, 9, 7, 8, 9, 8</li>
         </ul>
 
-        <h2>HTMLとJavaScriptでツールを作ってみた（確率・グラフ表示付き）</h2>
-        <p>入力した数値の平均値グラフに加え、「偶然起きた確率（p値）」も具体的に何%か表示されるツールを作成し、このページに埋め込んでみました！</p>
+        <h2>Excelの関数なら「T.TEST」で一瞬で算出できる</h2>
+        <p>入力するデータが手元にあれば、Excelの「T.TEST」という関数を使えば一瞬で確率（p値）を計算できます。</p>
+
+        <p>例えば、A列に「変更前のデータ」、B列に「変更後のデータ」が入っている場合、空いているセルに以下のように入力します。</p>
+
+        <p><code>=T.TEST(A2:A10, B2:B10, 2, 2)</code></p>
+
+        <p>この関数の結果として表示される数値こそが「p値（偶然起きた確率）」そのものです。表示された数値が「0.05（5%）」を下回っていれば、「有意差あり（効果があった！）」と判断できます。</p>
+
+        <h2>HTMLとJavaScriptでツールを作ってみた（各データのドット描画・p値付き）</h2>
+        <p>平均値の棒グラフの上に、<b>個々の入力データ（ドット）がどう散らばっているか</b>を視覚的に表示し、「偶然起きた確率（p値）」も計算するツールを埋め込んでみました！</p>
 
         <!-- 実際に動く簡易ツール -->
         <div class="tool-box">
-          <h3>【体験版】グラフ＆p値表示付き・有意差チェッカー</h3>
+          <h3>【体験版】データ分布＆p値表示付き・有意差チェッカー</h3>
           <p style="font-size:0.85rem; color:#64748b;">※数値をカンマ（,）区切りで入力してボタンを押してみてください</p>
 
           <label>変更前のデータ（処理時間・スコアなど）:</label>
-
           <textarea id="dataA">15, 18, 12, 16, 20, 14</textarea>
 
           <label style="margin-top:10px;">変更後のデータ（処理時間・スコアなど）:</label>
@@ -205,7 +205,7 @@
           </div>
 
           <div class="chart-container">
-            <canvas id="resultChart" width="400" height="200"></canvas>
+            <canvas id="resultChart" width="400" height="220"></canvas>
           </div>
         </div>
 
@@ -238,17 +238,19 @@
   </footer>
 
   <script>
-    function drawChart(mA, mB) {
+    function drawChart(A, B, mA, mB) {
       const canvas = document.getElementById('resultChart');
       if (!canvas || !canvas.getContext) return;
       const ctx = canvas.getContext('2d');
       
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      const maxVal = Math.max(mA, mB, 1) * 1.2;
-      const chartHeight = 140;
-      const startY = 160;
+      const allVals = [...A, ...B];
+      const maxVal = Math.max(...allVals, 1) * 1.2;
+      const chartHeight = 150;
+      const startY = 170;
 
+      // 軸
       ctx.beginPath();
       ctx.strokeStyle = '#94a3b8';
       ctx.moveTo(50, 20);
@@ -256,20 +258,40 @@
       ctx.lineTo(350, startY);
       ctx.stroke();
 
+      // 棒A（平均値）
       const hA = (mA / maxVal) * chartHeight;
-      ctx.fillStyle = '#64748b';
+      ctx.fillStyle = '#e2e8f0';
       ctx.fillRect(90, startY - hA, 70, hA);
       ctx.fillStyle = '#1e293b';
       ctx.font = '14px sans-serif';
       ctx.fillText('変更前', 100, startY + 20);
-      ctx.fillText(mA.toFixed(2), 105, startY - hA - 8);
+      ctx.fillText(`平均:${mA.toFixed(1)}`, 95, startY - hA - 8);
 
+      // 個別データAのドット描画
+      ctx.fillStyle = '#475569';
+      A.forEach(val => {
+        const y = startY - (val / maxVal) * chartHeight;
+        ctx.beginPath();
+        ctx.arc(125, y, 5, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      // 棒B（平均値）
       const hB = (mB / maxVal) * chartHeight;
-      ctx.fillStyle = '#f97316';
+      ctx.fillStyle = '#ffedd5';
       ctx.fillRect(220, startY - hB, 70, hB);
       ctx.fillStyle = '#1e293b';
       ctx.fillText('変更後', 230, startY + 20);
-      ctx.fillText(mB.toFixed(2), 235, startY - hB - 8);
+      ctx.fillText(`平均:${mB.toFixed(1)}`, 225, startY - hB - 8);
+
+      // 個別データBのドット描画
+      ctx.fillStyle = '#ea580c';
+      B.forEach(val => {
+        const y = startY - (val / maxVal) * chartHeight;
+        ctx.beginPath();
+        ctx.arc(255, y, 5, 0, Math.PI * 2);
+        ctx.fill();
+      });
     }
 
     function getPValue(t, df) {
@@ -313,7 +335,7 @@
         `<strong>たまたま起きる確率（p値）:</strong> 約 <strong>${pPercent}%</strong> (p = ${pValue.toFixed(4)})<br>` +
         `<strong>判定結果:</strong> ${isSignificant ? '<span style="color:#059669; font-weight:bold;">【有意差あり】偶然の確率が5%未満のため、明確な効果・変化があったと言えます！</span>' : '<span style="color:#d97706; font-weight:bold;">【有意差なし】偶然の確率が5%以上あるため、たまたまの誤差（ブレ）の可能性があります。</span>'}`;
 
-      drawChart(mA, mB);
+      drawChart(A, B, mA, mB);
     }
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -323,7 +345,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>簡易有意差チェッカー（確率・グラフ付き）</title>
+  <title>簡易有意差チェッカー（データ分布・確率・グラフ付き）</title>
   <style>
     body { font-family: sans-serif; padding: 20px; max-width: 600px; margin: auto; line-height: 1.6; }
     textarea { width: 100%; height: 60px; margin-bottom: 10px; }
@@ -333,7 +355,7 @@
   </style>
 </head>
 <body>
-  <h2>簡易・有意差チェッカー（確率・グラフ付き）</h2>
+  <h2>簡易・有意差チェッカー（データ分布・確率・グラフ付き）</h2>
   <label>変更前のデータ（カンマ区切り）:</label>
   <textarea id="a">15, 18, 12, 16, 20, 14</textarea>
   <label>変更後のデータ（カンマ区切り）:</label>
@@ -341,7 +363,7 @@
 
   <button onclick="calc()">判定と確率を計算</button>
   <div id="res" class="result">結果がここに表示されます</div>
-  <div class="chart"><canvas id="c" width="400" height="200"></canvas></div>
+  <div class="chart"><canvas id="c" width="400" height="220"></canvas></div>
 
   <script>
     function getPValue(t, df) {
@@ -378,15 +400,27 @@
         \`<b>判定:</b> \${isSignificant ? '【有意差あり】偶然の可能性が5%未満のため明確な効果と言えます！' : '【有意差なし】たまたまの誤差の範囲内かもしれません。'}\`;
 
       const cvs = document.getElementById('c'), ctx = cvs.getContext('2d');
-      ctx.clearRect(0,0,400,200);
-      const max = Math.max(mA, mB, 1) * 1.2;
-      ctx.beginPath(); ctx.moveTo(50,20); ctx.lineTo(50,160); ctx.lineTo(350,160); ctx.stroke();
+      ctx.clearRect(0,0,400,220);
+      const allVals = [...A, ...B];
+      const max = Math.max(...allVals, 1) * 1.2;
       
-      const hA = (mA/max)*140; ctx.fillStyle='#64748b'; ctx.fillRect(90, 160-hA, 70, hA);
-      ctx.fillStyle='#000'; ctx.fillText('変更前', 100, 180); ctx.fillText(mA.toFixed(2), 105, 150-hA);
+      ctx.beginPath(); ctx.moveTo(50,20); ctx.lineTo(50,170); ctx.lineTo(350,170); ctx.stroke();
       
-      const hB = (mB/max)*140; ctx.fillStyle='#f97316'; ctx.fillRect(220, 160-hB, 70, hB);
-      ctx.fillStyle='#000'; ctx.fillText('変更後', 230, 180); ctx.fillText(mB.toFixed(2), 235, 150-hB);
+      const hA = (mA/max)*150; ctx.fillStyle='#e2e8f0'; ctx.fillRect(90, 170-hA, 70, hA);
+      ctx.fillStyle='#000'; ctx.fillText('変更前', 100, 190); ctx.fillText(\`平均:\${mA.toFixed(1)}\`, 95, 160-hA);
+      ctx.fillStyle='#475569';
+      A.forEach(v => {
+        const y = 170 - (v/max)*150;
+        ctx.beginPath(); ctx.arc(125, y, 5, 0, Math.PI*2); ctx.fill();
+      });
+
+      const hB = (mB/max)*150; ctx.fillStyle='#ffedd5'; ctx.fillRect(220, 170-hB, 70, hB);
+      ctx.fillStyle='#000'; ctx.fillText('変更後', 230, 190); ctx.fillText(\`平均:\${mB.toFixed(1)}\`, 225, 160-hB);
+      ctx.fillStyle='#ea580c';
+      B.forEach(v => {
+        const y = 170 - (v/max)*150;
+        ctx.beginPath(); ctx.arc(255, y, 5, 0, Math.PI*2); ctx.fill();
+      });
     }
     window.onload = calc;
   <\/script>
