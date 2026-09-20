@@ -6,6 +6,7 @@ const year=document.getElementById('year');if(year)year.textContent=new Date().g
 document.addEventListener('DOMContentLoaded', () => {
   const filterBtns = document.querySelectorAll('.filter-btn');
   const articles = document.querySelectorAll('.article-card');
+  const noResultsMsg = document.getElementById('no-results');
 
   filterBtns.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -14,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.classList.add('active');
 
       const selectedCategory = btn.textContent.trim();
+      let visibleCount = 0;
 
       // 記事の表示・非表示切り替え
       articles.forEach(article => {
@@ -21,10 +23,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (selectedCategory === 'すべて' || articleCategory === selectedCategory) {
           article.style.display = '';
+          visibleCount++;
         } else {
           article.style.display = 'none';
         }
       });
+
+      // 該当記事が0件の場合のメッセージ表示切り替え
+      if (noResultsMsg) {
+        if (visibleCount === 0) {
+          noResultsMsg.textContent = 'まだ投稿された記事がありません。';
+          noResultsMsg.removeAttribute('hidden');
+        } else {
+          noResultsMsg.setAttribute('hidden', '');
+        }
+      }
     });
   });
 });
