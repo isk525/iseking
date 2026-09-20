@@ -97,3 +97,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.querySelectorAll('.fade-in-up').forEach(el => observer.observe(el));
 });
+<!-- カーソル光追従用要素 -->
+<div class="cursor-glow" id="cursorGlow"></div>
+
+<script>
+  // マウスカーソル追従処理
+  const glow = document.getElementById('cursorGlow');
+  if (glow) {
+    window.addEventListener('mousemove', (e) => {
+      glow.style.left = e.clientX + 'px';
+      glow.style.top = e.clientY + 'px';
+    });
+  }
+</script>
