@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="機関投資家が使う統計学の「有意水準」の考え方と、ExcelやHTMLで手軽に検証・可視化する方法を分かりやすく解説します。">
+  <meta name="theme-color" content="#f97316">
+  <title>【統計学×実務】機関投資家も使う「有意水準」とは？Excel・HTMLで手軽に可視化・検証する方法 | イセキングのDX日和</title>
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/article.css">
+</head>
+<body>
+<a class="skip-link" href="#main">本文へ移動</a>
+
+<header class="site-header"><div class="container header-inner">
+  <a class="brand" href="../index.html" aria-label="イセキングのDX日和 トップへ"><span class="brand-mark">DX</span><span><strong>イセキングのDX日和</strong><small>WORK SMARTER, ENJOY MORE</small></span></a>
+  <nav id="global-nav" class="global-nav" aria-label="メインメニュー"><a href="../index.html#articles">記事一覧</a><a href="../index.html#profile">プロフィール</a></nav>
+</div></header>
+
+<main id="main" class="container article-container">
+  <article class="article">
+    <header class="article-header">
+      <div class="article-meta">
+        <span class="category-tag">Excel活用術</span>
+        <time datetime="2026-09-20">2026.09.20</time>
+      </div>
+      <h1>【統計学×実務】機関投資家も使う「有意水準」とは？Excel・HTMLで手軽に可視化・検証する方法</h1>
+    </header>
+
+    <div class="article-content">
+      <p>先日、知人からこんな相談（というか雑談）を受けました。</p>
+      <p><strong>「同僚の奥さんが銀行で機関投資家をしていて、統計学を駆使して運用しているらしい。ExcelやHTMLで『有意水準』みたいなデータをサクッと出したりグラフ化したりする方法はないかな？」</strong></p>
+      <p>正直なところ、最初に聞いたときは「機関投資家…？有意水準…？」と頭の中にハテナが浮かびました。しかし詳しく調べて自分の学びに変えていくと、これは金融のプロだけでなく、<strong>日々の業務改善やデータ分析全般に使える非常に強力な思考法</strong>だと分かったのです。</p>
+
+      <h2>そもそも「機関投資家」とはどんな仕事？</h2>
+      <p>機関投資家とは、個人投資家とは異なり、顧客から預かった莫大な資金（数十億円〜数兆円規模）を運用するプロフェッショナルです。</p>
+      <p>彼らに求められるのは、勘や度胸ではなく**「客観的で再現性のある根拠」**です。「なんとなく上がりそうだから買った」では顧客に説明がつきません。そのため、過去の膨大な市場データを統計学的に分析し、「リスクとリターンの確率」を数値化して意思決定を行っています。</p>
+
+      <h2>「有意水準（p値）」ってなに？ざっくり言うと…</h2>
+      <p>機関投資家のデータ分析でよく登場するのが<strong>「有意水準」</strong>という言葉です。</p>
+      <p>一言で言うと、**「その結果は単なる『たまたま（偶然）』なのか、それとも明確な『効果・傾向（必然）』なのか」**を見極めるための基準です。</p>
+      <ul>
+        <li><strong>例えば：</strong>ある投資手法を試して勝率が上がったとします。</li>
+        <li>それが「たまたま相場が良かっただけ（偶然）」なのか。</li>
+        <li>それとも「手法そのものに効果があった（有意な差がある）」のか。</li>
+      </ul>
+      <p>一般的に統計学では「偶然起こる確率が5%未満（p値 &lt; 0.05）」であれば、**「これは偶然ではなく、明確な差（意味のある差＝有意）がある」**と判断します。</p>
+
+      <h2>「難しそう」を解決！Excelなら関数1つで計算できる</h2>
+      <p>統計学と聞くと難解な数式を想像しますが、実務で検証するだけなら高度な専門ソフトは不要です。Excelを使えば一瞬で判定できます。</p>
+      <p>例えば、施策前後の2つのデータ群を用意して、Excelの <code>T.TEST</code> 関数を使うだけで「偶然起きた確率（p値）」が算出できます。</p>
+      <pre><code>=T.TEST(配列1, 配列2, 裾の指定, 検定の種類)</code></pre>
+      <p>この結果が「0.05（5%）」を下回っていれば、「この変化には統計的に意味がある！」と胸を張って言えるわけです。</p>
+
+      <h2>HTML＋JavaScriptならブラウザ上で動く検証ツールも作れる</h2>
+      <p>さらにWebアプリ（HTML/JS）に組み込めば、数字を入力するだけで自動で有意差を判定し、Chart.jsなどのライブラリを使ってインタラクティブなグラフを描画するシンプルなツールも作れます。</p>
+      <p>ブラウザ上で動くため、インストール不要で社内やチームに共有できるのも大きなメリットです。</p>
+
+      <h2>ビジネスや日常への横展開：どんな場面で使える？</h2>
+      <p>この「有意水準」の考え方は、機関投資家だけのものにしておくのは勿体ない概念です。</p>
+      <ul>
+        <li><strong>Web・マーケティング：</strong>A/Bテストで新しいデザインのクリック率が上がった際、「偶然のブレ」か「デザイン改善の効果」かを冷静に判定する。</li>
+        <li><strong>業務改善：</strong>新しい作業手順を導入して作業時間が減った際、本当に効率化したのかをデータで証明する。</li>
+        <li><strong>趣味（ゴルフのデータ分析など）：</strong>フォームを変えてスコアが良くなったとき、上達したのか「たまたま調子が良かっただけ」かを振り返る。</li>
+      </ul>
+
+      <h2>まとめ</h2>
+      <p>一見難しそうな専門用語も、噛み砕いてツール（ExcelやHTML）に乗せてしまえば、誰でも明日から使える武器になります。</p>
+      <p>「たまたま」に惑わされず、数値的な根拠を持って判断するアプローチ、ぜひ皆さんの身近な業務でも試してみてください！</p>
+    </div>
+  </article>
+</main>
+
+<footer><div class="container footer-inner"><div><strong>イセキングのDX日和</strong><p>仕事をもっと楽しく、もっと楽に。</p></div><small>© イセキングのDX日和</small></div></footer>
+</body>
+</html>
