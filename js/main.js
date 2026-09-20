@@ -61,3 +61,39 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.querySelectorAll('.fade-in-up').forEach(el => observer.observe(el));
 });
+
+// 1. マウス追従グラデーションエフェクト
+document.addEventListener('DOMContentLoaded', () => {
+  // 追従ライト用のHTML要素を自動生成
+  const glow = document.createElement('div');
+  glow.id = 'mouse-glow';
+  document.body.appendChild(glow);
+
+  let mouseX = window.innerWidth / 2;
+  let mouseY = window.innerHeight / 2;
+
+  window.addEventListener('mousemove', (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+    // なめらかに追従
+    glow.style.left = `${mouseX}px`;
+    glow.style.top = `${mouseY}px`;
+  });
+
+  // 2. スクロール監視＆遅延（Stagger）アニメーション実行
+  const observerOptions = {
+    root: null,
+    rootMargin: '0px 0px -60px 0px',
+    threshold: 0.1
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+      }
+    });
+  }, observerOptions);
+
+  document.querySelectorAll('.fade-in-up').forEach(el => observer.observe(el));
+});
