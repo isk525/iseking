@@ -2,7 +2,7 @@
    トップページ用 クリーンデザイン・スタイル調整 & アニメーション
    ========================================================================== */
 
-/* ヒーローエリア */
+/* 1. ヒーローエリア全体設定 */
 .hero {
   position: relative;
   background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
@@ -10,19 +10,24 @@
   overflow: hidden;
 }
 
-/* ヒーローエリアのグリッド幅調整（ステータスパネルの圧迫を防止） */
+/* 横はみ出し防止用のグローバル保護 */
+body, html {
+  overflow-x: hidden;
+}
+
+/* 2. ヒーローエリアのグリッドレイアウト */
 .hero-grid {
   display: grid;
-  grid-template-columns: 1fr 380px; /* 右パネルの幅を380pxに固定 */
+  grid-template-columns: 1fr 380px; /* 右パネル幅を380pxに固定し圧迫を防止 */
   align-items: center;
   gap: 40px;
   padding: 60px 0;
 }
 
-/* メインコピーのフォントサイズと改行制御 */
+/* 3. メインコピー（H1）のフォント・改行制御 */
 .hero-copy h1 {
   margin: 16px 0 20px;
-  font-size: clamp(28px, 3.8vw, 48px); /* 文字サイズを少し抑えて収まりを改善 */
+  font-size: clamp(24px, 4vw, 44px); /* 画面幅に応じて適切に伸縮 */
   font-weight: 800;
   line-height: 1.35;
   color: #0f172a;
@@ -31,44 +36,16 @@
 .hero-line {
   display: block;
   min-height: 1.35em;
-  white-space: normal; /* 折り返しを許可 */
-  word-break: keep-all; /* 単語の途中で不自然に切れるのを防止 */
+  white-space: normal; /* 折返し許可 */
+  word-break: break-word; /* 長い単語や記号のはみ出し防止 */
   overflow-wrap: break-word;
 }
 
-/* PCではスマホ用改行タグを非表示 */
-.sp-only {
-  display: none;
+.hero-accent {
+  color: #2563eb;
 }
 
-/* タブレット・スマホ用のレスポンシブ設定 */
-@media (max-width: 960px) {
-  .hero-grid {
-    grid-template-columns: 1fr; /* 1列に並べる */
-    gap: 32px;
-    padding: 40px 0;
-  }
-
-  .hero-copy h1 {
-    font-size: clamp(24px, 6vw, 36px); /* スマホ画面に収まるサイズに自動調整 */
-  }
-
-  .sp-only {
-    display: inline; /* スマホのみ指定位置で改行 */
-  }
-}
-
-@media (max-width: 480px) {
-  .hero-copy h1 {
-    font-size: 22px; /* 小さめ端末用のサイズ調整 */
-  }
-
-  .stats-panel {
-    padding: 20px 16px; /* ステータスパネルの余白を詰めてコンパクト化 */
-  }
-}
-
-/* 点滅するカーソル（タイピング中の演出） */
+/* 4. タイピング演出（点滅カーソル） */
 .type-cursor {
   display: inline-block;
   width: 3px;
@@ -84,7 +61,7 @@
   50% { opacity: 0; }
 }
 
-/* サブテキストとボタンはタイピング完了後に表示 */
+/* サブテキストとボタン（タイピング完了後に表示） */
 .hero-copy .lead,
 .hero-actions {
   opacity: 0;
@@ -98,18 +75,7 @@
   transform: translateY(0);
 }
 
-@keyframes fadeInUp {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.hero-accent {
-  color: #2563eb;
-}
-
-/* 右側ステータスパネル */
+/* 5. 右側ステータスパネル */
 .stats-panel {
   padding: 32px;
   border: 1px solid #e2e8f0;
@@ -184,7 +150,7 @@
   text-align: right;
 }
 
-/* カテゴリフィルター */
+/* 6. カテゴリフィルターボタン */
 .category-filter {
   display: flex;
   gap: 8px;
@@ -218,9 +184,7 @@
   font-weight: 700;
 }
 
-/* --------------------------------------------------------------------------
-   カテゴリごとのカラー識別（タグおよびサムネイル用）
-   -------------------------------------------------------------------------- */
+/* 7. カテゴリごとのカラー識別 */
 /* Excel */
 [data-category="excel"] .meta span,
 .tag-excel {
@@ -276,7 +240,7 @@
   color: #0284c7 !important;
 }
 
-/* プロフィール */
+/* 8. プロフィール領域 */
 .profile-photo-wrap {
   overflow: hidden;
   border: 1px solid #e2e8f0;
@@ -319,15 +283,39 @@
   line-height: 1.8;
 }
 
-/* レスポンシブ */
-@media(max-width:900px){
-  .hero-grid { grid-template-columns: 1fr; gap: 36px; padding: 48px 0; }
+/* 9. レスポンシブ設定（タブレット・スマホ対応） */
+@media (max-width: 900px) {
+  .hero-grid {
+    grid-template-columns: 1fr;
+    gap: 36px;
+    padding: 48px 0;
+  }
 }
-@media(max-width:640px){
-  .hero-copy h1 { font-size: 34px; }
-  .hero-actions { flex-direction: column; }
-  .stats-panel { padding: 20px 16px; }
-  .stats-grid { gap: 6px; }
-  .stat-number { font-size: 24px; }
-  .profile-story { padding: 20px; }
+
+@media (max-width: 640px) {
+  .hero-copy h1 {
+    font-size: 22px; /* スマホで文字が納まるサイズに調整 */
+  }
+  .hero-copy .lead {
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .hero-actions {
+    flex-direction: column;
+  }
+  .stats-panel {
+    padding: 20px 16px;
+  }
+  .stats-grid {
+    gap: 6px;
+  }
+  .stat-card {
+    padding: 12px 4px;
+  }
+  .stat-number {
+    font-size: 22px;
+  }
+  .profile-story {
+    padding: 20px;
+  }
 }
