@@ -139,3 +139,100 @@ h1, h2, h3, h4 {
   opacity: 1;
   transform: translateY(0);
 }
+
+/* ==========================================================================
+   ACES風 高級感・未来感のあるデザインカスタマイズ
+   ========================================================================== */
+
+/* 1. ダーク＆先進的なカラー定義 */
+:root {
+  --bg-dark: #070a12;
+  --card-dark: rgba(15, 23, 42, 0.75);
+  --border-glow: rgba(56, 189, 248, 0.2);
+  --accent-cyan: #38bdf8;
+  --accent-orange: #f97316;
+}
+
+/* 全体背景を深みのある暗色へ */
+body {
+  background-color: var(--bg-dark);
+  color: #f1f5f9;
+}
+
+/* 2. ヒーローエリアの巨大タイトル演出 */
+.hero {
+  position: relative;
+  padding: 120px 0 80px;
+  overflow: hidden;
+}
+
+/* 背景でうっすら光るオーロラグラデーション */
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -20%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(37, 99, 235, 0.25) 0%, rgba(249, 115, 22, 0.1) 50%, transparent 70%);
+  filter: blur(80px);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.hero-copy h1 {
+  font-size: clamp(2.5rem, 6vw, 4.5rem); /* 画面幅に合わせて圧倒的に大きく */
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  margin-bottom: 24px;
+}
+
+.hero-accent {
+  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-orange));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* 3. サイバー感のあるカードデザイン */
+.card {
+  background: var(--card-dark);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  border-color: var(--border-glow);
+  box-shadow: 0 0 30px rgba(56, 189, 248, 0.15), 0 20px 40px rgba(0, 0, 0, 0.6);
+}
+
+/* 4. アクションボタンの洗練 */
+.btn-primary {
+  background: #ffffff;
+  color: #070a12;
+  font-weight: 700;
+  border-radius: 9999px; /* 丸みのあるカプセル形状 */
+  padding: 14px 32px;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+}
+
+.btn-primary:hover {
+  background: var(--accent-cyan);
+  color: #070a12;
+  box-shadow: 0 0 25px rgba(56, 189, 248, 0.5);
+}
+
+/* テキストカラーの暗色調整 */
+.article-body h3, .section-heading h2, .stats-heading h2 {
+  color: #ffffff;
+}
+
+.lead, .article-body p, .section-heading p {
+  color: #94a3b8;
+}
