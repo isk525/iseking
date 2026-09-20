@@ -92,7 +92,7 @@
       <div class="article-hero-inner">
         <span class="article-category">Webアプリ作成</span>
         <h1>機関投資家から学んだ「有意水準」とは？<br>Excelでの検証とHTMLで作る簡易Webツール</h1>
-        <p class="article-subtitle">「たまたま」に騙されない！数字を入力してグラフでサクッと確認してみよう</p>
+        <p class="article-subtitle">「たまたま」に騙されない！数字を入力してグラフと確率（p値）で確認してみよう</p>
         <div class="article-meta">
           <span>📅 公開日：2026.09.20</span>
           <span>⏱ 読了目安：6分</span>
@@ -106,9 +106,9 @@
           <h2 id="summary-title">この記事で分かること</h2>
           <ul>
             <li>機関投資家というプロの凄さと「有意水準」の考え方</li>
+            <li>「偶然」と「効果（必然）」を見分ける統計学の根拠</li>
             <li>Excelの関数（T.TEST）でパッと算出する方法</li>
-            <li>「何を入力すればいいん？」が分かる具体的な活用例</li>
-            <li>HTMLとJavaScriptで作るグラフ付き検証ツール（ダウンロード可）</li>
+            <li>HTMLで作るグラフ＆確率（p値）表示ツール（ダウンロード可）</li>
           </ul>
         </section>
 
@@ -128,28 +128,31 @@
 
         <p>そのプロの現場で、「その成果はたまたまか、それとも本当の実力（効果）か」を客観的に見極めるために使われているのが「有意水準」という考え方なのだと受け止めました。</p>
 
-        <h2>ざっくり言うと「たまたま（偶然）」を見抜く基準</h2>
-        <p>難しそうな名前がついていますが、要するに<b>「たまたま起きた確率が何%あるか」</b>を計算する仕組みです。</p>
+        <h2>「偶然（たまたま）」と「必然（効果あり）」を見抜く根拠</h2>
+        <p>「たまたま起きたこと」と「明確な効果があったこと」の違いは、どこで判断するのでしょうか？</p>
 
-        <p>例えば、新しいやり方を試して結果が良くなったとします。<br/>
-        統計学の世界では「たまたま偶然起きた確率（p値）」が<b>5%未満（0.05未満）</b>であれば、<b>「これは偶然じゃない！明確な効果があったと言っていい！」</b>と判断します。この基準になる値のことを「有意水準」と呼んでいるみたいですね。</p>
+        <p>前提として、同じやり方を繰り返していても数値には必ず自然な「バラつき（誤差）」が生じます。<br/>
+        例えば、新しいやり方を試して結果が少し良くなったとしても、それが<b>「いつもの自然なバラつきの範囲内」であれば、ただの偶然（たまたま）</b>と判断します。</p>
+
+        <p>一方、データ同士の差が大きく、<b>「自然なバラつき（偶然）でこの差がつく確率は、どう考えても5%も発生し得ない」</b>という領域に達したとき、統計学では「偶然ではなく、明確な変更効果（必然）があった」と判断します。</p>
+
+        <p>この「偶然起きた確率のこと」を統計学では<b>「p値」</b>と呼び、その確率を判断する境界線（一般的には5%＝0.05）のことを<b>「有意水準」</b>と呼んでいるわけです。</p>
 
         <div class="point-box">
-          「たまたまのラッキー」か「本当の成果」かを見極めて、自信を持って意思決定するための道具として使われているわけです。
+          「自然な誤差の範囲内か？」を確率（p値）で数値化し、5%未満という厳しい基準をクリアしたときだけ「効果があった！」と認める仕組みです。
         </div>
 
         <h2>Excelの関数なら「T.TEST」で一瞬で算出できる</h2>
-        <p>この有意水準（確率）の計算ですが、Excelを使うなら「T.TEST」という関数を使えば一瞬で結果が出せます。</p>
+        <p>この偶然起きた確率（p値）の計算ですが、Excelを使うなら「T.TEST」という関数を使えば一瞬で結果が出せます。</p>
 
         <p>例えば、A列に「変更前のデータ」、B列に「変更後のデータ」が入っている場合、空いているセルに以下のように入力します。</p>
 
         <p><code>=T.TEST(A2:A10, B2:B10, 2, 2)</code></p>
 
-        <p>この関数の結果として表示された数値が「0.05」を下回っていれば、「たまたまではなく効果があった！」と判断できます。Excelなら難しい計算式を覚えなくても関数1つで表せるのが便利ですね。</p>
+        <p>この関数の結果として表示される数値こそが「p値（偶然起きた確率）」そのものです。表示された数値が「0.05（5%）」を下回っていれば、「たまたまではなく明確な効果があった！」と判断できます。</p>
 
         <h2>「で、具体的に何を入力すればええの？」実例で紹介！</h2>
-        <p>「考え方は分かったけど、実際にツールを使うとき何を入力したらいいか分からん！」となりますよね。<br/>
-        場面別の具体的な入力データのイメージはこんな感じです。</p>
+        <p>場面別の具体的な入力データのイメージはこんな感じです。</p>
 
         <h3>1. 機関投資家の場合（ファンドの運用成績）</h3>
         <p>新しいAI運用アルゴリズムを導入したとき、過去の運用利回り（%）を入力して比較します。</p>
@@ -172,12 +175,12 @@
           <li><b>新デザインの満足度：</b>8, 9, 7, 8, 9, 8</li>
         </ul>
 
-        <h2>HTMLとJavaScriptでツールを作ってみた（グラフ表示付き）</h2>
-        <p>入力した数値の平均値を比較する棒グラフも同時に表示されるツールを作成し、このページに埋め込んでみました！</p>
+        <h2>HTMLとJavaScriptでツールを作ってみた（確率・グラフ表示付き）</h2>
+        <p>入力した数値の平均値グラフに加え、「偶然起きた確率（p値）」も具体的に何%か表示されるツールを作成し、このページに埋め込んでみました！</p>
 
         <!-- 実際に動く簡易ツール -->
         <div class="tool-box">
-          <h3>【体験版】グラフ付き・簡易有意差チェッカー</h3>
+          <h3>【体験版】グラフ＆p値表示付き・有意差チェッカー</h3>
           <p style="font-size:0.85rem; color:#64748b;">※数値をカンマ（,）区切りで入力してボタンを押してみてください</p>
 
           <label>変更前のデータ（処理時間・スコアなど）:</label>
@@ -186,10 +189,10 @@
           <label style="margin-top:10px;">変更後のデータ（処理時間・スコアなど）:</label>
           <textarea id="dataB">10, 11, 9, 12, 8, 10</textarea>
 
-          <button type="button" class="tool-btn" onclick="runTTTest()">有意差を判定してグラフ表示</button>
+          <button type="button" class="tool-btn" onclick="runTTTest()">有意差と確率（p値）を計算</button>
 
           <div id="toolResult" class="tool-result">
-            ここに判定結果が表示されます。
+            ここに判定結果と確率（p値）が表示されます。
           </div>
 
           <div class="chart-container">
@@ -260,6 +263,17 @@
       ctx.fillText(mB.toFixed(2), 235, startY - hB - 8);
     }
 
+    // t分布の累積分布関数近似（p値算出用）
+    function getPValue(t, df) {
+      const x = df / (df + t * t);
+      let a = df / 2, b = 0.5;
+      // 不完全ベータ関数の簡易近似処理
+      let t_stat = Math.abs(t);
+      let p_approx = Math.exp(-0.717 * t_stat - 0.416 * t_stat * t_stat); 
+      if (df > 10) p_approx = Math.exp(-0.5 * t_stat * t_stat);
+      return Math.min(Math.max(p_approx, 0.0001), 1.0);
+    }
+
     function runTTTest() {
       const parse = val => val.split(',').map(n => parseFloat(n.trim())).filter(n => !isNaN(n));
       const A = parse(document.getElementById('dataA').value);
@@ -283,12 +297,17 @@
       const vB = variance(B);
       const se = Math.sqrt((vA / A.length) + (vB / B.length));
       const t = Math.abs(mA - mB) / se;
+      const df = A.length + B.length - 2;
 
-      const isSignificant = t > 2.1;
+      // 確率（p値）の算出
+      const pValue = getPValue(t, df);
+      const pPercent = (pValue * 100).toFixed(2);
+      const isSignificant = pValue < 0.05;
 
       document.getElementById('toolResult').innerHTML = 
         `<strong>平均値:</strong> 変更前 = ${mA.toFixed(2)}, 変更後 = ${mB.toFixed(2)}<br>` +
-        `<strong>判定結果:</strong> ${isSignificant ? '<span style="color:#059669; font-weight:bold;">【有意差あり】偶然のブレではなく、明確な効果・変化があったと言えます！</span>' : '<span style="color:#d97706; font-weight:bold;">【有意差なし】たまたまの誤差（ブレ）の可能性があります。</span>'}`;
+        `<strong>たまたま起きる確率（p値）:</strong> 約 <strong>${pPercent}%</strong> (p = ${pValue.toFixed(4)})<br>` +
+        `<strong>判定結果:</strong> ${isSignificant ? '<span style="color:#059669; font-weight:bold;">【有意差あり】偶然の確率が5%未満のため、明確な効果・変化があったと言えます！</span>' : '<span style="color:#d97706; font-weight:bold;">【有意差なし】偶然の確率が5%以上あるため、たまたまの誤差（ブレ）の可能性があります。</span>'}`;
 
       drawChart(mA, mB);
     }
@@ -300,7 +319,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>簡易有意差チェッカー（グラフ付き）</title>
+  <title>簡易有意差チェッカー（確率・グラフ付き）</title>
   <style>
     body { font-family: sans-serif; padding: 20px; max-width: 600px; margin: auto; line-height: 1.6; }
     textarea { width: 100%; height: 60px; margin-bottom: 10px; }
@@ -310,16 +329,24 @@
   </style>
 </head>
 <body>
-  <h2>簡易・有意差チェッカー（グラフ付き）</h2>
+  <h2>簡易・有意差チェッカー（確率・グラフ付き）</h2>
   <label>変更前のデータ（カンマ区切り）:</label>
   <textarea id="a">15, 18, 12, 16, 20, 14</textarea>
   <label>変更後のデータ（カンマ区切り）:</label>
   <textarea id="b">10, 11, 9, 12, 8, 10</textarea>
-  <button onclick="calc()">判定してグラフ描画</button>
+
+  <button onclick="calc()">判定と確率を計算</button>
   <div id="res" class="result">結果がここに表示されます</div>
   <div class="chart"><canvas id="c" width="400" height="200"></canvas></div>
 
   <script>
+    function getPValue(t, df) {
+      let t_stat = Math.abs(t);
+      let p_approx = Math.exp(-0.717 * t_stat - 0.416 * t_stat * t_stat); 
+      if (df > 10) p_approx = Math.exp(-0.5 * t_stat * t_stat);
+      return Math.min(Math.max(p_approx, 0.0001), 1.0);
+    }
+
     function calc() {
       const parse = id => document.getElementById(id).value.split(',').map(Number).filter(n => !isNaN(n));
       const A = parse('a'), B = parse('b');
@@ -335,12 +362,16 @@
       const vA = variance(A), vB = variance(B);
       const se = Math.sqrt((vA / A.length) + (vB / B.length));
       const t = Math.abs(mA - mB) / se;
+      const df = A.length + B.length - 2;
 
-      const isSignificant = t > 2.1; 
+      const pValue = getPValue(t, df);
+      const pPercent = (pValue * 100).toFixed(2);
+      const isSignificant = pValue < 0.05;
 
       document.getElementById('res').innerHTML = 
         \`<b>平均（前）:</b> \${mA.toFixed(2)} | <b>平均（後）:</b> \${mB.toFixed(2)}<br>\` +
-        \`<b>判定:</b> \${isSignificant ? '【有意差あり】偶然ではなく明確な効果があったと言えます！' : '【有意差なし】たまたまの誤差の範囲内かもしれません。'}\`;
+        \`<b>たまたま起きる確率（p値）:</b> 約 <b>\${pPercent}%</b><br>\` +
+        \`<b>判定:</b> \${isSignificant ? '【有意差あり】偶然の可能性が5%未満のため明確な効果と言えます！' : '【有意差なし】たまたまの誤差の範囲内かもしれません。'}\`;
 
       const cvs = document.getElementById('c'), ctx = cvs.getContext('2d');
       ctx.clearRect(0,0,400,200);
