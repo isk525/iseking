@@ -153,9 +153,9 @@ document.addEventListener('DOMContentLoaded', () => {
       if (i < line1Text.length) {
         line1Elem.insertBefore(document.createTextNode(line1Text.charAt(i)), cursor);
         i++;
-        setTimeout(typeLine1, 110);
+        setTimeout(typeLine1, 100);
       } else {
-        setTimeout(typeLine2, 350);
+        setTimeout(typeLine2, 300);
       }
     }
 
@@ -164,7 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (j < line2Text.length) {
         line2Elem.insertBefore(document.createTextNode(line2Text.charAt(j)), cursor);
         j++;
-        setTimeout(typeLine2, 110);
+        setTimeout(typeLine2, 100);
       } else {
         setTimeout(() => {
           cursor.remove();
