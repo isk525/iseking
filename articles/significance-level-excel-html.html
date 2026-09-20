@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="同僚の奥さん（プロの機関投資家）から聞いた「有意水準」の話。Excelでの関数表現や、データプロット付き簡易Webツールの作り方まで分かりやすく紹介します。">
+  <meta name="description" content="同僚の奥さん（プロの機関投資家）から聞いた「有意水準」の話。Excelでの関数表現や、確率分布グラフ付き簡易Webツールの作り方まで分かりやすく紹介します。">
   <meta name="theme-color" content="#f97316">
   <title>機関投資家から学んだ「有意水準」とは？Excelでの検証とHTMLで作る簡易Webツール | イセキングのDX日和</title>
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
@@ -92,7 +92,7 @@
       <div class="article-hero-inner">
         <span class="article-category">Webアプリ作成</span>
         <h1>機関投資家から学んだ「有意水準」とは？<br>Excelでの検証とHTMLで作る簡易Webツール</h1>
-        <p class="article-subtitle">「たまたま」に騙されない！数字を入力してグラフと確率（p値）で確認してみよう</p>
+        <p class="article-subtitle">「たまたま」に騙されない！数字を入力して確率分布グラフと確率（p値）で確認してみよう</p>
         <div class="article-meta">
           <span>📅 公開日：2026.09.20</span>
           <span>⏱ 読了目安：6分</span>
@@ -106,10 +106,10 @@
           <h2 id="summary-title">この記事で分かること</h2>
           <ul>
             <li>機関投資家というプロの凄さと「有意水準」「有意差」の考え方</li>
-            <li>「偶然」と「効果（必然）」を見分ける身近なイメージ（コイン投げの例）</li>
+            <li>「偶然」と「効果（必然）」を見分ける基準</li>
             <li>「何を入力すればいいん？」が分かる具体的な活用例</li>
             <li>Excelの関数（T.TEST）でパッと算出する方法</li>
-            <li>HTMLで作るデータ散布描画＆確率（p値）表示ツール（ダウンロード可）</li>
+            <li>HTMLで作る確率分布描画＆確率（p値）表示ツール（ダウンロード可）</li>
           </ul>
         </section>
 
@@ -117,85 +117,67 @@
 
         <p>先日、同僚の奥さんと話す機会があったんですが、なんと銀行で「機関投資家」として働かれているとのこと！<br/>
         普段から高度な統計学を使いこなして運用されているそうで、話を聞いていると「有意水準」やら「確率論」やら専門用語がどんどん飛び出してきました。<br/><br/>
-        正直、最初は「頭良すぎて何言よるかサッパリ分からん…！」となりました（笑）。<br/>
-        でも、気になって自分なりに勉強してみたら、「あ、これって僕らの日頃の業務改善やWebアプリ作りにもめちゃくちゃ使える話やん！」と気付いたんです。</p>
+        正直、最初は専門的で難しく感じました。<br/>
+        でも、自分なりに勉強してみたら、「業務改善やWebアプリ作りにも活用できる考え方だ」と気付いたんです。</p>
 
-        <h2>それにしても「機関投資家」って凄すぎん？</h2>
-        <p>そもそも機関投資家って、誰でもなれるような仕事じゃないですよね。<br/>
-        個人のお金ではなく、顧客から預かった数百億〜数兆円という桁違いの超巨大な資金を運用する、まさに金融界のエリート中のエリートです。</p>
+        <h2>「機関投資家」の実務と判断基準</h2>
+        <p>機関投資家は個人のお金ではなく、顧客から預かった数百億〜数兆円という資金を運用します。</p>
 
-        <p>知人や身近に機関投資家がいるだけでも「え、すご…！」って自慢したくなるレベルなんですが、そんなプロが大切にしているのが<b>「感や度胸に頼らず、数値的な根拠を持つこと」</b>なのだそうです。<br/>
-        「なんとなく上がりそうだから買いました」なんて口が裂けても言えませんからね。</p>
+        <p>数値的な根拠を持つことが重視され、「その成果は偶然か、それとも明確な効果によるものか」を客観的に見極めるために「有意水準」という考え方が使われています。</p>
 
-        <p>そのプロの現場で、「その成果はたまたまか、それとも本当の実力（効果）か」を客観的に見極めるために使われているのが「有意水準」という考え方なのだと受け止めました。</p>
+        <h2>「有意水準」と「有意差」の基準</h2>
+        <p>データに差が生じたとき、それが偶然起きた確率のことを<b>「p値」</b>と呼びます。</p>
 
-        <h2>身近な例え：「コイン投げ」で考える「有意水準」と「有意差」</h2>
-        <p>難しそうな名前がついていますが、<b>「コイン投げでイカサマを疑うライン」</b>と考えると一気にイメージしやすくなります。</p>
+        <p>統計学では、このp値が<b>5%未満（0.05未満）</b>になったとき、「偶然とは言い切れない明確な変化があった」と判断します。</p>
 
-        <p>普通のコインを投げたとき、表が出るか裏が出るかは50%（半分）ですよね。<br/>
-        もし目の前でコインを投げて、連続で表が出たとします。</p>
-
-        <ul>
-          <li><b>2回連続で表：</b>確率25%（まあ、たまに起きるよね）</li>
-          <li><b>3回連続で表：</b>確率12.5%（運が良いな〜）</li>
-          <li><b>5回連続で表：</b>確率約3.1%（えっ…これ本当に仕込みのない普通のコイン？）</li>
-        </ul>
-
-        <p>3回連続くらいなら「たまたまのラッキー（偶然）」で納得できますが、<b>5回も6回も連続で表が出ると、「いやいや、そのコイン仕掛けがあるでしょ（仕掛けという原因・効果がある）！」</b>と疑いたくなりますよね。</p>
-
-        <p>統計学では、この「たまたま起きる確率（＝<b>p値</b>）」が<b>5%未満（0.05未満）</b>になったとき、「偶然とは言い切れない！仕掛け（明確な変更効果）があったんだ！」と判断します。</p>
-
-        <p>この判定の基準線（5%＝0.05）のことを<b>「有意水準」</b>と呼び、その基準をクリアして「明確な差がある！」と判断できた状態のことを<b>「有意差がある（有意差あり）」</b>と表現します。</p>
+        <p>この判定基準（5%＝0.05）のことを<b>「有意水準」</b>と呼び、基準を満たして「明確な差がある」と判断できた状態を<b>「有意差あり」</b>と表現します。</p>
 
         <div class="point-box">
-          判定基準が「有意水準」、判定結果が「有意差あり/なし」と覚えると分かりやすいですね！
+          判定基準が「有意水準」、判定結果が「有意差あり/なし」となります。
         </div>
 
-        <h2>「で、具体的に何を入力すればええの？」実例で紹介！</h2>
-        <p>場面別の具体的な入力データのイメージはこんな感じです。</p>
+        <h2>活用例</h2>
+        <p>場面別の具体的な入力データの例です。</p>
 
-        <h3>1. 機関投資家の場合（ファンドの運用成績）</h3>
-        <p>新しいAI運用アルゴリズムを導入したとき、過去の運用利回り（%）を入力して比較します。</p>
+        <h3>1. ファンドの運用成績</h3>
         <ul>
           <li><b>従来の運用（%）：</b>2.1, 1.8, 2.5, 1.9, 2.0, 2.2</li>
-          <li><b>新AI運用（%）：</b>3.5, 2.8, 3.2, 3.0, 2.9, 3.4</li>
+          <li><b>新運用（%）：</b>3.5, 2.8, 3.2, 3.0, 2.9, 3.4</li>
         </ul>
 
-        <h3>2. 電子申請や業務改善の場合（処理にかかる時間）</h3>
-        <p>紙の申請から電子申請システムに変えて、職員1名あたりの処理時間（分）を測定した場合です。</p>
+        <h3>2. 業務処理時間</h3>
         <ul>
-          <li><b>紙での処理時間（分）：</b>15, 18, 12, 16, 20, 14</li>
-          <li><b>電子申請の処理時間（分）：</b>10, 11, 9, 12, 8, 10</li>
+          <li><b>変更前（分）：</b>15, 18, 12, 16, 20, 14</li>
+          <li><b>変更後（分）：</b>10, 11, 9, 12, 8, 10</li>
         </ul>
 
-        <h3>3. Webサイトやアンケートの場合（満足度スコア）</h3>
-        <p>アンケートの画面デザインを変更して、10点満点の満足度を入力した場合です。</p>
+        <h3>3. アンケート満足度スコア</h3>
         <ul>
-          <li><b>旧デザインの満足度：</b>6, 7, 5, 6, 7, 6</li>
-          <li><b>新デザインの満足度：</b>8, 9, 7, 8, 9, 8</li>
+          <li><b>変更前：</b>6, 7, 5, 6, 7, 6</li>
+          <li><b>変更後：</b>8, 9, 7, 8, 9, 8</li>
         </ul>
 
-        <h2>Excelの関数なら「T.TEST」で一瞬で算出できる</h2>
-        <p>入力するデータが手元にあれば、Excelの「T.TEST」という関数を使えば一瞬で確率（p値）を計算できます。</p>
+        <h2>Excelの関数「T.TEST」による算出</h2>
+        <p>Excelの「T.TEST」関数を使うと、確率（p値）を計算できます。</p>
 
-        <p>例えば、A列に「変更前のデータ」、B列に「変更後のデータ」が入っている場合、空いているセルに以下のように入力します。</p>
+        <p>A列に「変更前のデータ」、B列に「変更後のデータ」が入っている場合、以下の式を入力します。</p>
 
         <p><code>=T.TEST(A2:A10, B2:B10, 2, 2)</code></p>
 
-        <p>この関数の結果として表示される数値こそが「p値（偶然起きた確率）」そのものです。表示された数値が「0.05（5%）」を下回っていれば、「有意差あり（効果があった！）」と判断できます。</p>
+        <p>関数の結果（p値）が「0.05」を下回っていれば、「有意差あり」と判断できます。</p>
 
-        <h2>HTMLとJavaScriptでツールを作ってみた（各データのドット描画・p値付き）</h2>
-        <p>平均値の棒グラフの上に、<b>個々の入力データ（ドット）がどう散らばっているか</b>を視覚的に表示し、「偶然起きた確率（p値）」も計算するツールを埋め込んでみました！</p>
+        <h2>HTMLとJavaScriptでツールを作成（分布図・p値表示）</h2>
+        <p>確率分布（山型曲線）の上に棄却域（5%ライン）と今回の検定統計量（t値）の位置を描画し、確率（p値）を計算するツールです。</p>
 
-        <!-- 実際に動く簡易ツール -->
+        <!-- ツール本体 -->
         <div class="tool-box">
-          <h3>【体験版】データ分布＆p値表示付き・有意差チェッカー</h3>
-          <p style="font-size:0.85rem; color:#64748b;">※数値をカンマ（,）区切りで入力してボタンを押してみてください</p>
+          <h3>【体験版】確率分布＆p値表示付き・有意差チェッカー</h3>
+          <p style="font-size:0.85rem; color:#64748b;">※数値をカンマ（,）区切りで入力してボタンを押してください</p>
 
-          <label>変更前のデータ（処理時間・スコアなど）:</label>
+          <label>変更前のデータ:</label>
           <textarea id="dataA">15, 18, 12, 16, 20, 14</textarea>
 
-          <label style="margin-top:10px;">変更後のデータ（処理時間・スコアなど）:</label>
+          <label style="margin-top:10px;">変更後のデータ:</label>
           <textarea id="dataB">10, 11, 9, 12, 8, 10</textarea>
 
           <button type="button" class="tool-btn" onclick="runTTTest()">有意差と確率（p値）を計算</button>
@@ -205,20 +187,19 @@
           </div>
 
           <div class="chart-container">
-            <canvas id="resultChart" width="400" height="240"></canvas>
+            <canvas id="resultChart" width="500" height="260"></canvas>
           </div>
         </div>
 
-        <h2>このツールのコードとダウンロード</h2>
-        <p>HTMLファイル1個で動くシンプルなコードです。下のボタンからダウンロードしてパソコンで開けば、ネットに繋がっていなくてもブラウザで動かせます。</p>
+        <h2>コードとダウンロード</h2>
+        <p>以下のボタンからHTMLファイルをダウンロードできます。</p>
 
         <a id="downloadBtn" class="dl-btn" href="#" download="significance-checker.html">HTMLファイルをダウンロード</a>
 
-        <h2>おわりに</h2>
-        <p>機関投資家というプロの世界で使われている考え方も、紐解いてみれば僕たちの日常の「これって本当に良くなったん？」という疑問をすっきり解決してくれる知識でした。</p>
+        <h2>まとめ</h2>
+        <p>確率分布を表示することで、計算された値が統計的にどの位置にあるのかを確認できます。</p>
 
-        <p>数字を扱うのはちょっと難しそうに見えますが、こうやってHTMLでサクッとツールにしてしまえば、誰でも手軽に使えますよね。<br/>
-        「たまたま」に惑わされず、根拠を持って仕事を楽にしていきましょう！</p>
+        <p>データに基づく客観的な判断にお役立てください。</p>
       </article>
 
       <nav class="article-footer-nav" aria-label="記事下部ナビゲーション">
@@ -238,68 +219,122 @@
   </footer>
 
   <script>
-    function drawChart(A, B, mA, mB) {
+    function drawDistributionChart(tValue, isSignificant) {
       const canvas = document.getElementById('resultChart');
       if (!canvas || !canvas.getContext) return;
       const ctx = canvas.getContext('2d');
       
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const width = canvas.width;
+      const height = canvas.height;
+      ctx.clearRect(0, 0, width, height);
 
-      const allVals = [...A, ...B];
-      const maxVal = Math.max(...allVals, 1) * 1.25;
-      const chartHeight = 150;
-      const startY = 190;
+      const margin = { top: 40, right: 30, bottom: 50, left: 30 };
+      const plotWidth = width - margin.left - margin.right;
+      const plotHeight = height - margin.top - margin.bottom;
+      const zeroX = margin.left + plotWidth / 2;
+      const basey = margin.top + plotHeight;
 
-      // 軸
+      // X軸範囲 (-4 〜 +4)
+      const xMin = -4, xMax = 4;
+      const toCanvasX = (x) => margin.left + ((x - xMin) / (xMax - xMin)) * plotWidth;
+
+      // 標準正規分布関数 (山型)
+      const pdf = (x) => (1 / Math.sqrt(2 * Math.PI)) * Math.exp(-0.5 * x * x);
+      const maxY = pdf(0);
+      const toCanvasY = (y) => basey - (y / maxY) * (plotHeight - 20);
+
+      // 1. 棄却域 (両端 2.5% ずつ, x = ±1.96) の塗りつぶし
+      ctx.fillStyle = 'rgba(239, 68, 68, 0.25)'; // 赤色透明
+
+      // 左側 棄却域 (-4 ～ -1.96)
       ctx.beginPath();
-      ctx.strokeStyle = '#94a3b8';
-      ctx.moveTo(50, 20);
-      ctx.lineTo(50, startY);
-      ctx.lineTo(350, startY);
+      ctx.moveTo(toCanvasX(-4), basey);
+      for (let x = -4; x <= -1.96; x += 0.05) {
+        ctx.lineTo(toCanvasX(x), toCanvasY(pdf(x)));
+      }
+      ctx.lineTo(toCanvasX(-1.96), basey);
+      ctx.closePath();
+      ctx.fill();
+
+      // 右側 棄却域 (1.96 ～ 4)
+      ctx.beginPath();
+      ctx.moveTo(toCanvasX(1.96), basey);
+      for (let x = 1.96; x <= 4; x += 0.05) {
+        ctx.lineTo(toCanvasX(x), toCanvasY(pdf(x)));
+      }
+      ctx.lineTo(toCanvasX(4), basey);
+      ctx.closePath();
+      ctx.fill();
+
+      // 棄却域の文字ラベル
+      ctx.fillStyle = '#dc2626';
+      ctx.font = '11px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('棄却域(5%)', toCanvasX(-2.8), basey - 15);
+      ctx.fillText('棄却域(5%)', toCanvasX(2.8), basey - 15);
+
+      // 2. 山型曲線の描画
+      ctx.beginPath();
+      ctx.strokeStyle = '#0284c7';
+      ctx.lineWidth = 2.5;
+      for (let x = -4; x <= 4; x += 0.05) {
+        const cx = toCanvasX(x);
+        const cy = toCanvasY(pdf(x));
+        if (x === -4) ctx.moveTo(cx, cy);
+        else ctx.lineTo(cx, cy);
+      }
       ctx.stroke();
 
-      // 棒A（平均値）
-      const hA = (mA / maxVal) * chartHeight;
-      ctx.fillStyle = '#e2e8f0';
-      ctx.fillRect(90, startY - hA, 70, hA);
+      // 3. X軸と中央破線 (0)
+      ctx.beginPath();
+      ctx.strokeStyle = '#64748b';
+      ctx.lineWidth = 1;
+      ctx.moveTo(margin.left, basey);
+      ctx.lineTo(width - margin.right, basey);
+      ctx.stroke();
+
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.moveTo(zeroX, margin.top);
+      ctx.lineTo(zeroX, basey);
+      ctx.stroke();
+      ctx.setLineDash([]); // リセット
+
+      ctx.fillStyle = '#334155';
+      ctx.font = '12px sans-serif';
+      ctx.fillText('0', zeroX, basey + 18);
+      ctx.fillText('-tα/2 (-1.96)', toCanvasX(-1.96), basey + 18);
+      ctx.fillText('tα/2 (1.96)', toCanvasX(1.96), basey + 18);
+
+      // 4. 計算されたt値 (検定統計量) の位置を示す矢印と線
+      const clampedT = Math.max(-3.8, Math.min(3.8, tValue)); // 画面外対策
+      const tX = toCanvasX(clampedT);
+      const tY = toCanvasY(pdf(clampedT));
+
+      ctx.strokeStyle = '#d97706';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(tX, margin.top - 10);
+      ctx.lineTo(tX, basey);
+      ctx.stroke();
+
+      // ポインター矢印
+      ctx.fillStyle = '#d97706';
+      ctx.beginPath();
+      ctx.moveTo(tX, margin.top + 5);
+      ctx.lineTo(tX - 5, margin.top - 5);
+      ctx.lineTo(tX + 5, margin.top - 5);
+      ctx.closePath();
+      ctx.fill();
+
+      // 検定統計量ラベル
+      ctx.font = 'bold 12px sans-serif';
+      ctx.fillText(`検定統計量 (t = ${tValue.toFixed(2)})`, tX, margin.top - 18);
       
-      // ラベル・平均値テキスト（棒の上に十分な余白を確保）
-      ctx.fillStyle = '#1e293b';
-      ctx.font = '13px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText('変更前', 125, startY + 20);
-      ctx.fillText(`平均 ${mA.toFixed(1)}`, 125, Math.min(startY - hA - 12, startY - 10));
-
-      // 個別データAのドット描画（左右に少しバラけさせて重なり防止）
-      ctx.fillStyle = 'rgba(71, 85, 105, 0.7)';
-      A.forEach((val, i) => {
-        const y = startY - (val / maxVal) * chartHeight;
-        const xOffset = ((i % 3) - 1) * 12; // -12px, 0px, 12px に分散
-        ctx.beginPath();
-        ctx.arc(125 + xOffset, y, 4.5, 0, Math.PI * 2);
-        ctx.fill();
-      });
-
-      // 棒B（平均値）
-      const hB = (mB / maxVal) * chartHeight;
-      ctx.fillStyle = '#ffedd5';
-      ctx.fillRect(220, startY - hB, 70, hB);
-      
-      ctx.fillStyle = '#1e293b';
-      ctx.fillText('変更後', 255, startY + 20);
-      ctx.fillText(`平均 ${mB.toFixed(1)}`, 255, Math.min(startY - hB - 12, startY - 10));
-
-      // 個別データBのドット描画（左右に少しバラけさせて重なり防止）
-      ctx.fillStyle = 'rgba(234, 88, 12, 0.8)';
-      B.forEach((val, i) => {
-        const y = startY - (val / maxVal) * chartHeight;
-        const xOffset = ((i % 3) - 1) * 12; // -12px, 0px, 12px に分散
-        ctx.beginPath();
-        ctx.arc(255 + xOffset, y, 4.5, 0, Math.PI * 2);
-        ctx.fill();
-      });
-
-      ctx.textAlign = 'left'; // リセット
+      // グラフタイトルの表示
+      ctx.fillStyle = '#0f172a';
+      ctx.font = 'bold 14px sans-serif';
+      ctx.fillText('p値と確率分布（t分布）', width / 2, 20);
     }
 
     function getPValue(t, df) {
@@ -331,7 +366,7 @@
       const vA = variance(A);
       const vB = variance(B);
       const se = Math.sqrt((vA / A.length) + (vB / B.length));
-      const t = Math.abs(mA - mB) / se;
+      const t = (mA - mB) / se; // 符号付きt値
       const df = A.length + B.length - 2;
 
       const pValue = getPValue(t, df);
@@ -341,9 +376,9 @@
       document.getElementById('toolResult').innerHTML = 
         `<strong>平均値:</strong> 変更前 = ${mA.toFixed(2)}, 変更後 = ${mB.toFixed(2)}<br>` +
         `<strong>たまたま起きる確率（p値）:</strong> 約 <strong>${pPercent}%</strong> (p = ${pValue.toFixed(4)})<br>` +
-        `<strong>判定結果:</strong> ${isSignificant ? '<span style="color:#059669; font-weight:bold;">【有意差あり】偶然の確率が5%未満のため、明確な効果・変化があったと言えます！</span>' : '<span style="color:#d97706; font-weight:bold;">【有意差なし】偶然の確率が5%以上あるため、たまたまの誤差（ブレ）の可能性があります。</span>'}`;
+        `<strong>判定結果:</strong> ${isSignificant ? '<span style="color:#059669; font-weight:bold;">【有意差あり】偶然の確率が5%未満のため、明確な効果・変化があったと言えます。</span>' : '<span style="color:#d97706; font-weight:bold;">【有意差なし】偶然の確率が5%以上あるため、誤差の範囲内です。</span>'}`;
 
-      drawChart(A, B, mA, mB);
+      drawDistributionChart(t, isSignificant);
     }
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -353,7 +388,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>簡易有意差チェッカー（データ分布・確率・グラフ付き）</title>
+  <title>簡易有意差チェッカー（確率分布グラフ付き）</title>
   <style>
     body { font-family: sans-serif; padding: 20px; max-width: 600px; margin: auto; line-height: 1.6; }
     textarea { width: 100%; height: 60px; margin-bottom: 10px; }
@@ -363,7 +398,7 @@
   </style>
 </head>
 <body>
-  <h2>簡易・有意差チェッカー（データ分布・確率・グラフ付き）</h2>
+  <h2>簡易・有意差チェッカー（確率分布・p値付き）</h2>
   <label>変更前のデータ（カンマ区切り）:</label>
   <textarea id="a">15, 18, 12, 16, 20, 14</textarea>
   <label>変更後のデータ（カンマ区切り）:</label>
@@ -371,7 +406,7 @@
 
   <button onclick="calc()">判定と確率を計算</button>
   <div id="res" class="result">結果がここに表示されます</div>
-  <div class="chart"><canvas id="c" width="400" height="240"></canvas></div>
+  <div class="chart"><canvas id="c" width="500" height="260"></canvas></div>
 
   <script>
     function getPValue(t, df) {
@@ -379,6 +414,65 @@
       let p_approx = Math.exp(-0.717 * t_stat - 0.416 * t_stat * t_stat); 
       if (df > 10) p_approx = Math.exp(-0.5 * t_stat * t_stat);
       return Math.min(Math.max(p_approx, 0.0001), 1.0);
+    }
+
+    function drawChart(tValue) {
+      const cvs = document.getElementById('c'), ctx = cvs.getContext('2d');
+      const width = cvs.width, height = cvs.height;
+      ctx.clearRect(0, 0, width, height);
+
+      const margin = { top: 40, right: 30, bottom: 50, left: 30 };
+      const plotWidth = width - margin.left - margin.right;
+      const plotHeight = height - margin.top - margin.bottom;
+      const zeroX = margin.left + plotWidth / 2;
+      const basey = margin.top + plotHeight;
+
+      const toCanvasX = (x) => margin.left + ((x - (-4)) / 8) * plotWidth;
+      const pdf = (x) => (1 / Math.sqrt(2 * Math.PI)) * Math.exp(-0.5 * x * x);
+      const toCanvasY = (y) => basey - (y / pdf(0)) * (plotHeight - 20);
+
+      // 棄却域 (両端)
+      ctx.fillStyle = 'rgba(239, 68, 68, 0.25)';
+      ctx.beginPath(); ctx.moveTo(toCanvasX(-4), basey);
+      for (let x = -4; x <= -1.96; x += 0.05) ctx.lineTo(toCanvasX(x), toCanvasY(pdf(x)));
+      ctx.lineTo(toCanvasX(-1.96), basey); ctx.closePath(); ctx.fill();
+
+      ctx.beginPath(); ctx.moveTo(toCanvasX(1.96), basey);
+      for (let x = 1.96; x <= 4; x += 0.05) ctx.lineTo(toCanvasX(x), toCanvasY(pdf(x)));
+      ctx.lineTo(toCanvasX(4), basey); ctx.closePath(); ctx.fill();
+
+      ctx.fillStyle = '#dc2626'; ctx.font = '11px sans-serif'; ctx.textAlign = 'center';
+      ctx.fillText('棄却域(5%)', toCanvasX(-2.8), basey - 15);
+      ctx.fillText('棄却域(5%)', toCanvasX(2.8), basey - 15);
+
+      // 曲線
+      ctx.beginPath(); ctx.strokeStyle = '#0284c7'; ctx.lineWidth = 2.5;
+      for (let x = -4; x <= 4; x += 0.05) {
+        const cx = toCanvasX(x), cy = toCanvasY(pdf(x));
+        if (x === -4) ctx.moveTo(cx, cy); else ctx.lineTo(cx, cy);
+      }
+      ctx.stroke();
+
+      // 軸
+      ctx.beginPath(); ctx.strokeStyle = '#64748b'; ctx.lineWidth = 1;
+      ctx.moveTo(margin.left, basey); ctx.lineTo(width - margin.right, basey); ctx.stroke();
+
+      ctx.setLineDash([4, 4]); ctx.beginPath();
+      ctx.moveTo(zeroX, margin.top); ctx.lineTo(zeroX, basey); ctx.stroke(); ctx.setLineDash([]);
+
+      ctx.fillStyle = '#334155'; ctx.font = '12px sans-serif';
+      ctx.fillText('0', zeroX, basey + 18);
+      ctx.fillText('-1.96', toCanvasX(-1.96), basey + 18);
+      ctx.fillText('1.96', toCanvasX(1.96), basey + 18);
+
+      // t値の位置
+      const clampedT = Math.max(-3.8, Math.min(3.8, tValue));
+      const tX = toCanvasX(clampedT);
+      ctx.strokeStyle = '#d97706'; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(tX, margin.top - 10); ctx.lineTo(tX, basey); ctx.stroke();
+
+      ctx.fillStyle = '#d97706'; ctx.font = 'bold 12px sans-serif';
+      ctx.fillText(\`t = \${tValue.toFixed(2)}\`, tX, margin.top - 15);
     }
 
     function calc() {
@@ -395,7 +489,7 @@
       };
       const vA = variance(A), vB = variance(B);
       const se = Math.sqrt((vA / A.length) + (vB / B.length));
-      const t = Math.abs(mA - mB) / se;
+      const t = (mA - mB) / se;
       const df = A.length + B.length - 2;
 
       const pValue = getPValue(t, df);
@@ -405,35 +499,9 @@
       document.getElementById('res').innerHTML = 
         \`<b>平均（前）:</b> \${mA.toFixed(2)} | <b>平均（後）:</b> \${mB.toFixed(2)}<br>\` +
         \`<b>たまたま起きる確率（p値）:</b> 約 <b>\${pPercent}%</b><br>\` +
-        \`<b>判定:</b> \${isSignificant ? '【有意差あり】偶然の可能性が5%未満のため明確な効果と言えます！' : '【有意差なし】たまたまの誤差の範囲内かもしれません。'}\`;
+        \`<b>判定:</b> \${isSignificant ? '【有意差あり】明確な効果と言えます。' : '【有意差なし】誤差の範囲内です。'}\`;
 
-      const cvs = document.getElementById('c'), ctx = cvs.getContext('2d');
-      ctx.clearRect(0,0,400,240);
-      const allVals = [...A, ...B];
-      const max = Math.max(...allVals, 1) * 1.25;
-      
-      ctx.beginPath(); ctx.moveTo(50,20); ctx.lineTo(50,190); ctx.lineTo(350,190); ctx.stroke();
-      
-      const hA = (mA/max)*150; ctx.fillStyle='#e2e8f0'; ctx.fillRect(90, 190-hA, 70, hA);
-      ctx.fillStyle='#1e293b'; ctx.font='13px sans-serif'; ctx.textAlign='center';
-      ctx.fillText('変更前', 125, 210); ctx.fillText(\`平均 \${mA.toFixed(1)}\`, 125, Math.min(190-hA-12, 180));
-      ctx.fillStyle='rgba(71, 85, 105, 0.7)';
-      A.forEach((v, i) => {
-        const y = 190 - (v/max)*150;
-        const xOffset = ((i % 3) - 1) * 12;
-        ctx.beginPath(); ctx.arc(125 + xOffset, y, 4.5, 0, Math.PI*2); ctx.fill();
-      });
-
-      const hB = (mB/max)*150; ctx.fillStyle='#ffedd5'; ctx.fillRect(220, 190-hB, 70, hB);
-      ctx.fillStyle='#1e293b';
-      ctx.fillText('変更後', 255, 210); ctx.fillText(\`平均 \${mB.toFixed(1)}\`, 255, Math.min(190-hB-12, 180));
-      ctx.fillStyle='rgba(234, 88, 12, 0.8)';
-      B.forEach((v, i) => {
-        const y = 190 - (v/max)*150;
-        const xOffset = ((i % 3) - 1) * 12;
-        ctx.beginPath(); ctx.arc(255 + xOffset, y, 4.5, 0, Math.PI*2); ctx.fill();
-      });
-      ctx.textAlign='left';
+      drawChart(t);
     }
     window.onload = calc;
   <\/script>
