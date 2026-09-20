@@ -2,3 +2,29 @@ const menuButton=document.querySelector('.menu-button');const nav=document.query
 const search=document.getElementById('article-search');const cards=[...document.querySelectorAll('#article-list .article-card')];const empty=document.getElementById('no-results');if(search){search.addEventListener('input',()=>{const q=search.value.trim().toLowerCase();let count=0;cards.forEach(card=>{const match=!q||card.dataset.search?.toLowerCase().includes(q)||card.textContent.toLowerCase().includes(q);card.hidden=!match;if(match)count++});if(empty)empty.hidden=count!==0})}
 const setCount=(id,value)=>{const el=document.getElementById(id);if(el)el.textContent=String(value)};setCount('article-count',cards.length);setCount('category-count',new Set(cards.map(card=>card.dataset.category).filter(Boolean)).size);setCount('app-count',document.querySelectorAll('[data-public-app="true"]').length);
 const year=document.getElementById('year');if(year)year.textContent=new Date().getFullYear();const items=document.querySelectorAll('.reveal');if('IntersectionObserver'in window){const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('visible');observer.unobserve(entry.target)}}),{threshold:.12});items.forEach(item=>observer.observe(item))}else{items.forEach(item=>item.classList.add('visible'))}
+// カテゴリフィルター機能
+document.addEventListener('DOMContentLoaded', () => {
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  const articles = document.querySelectorAll('.article-card');
+
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      // アクティブなボタンの表示切り替え
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const selectedCategory = btn.textContent.trim();
+
+      // 記事の表示・非表示切り替え
+      articles.forEach(article => {
+        const articleCategory = article.getAttribute('data-category');
+
+        if (selectedCategory === 'すべて' || articleCategory === selectedCategory) {
+          article.style.display = '';
+        } else {
+          article.style.display = 'none';
+        }
+      });
+    });
+  });
+});
