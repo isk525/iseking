@@ -15,8 +15,8 @@
 <header class="site-header"><div class="container header-inner">
   <a class="brand" href="#top" aria-label="イセキングのDX日和 トップへ"><span class="brand-mark">DX</span><span><strong>イセキングのDX日和</strong><small>WORK SMARTER, ENJOY MORE</small></span></a>
   <button class="menu-button" type="button" aria-label="メニューを開く" aria-controls="global-nav" aria-expanded="false"><span></span><span></span><span></span></button>
-  <nav id="global-nav" class="global-nav" aria-label="メインメニュー"><a href="#themes">発信テーマ</a><a href="#articles">記事</a><a href="#apps">作ったもの</a><a href="#profile">プロフィール</a><a href="#contact">お問い合わせ</a></nav>
-</div></header>
+ <nav id="global-nav" class="global-nav" aria-label="メインメニュー"><a href="#articles">記事</a><a href="#apps">作ったもの</a><a href="#profile">プロフィール</a><a href="#contact">お問い合わせ</a></nav>
+  
 <main id="main">
 <section id="top" class="hero"><div class="hero-blob blob-one"></div><div class="hero-blob blob-two"></div><div class="container hero-grid">
   <div class="hero-copy reveal">
@@ -36,13 +36,17 @@
   </aside>
 </div></section>
 
-<section id="themes" class="section"><div class="container"><div class="section-heading"><p class="kicker">THEMES</p><h2>発信しているテーマ</h2><p>難しい理論より、明日から試せること。実務で役立つ情報を5つのテーマで紹介します。</p></div><div class="theme-grid">
-  <article class="theme-card reveal"><span class="theme-icon orange">AI</span><h3>AI活用術</h3><p>Copilotなどの生成AIを、仕事で安全に便利に使うための実践例。</p><a href="#articles">記事を見る →</a></article>
-  <article class="theme-card reveal"><span class="theme-icon green">Excel</span><h3>Excel活用術</h3><p>関数・ピボットテーブル・Power Query・マクロなどの便利機能。</p><a href="#articles">記事を見る →</a></article>
-  <article class="theme-card reveal"><span class="theme-icon blue">&lt;/&gt;</span><h3>Webアプリ作成</h3><p>HTML・CSS・JavaScriptやスマホ向けアプリの作り方を紹介。</p><a href="#articles">記事を見る →</a></article>
-  <article class="theme-card reveal"><span class="theme-icon red">↗</span><h3>業務改善</h3><p>業務可視化やECRSなど、現場ですぐ試せる改善の考え方。</p><a href="#articles">記事を見る →</a></article>
-  <article class="theme-card reveal"><span class="theme-icon purple">⌨</span><h3>PC活用術</h3><p>ショートカットキー・環境変数・Windowsの便利機能を紹介。</p><a href="#articles">記事を見る →</a></article>
-</div></div></section>
+<section id="articles" class="section section-soft"><div class="container"><div class="articles-head"><div class="section-heading"><p class="kicker">ARTICLES</p><h2>記事一覧</h2><p>実際に試して分かったことを、フランクにまとめています。</p></div><label class="search"><span>⌕</span><input id="article-search" type="search" placeholder="記事を検索" aria-label="記事を検索"></label></div>
+
+<!-- カテゴリフィルター -->
+<div class="category-filter" style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px;">
+  <button class="filter-btn active" style="padding: 6px 14px; border-radius: 20px; border: 1px solid #f97316; background: #f97316; color: #fff; font-size: 0.85rem; cursor: pointer;">すべて</button>
+  <button class="filter-btn" style="padding: 6px 14px; border-radius: 20px; border: 1px solid #e2e8f0; background: #fff; color: #475569; font-size: 0.85rem; cursor: pointer;">AI活用術</button>
+  <button class="filter-btn" style="padding: 6px 14px; border-radius: 20px; border: 1px solid #e2e8f0; background: #fff; color: #475569; font-size: 0.85rem; cursor: pointer;">Excel活用術</button>
+  <button class="filter-btn" style="padding: 6px 14px; border-radius: 20px; border: 1px solid #e2e8f0; background: #fff; color: #475569; font-size: 0.85rem; cursor: pointer;">Webアプリ作成</button>
+  <button class="filter-btn" style="padding: 6px 14px; border-radius: 20px; border: 1px solid #e2e8f0; background: #fff; color: #475569; font-size: 0.85rem; cursor: pointer;">業務改善</button>
+  <button class="filter-btn" style="padding: 6px 14px; border-radius: 20px; border: 1px solid #e2e8f0; background: #fff; color: #475569; font-size: 0.85rem; cursor: pointer;">PC活用術</button>
+</div>
 
 <section id="articles" class="section section-soft"><div class="container"><div class="articles-head"><div class="section-heading"><p class="kicker">ARTICLES</p><h2>最新の記事</h2><p>実際に試して分かったことを、フランクにまとめています。</p></div><label class="search"><span>⌕</span><input id="article-search" type="search" placeholder="記事を検索" aria-label="記事を検索"></label></div>
 <div id="article-list" class="article-grid">
