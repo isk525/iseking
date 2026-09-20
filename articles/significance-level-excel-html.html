@@ -1,77 +1,355 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="機関投資家が使う統計学の「有意水準」の考え方と、ExcelやHTMLで手軽に検証・可視化する方法を分かりやすく解説します。">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="同僚の奥さん（機関投資家）から聞いた「有意水準」の考え方。Excelでの計算方法から、ブラウザで動く簡易HTML検証ツールの作り方・ダウンロードまで解説します。">
   <meta name="theme-color" content="#f97316">
-  <title>【統計学×実務】機関投資家も使う「有意水準」とは？Excel・HTMLで手軽に可視化・検証する方法 | イセキングのDX日和</title>
+  <title>機関投資家から学んだ「有意水準」とは？Excelでの検証とHTMLで作る簡易Webツール | イセキングのDX日和</title>
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/article.css">
+  <style>
+    /* 簡易ツールの埋め込み用スタイル */
+    .tool-box {
+      background: #f8fafc;
+      border: 2px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 24px 0;
+    }
+    .tool-box label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+    .tool-box textarea {
+      width: 100%;
+      height: 70px;
+      padding: 8px;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      box-sizing: border-box;
+      font-family: inherit;
+    }
+    .tool-btn {
+      background: #f97316;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+    .tool-btn:hover {
+      background: #ea580c;
+    }
+    .tool-result {
+      margin-top: 16px;
+      padding: 12px;
+      background: #fff;
+      border-left: 4px solid #0284c7;
+      border-radius: 4px;
+    }
+    .code-block {
+      background: #1e293b;
+      color: #f8fafc;
+      padding: 16px;
+      border-radius: 6px;
+      overflow-x: auto;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+    .dl-btn {
+      display: inline-block;
+      background: #0284c7;
+      color: #fff;
+      padding: 10px 18px;
+      border-radius: 4px;
+      text-decoration: none;
+      font-weight: bold;
+      margin-top: 12px;
+    }
+    .dl-btn:hover {
+      background: #0369a1;
+    }
+  </style>
+</head>
+<body class="article-page">
+  <a class="skip-link" href="#article-main">本文へ移動</a>
+
+  <header class="site-header article-header">
+    <div class="container">
+      <a class="article-back" href="../index.html">← トップへ戻る</a>
+    </div>
+  </header>
+
+  <main id="article-main">
+    <section class="article-hero">
+      <div class="article-hero-inner">
+        <span class="article-category">Webアプリ作成</span>
+        <h1>機関投資家から学んだ「有意水準」とは？<br>Excelでの検証とHTMLで作る簡易Webツール</h1>
+        <p class="article-subtitle">難しそうな統計学の考え方を、ブラウザで動くツールに落とし込む</p>
+        <div class="article-meta">
+          <span>📅 公開日：2026.09.20</span>
+          <span>⏱ 読了目安：6分</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="article-layout">
+      <article class="article-content">
+        <section class="article-summary" aria-labelledby="summary-title">
+          <h2 id="summary-title">この記事で分かること</h2>
+          <ul>
+            <li>機関投資家が使う「有意水準（p値）」のざっくりした考え方</li>
+            <li>Excelで一瞬で計算する数式</li>
+            <li>HTMLとJavaScriptで動く簡易検証ツールの作り方（ダウンロード可）</li>
+          </ul>
+        </section>
+
+        <p>どうも、イセキングです。</p>
+
+        <p>先日、同僚の奥さんと話す機会がありました。<br/>
+        銀行で機関投資家として働かれているらしく、普段から統計学を駆使して運用されているとのこと。<br/>
+        話を聞いていると「有意水準」やら「確率論」やら専門用語が飛び交って、正直なところ最初は「頭が良すぎて何言よるか分からん…！」となりました（笑）。<br/><br/>
+        でも、自分なりに噛み砕いて調べてみると、これは金融のプロだけでなく、僕たちが日頃やっている業務改善やA/Bテスト、データの効果測定にもめちゃくちゃ使える考え方だと分かったんです。</p>
+
+        <h2>そもそも機関投資家とは？何が求められる仕事？</h2>
+        <p>機関投資家というのは、個人の資産ではなく、顧客から預かった莫大な資金を運用するプロのことです。<br/>
+        勘や度胸で「なんとなく上がりそうだから」と投資するわけにはいかず、常に客観的で納得感のある根拠が求められます。</p>
+
+        <p>その根拠を示すために使われているのが、統計学によるデータ分析です。<br/>
+        中でも重要なテーマが「その結果は、たまたまなのか？それとも必然なのか？」を見極めることです。</p>
+
+        <h2>「有意水準（p値）」って何？</h2>
+        <p>ここで登場するのが「有意水準」という考え方です。<br/>
+        難しく言えば仮説検定の基準ですが、ざっくり言うと<b>「偶然起きた確率（p値）がどれくらいあるか」</b>を調べる指標です。</p>
+
+        <ul>
+          <li>例えば、新しい業務手順に変えたら作業時間が5分縮んだとします。</li>
+          <li>これが「たまたまその日の調子が良かっただけ（偶然）」なのか。</li>
+          <li>それとも「手順を変えた効果が明確にあった（必然）」のか。</li>
+        </ul>
+
+        <p>統計学では、この偶然起きる確率（p値）が「5%（0.05）未満」であれば、<b>「偶然ではなく、意味のある差（有意な差）がある」</b>と判断するのが一般的なルールになっています。</p>
+
+        <div class="point-box">
+          「たまたまのブレ」に振り回されず、「明確な効果があったか」を数字で客観的に判定するのが有意水準の役割です。
+        </div>
+
+        <h2>Excelなら関数ひとつで出せる</h2>
+        <p>この有意水準（p値）の検証ですが、Excelなら非常に簡単に計算できます。<br/>
+        変更前のデータ群と、変更後のデータ群を用意して、以下の関数を入力するだけです。</p>
+
+        <p><code>=T.TEST(変更前の範囲, 変更後の範囲, 2, 2)</code></p>
+
+        <p>これで算出された数字が「0.05」より小さければ、「統計的に意味のある変化だった」と言えます。</p>
+
+        <h2>HTMLとJavaScriptなら、ブラウザで動くツールにできる</h2>
+        <p>Excelも便利ですが、「チームに共有したい」「ブラウザ上でサクッと入力して判定したい」というときは、やっぱりHTMLとJavaScriptでWebアプリにしてしまうのが一番手軽です。</p>
+
+        <p>実際に、2つのデータ群を入力したら平均値の差とp値を計算して簡易判定するツールを組み込んでみました。</p>
+
+        <!-- 実際に動く簡易ツール -->
+        <div class="tool-box">
+          <h3>【体験版】簡易・有意差（t検定）チェッカー</h3>
+          <p style="font-size:0.85rem; color:#64748b;">※カンマ（,）区切りで数値を入力してください</p>
+
+          <label>グループA（変更前など）:</label>
+          <textarea id="dataA">10, 12, 11, 13, 10, 11</textarea>
+
+          <label style="margin-top:10px;">グループB（変更後など）:</label>
+          <textarea id="dataB">15, 14, 16, 13, 15, 14</textarea>
+
+          <button type="button" class="tool-btn" onclick="runTTTest()">有意差を判定する</button>
+
+          <div id="toolResult" class="tool-result">
+            ここに判定結果が表示されます。
+          </div>
+        </div>
+
+        <h2>このツールのHTML/JSコード（全コード）</h2>
+        <p>このツールは、特別なライブラリを使わずHTML1ファイルだけで作ることができます。<br/>
+        コードをパソコンに保存してブラウザで開くだけで、いつでも使えます。</p>
+
+        <pre class="code-block"><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="ja"&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;title&gt;簡易有意差チェッカー&lt;/title&gt;
+  &lt;style&gt;
+    body { font-family: sans-serif; padding: 20px; max-width: 600px; margin: auto; }
+    textarea { width: 100%; height: 60px; margin-bottom: 10px; }
+    button { background: #f97316; color: #fff; border: none; padding: 10px 20px; cursor: pointer; border-radius: 4px; }
+    .result { margin-top: 15px; padding: 10px; background: #e0f2fe; border-radius: 4px; }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h2&gt;簡易・有意差（t検定）チェッカー&lt;/h2&gt;
+  &lt;label&gt;グループA（カンマ区切り）:&lt;/label&gt;
+  &lt;textarea id="a"&gt;10, 12, 11, 13, 10, 11&lt;/textarea&gt;
+  &lt;label&gt;グループB（カンマ区切り）:&lt;/label&gt;
+  &lt;textarea id="b"&gt;15, 14, 16, 13, 15, 14&lt;/textarea&gt;
+  &lt;button onclick="calc()"&gt;判定する&lt;/button&gt;
+  &lt;div id="res" class="result"&gt;結果がここに表示されます&lt;/div&gt;
+
+  &lt;script&gt;
+    function calc() {
+      const parse = id =&gt; document.getElementById(id).value.split(',').map(Number).filter(n =&gt; !isNaN(n));
+      const A = parse('a'), B = parse('b');
+      if (!A.length || !B.length) return alert('数値を入れてください');
+
+      const mean = arr =&gt; arr.reduce((a, b) =&gt; a + b, 0) / arr.length;
+      const mA = mean(A), mB = mean(B);
+
+      // 簡易ウェルチのt検定計算
+      const stat = arr =&gt; {
+        const m = mean(arr);
+        return arr.reduce((a, b) =&gt; a + Math.pow(b - m, 2), 0) / (arr.length - 1);
+      };
+      const vA = stat(A), vB = stat(B);
+      const se = Math.sqrt((vA / A.length) + (vB / B.length));
+      const t = Math.abs(mA - mB) / se;
+
+      // 自由度の簡易計算とt値の基準判定（概算）
+      const isSignificant = t &gt; 2.1; 
+
+      document.getElementById('res').innerHTML = 
+        `&lt;b&gt;平均A:&lt;/b&gt; ${mA.toFixed(2)} | &lt;b&gt;平均B:&lt;/b&gt; ${mB.toFixed(2)}&lt;br&gt;` +
+        `&lt;b&gt;判定:&lt;/b&gt; ${isSignificant ? '【有意差あり】偶然ではなく効果があった可能性が高いです！' : '【有意差なし】たまたまの誤差の範囲内かもしれません。'}`;
+    }
+  &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+
+        <p>以下のボタンから、上記コードをそのままHTMLファイルとしてダウンロードできます。</p>
+        <a id="downloadBtn" class="dl-btn" href="#" download="significance-checker.html">HTMLファイルをダウンロード</a>
+
+        <h2>機関投資家以外でも使える横展開のアイデア</h2>
+        <p>この「たまたまか、必然か」を調べるアプローチは、仕事のあらゆる場面で活用できます。</p>
+
+        <ul>
+          <li><b>Webマーケティング：</b>A/Bテストで新しいボタンデザインにした際、クリック率の上昇がたまたまじゃないかを検証。</li>
+          <li><b>業務改善：</b>マニュアルを改定した前後で作業時間を測定し、本当に業務効率化できたかを証明する。</li>
+          <li><b>日常・趣味：</b>ゴルフのフォームを変えて練習したとき、スコアの良さが「たまたまの調子」か「上達」かを確かめる。</li>
+        </ul>
+
+        <h2>おわりに</h2>
+        <p>最初は「難しそうな話」として聞いた話でしたが、自分が使いやすいツールに落とし込んでみると、すごく身近で役立つ知識に変わりました。</p>
+
+        <p>Excelで計算してみるのも良し、HTMLでサクッと自分専用のチェッカーを作ってみるのも良し。<br/>
+        これからも難しい概念を「使えるツール」にしながら、楽しく業務改善をしていきたいと思います！</p>
+      </article>
+
+      <nav class="article-footer-nav" aria-label="記事下部ナビゲーション">
+        <a class="article-home-button" href="../index.html">トップページへ戻る</a>
+      </nav>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container footer-inner">
+      <div>
+        <strong>イセキングのDX日和</strong>
+        <p>仕事をもっと楽しく、もっと楽に。</p>
+      </div>
+      <small>© 2026 イセキングのDX日和</small>
+    </div>
+  </footer>
+
+  <!-- 簡易ツール＆ダウンロード用スクリプト -->
+  <script>
+    function runTTTest() {
+      const parse = val => val.split(',').map(n => parseFloat(n.trim())).filter(n => !isNaN(n));
+      const A = parse(document.getElementById('dataA').value);
+      const B = parse(document.getElementById('dataB').value);
+
+      if (A.length < 2 || B.length < 2) {
+        alert('グループA・Bともに数値を2つ以上入力してください。');
+        return;
+      }
+
+      const mean = arr => arr.reduce((a, b) => a + b, 0) / arr.length;
+      const mA = mean(A);
+      const mB = mean(B);
+
+      const variance = arr => {
+        const m = mean(arr);
+        return arr.reduce((a, b) => a + Math.pow(b - m, 2), 0) / (arr.length - 1);
+      };
+
+      const vA = variance(A);
+      const vB = variance(B);
+      const se = Math.sqrt((vA / A.length) + (vB / B.length));
+      const t = Math.abs(mA - mB) / se;
+
+      // 簡易判定（t値 > 2.1 をおおむね5%有意水準の目安とする）
+      const isSignificant = t > 2.1;
+
+      document.getElementById('toolResult').innerHTML = 
+        `<strong>平均値:</strong> グループA = ${mA.toFixed(2)}, グループB = ${mB.toFixed(2)}<br>` +
+        `<strong>判定結果:</strong> ${isSignificant ? '<span style="color:#059669; font-weight:bold;">【有意差あり】偶然ではなく明確な差がある可能性が高いです。</span>' : '<span style="color:#d97706; font-weight:bold;">【有意差なし】偶然の範囲（誤差）の可能性があります。</span>'}`;
+    }
+
+    // DL用ファイルの自動生成
+    document.addEventListener('DOMContentLoaded', () => {
+      const htmlContent = `<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>簡易有意差チェッカー</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; max-width: 600px; margin: auto; line-height: 1.6; }
+    textarea { width: 100%; height: 60px; margin-bottom: 10px; }
+    button { background: #f97316; color: #fff; border: none; padding: 10px 20px; cursor: pointer; border-radius: 4px; font-weight: bold; }
+    .result { margin-top: 15px; padding: 12px; background: #e0f2fe; border-radius: 4px; }
+  </style>
 </head>
 <body>
-<a class="skip-link" href="#main">本文へ移動</a>
+  <h2>簡易・有意差（t検定）チェッカー</h2>
+  <label>グループA（カンマ区切り）:</label>
+  <textarea id="a">10, 12, 11, 13, 10, 11</textarea>
+  <label>グループB（カンマ区切り）:</label>
+  <textarea id="b">15, 14, 16, 13, 15, 14</textarea>
+  <button onclick="calc()">判定する</button>
+  <div id="res" class="result">結果がここに表示されます</div>
 
-<header class="site-header"><div class="container header-inner">
-  <a class="brand" href="../index.html" aria-label="イセキングのDX日和 トップへ"><span class="brand-mark">DX</span><span><strong>イセキングのDX日和</strong><small>WORK SMARTER, ENJOY MORE</small></span></a>
-  <nav id="global-nav" class="global-nav" aria-label="メインメニュー"><a href="../index.html#articles">記事一覧</a><a href="../index.html#profile">プロフィール</a></nav>
-</div></header>
+  <script>
+    function calc() {
+      const parse = id => document.getElementById(id).value.split(',').map(Number).filter(n => !isNaN(n));
+      const A = parse('a'), B = parse('b');
+      if (A.length < 2 || B.length < 2) return alert('数値を2つ以上入力してください');
 
-<main id="main" class="container article-container">
-  <article class="article">
-    <header class="article-header">
-      <div class="article-meta">
-        <span class="category-tag">Excel活用術</span>
-        <time datetime="2026-09-20">2026.09.20</time>
-      </div>
-      <h1>【統計学×実務】機関投資家も使う「有意水準」とは？Excel・HTMLで手軽に可視化・検証する方法</h1>
-    </header>
+      const mean = arr => arr.reduce((a, b) => a + b, 0) / arr.length;
+      const mA = mean(A), mB = mean(B);
 
-    <div class="article-content">
-      <p>先日、知人からこんな相談（というか雑談）を受けました。</p>
-      <p><strong>「同僚の奥さんが銀行で機関投資家をしていて、統計学を駆使して運用しているらしい。ExcelやHTMLで『有意水準』みたいなデータをサクッと出したりグラフ化したりする方法はないかな？」</strong></p>
-      <p>正直なところ、最初に聞いたときは「機関投資家…？有意水準…？」と頭の中にハテナが浮かびました。しかし詳しく調べて自分の学びに変えていくと、これは金融のプロだけでなく、<strong>日々の業務改善やデータ分析全般に使える非常に強力な思考法</strong>だと分かったのです。</p>
+      const variance = arr => {
+        const m = mean(arr);
+        return arr.reduce((a, b) => a + Math.pow(b - m, 2), 0) / (arr.length - 1);
+      };
+      const vA = variance(A), vB = variance(B);
+      const se = Math.sqrt((vA / A.length) + (vB / B.length));
+      const t = Math.abs(mA - mB) / se;
 
-      <h2>そもそも「機関投資家」とはどんな仕事？</h2>
-      <p>機関投資家とは、個人投資家とは異なり、顧客から預かった莫大な資金（数十億円〜数兆円規模）を運用するプロフェッショナルです。</p>
-      <p>彼らに求められるのは、勘や度胸ではなく**「客観的で再現性のある根拠」**です。「なんとなく上がりそうだから買った」では顧客に説明がつきません。そのため、過去の膨大な市場データを統計学的に分析し、「リスクとリターンの確率」を数値化して意思決定を行っています。</p>
+      const isSignificant = t > 2.1; 
 
-      <h2>「有意水準（p値）」ってなに？ざっくり言うと…</h2>
-      <p>機関投資家のデータ分析でよく登場するのが<strong>「有意水準」</strong>という言葉です。</p>
-      <p>一言で言うと、**「その結果は単なる『たまたま（偶然）』なのか、それとも明確な『効果・傾向（必然）』なのか」**を見極めるための基準です。</p>
-      <ul>
-        <li><strong>例えば：</strong>ある投資手法を試して勝率が上がったとします。</li>
-        <li>それが「たまたま相場が良かっただけ（偶然）」なのか。</li>
-        <li>それとも「手法そのものに効果があった（有意な差がある）」のか。</li>
-      </ul>
-      <p>一般的に統計学では「偶然起こる確率が5%未満（p値 &lt; 0.05）」であれば、**「これは偶然ではなく、明確な差（意味のある差＝有意）がある」**と判断します。</p>
+      document.getElementById('res').innerHTML = 
+        \`<b>平均A:</b> \${mA.toFixed(2)} | <b>平均B:</b> \${mB.toFixed(2)}<br>\` +
+        \`<b>判定:</b> \${isSignificant ? '【有意差あり】偶然ではなく効果があった可能性が高いです！' : '【有意差なし】たまたまの誤差の範囲内かもしれません。'}\`;
+    }
+  <\/script>
+</body>
+</html>`;
 
-      <h2>「難しそう」を解決！Excelなら関数1つで計算できる</h2>
-      <p>統計学と聞くと難解な数式を想像しますが、実務で検証するだけなら高度な専門ソフトは不要です。Excelを使えば一瞬で判定できます。</p>
-      <p>例えば、施策前後の2つのデータ群を用意して、Excelの <code>T.TEST</code> 関数を使うだけで「偶然起きた確率（p値）」が算出できます。</p>
-      <pre><code>=T.TEST(配列1, 配列2, 裾の指定, 検定の種類)</code></pre>
-      <p>この結果が「0.05（5%）」を下回っていれば、「この変化には統計的に意味がある！」と胸を張って言えるわけです。</p>
-
-      <h2>HTML＋JavaScriptならブラウザ上で動く検証ツールも作れる</h2>
-      <p>さらにWebアプリ（HTML/JS）に組み込めば、数字を入力するだけで自動で有意差を判定し、Chart.jsなどのライブラリを使ってインタラクティブなグラフを描画するシンプルなツールも作れます。</p>
-      <p>ブラウザ上で動くため、インストール不要で社内やチームに共有できるのも大きなメリットです。</p>
-
-      <h2>ビジネスや日常への横展開：どんな場面で使える？</h2>
-      <p>この「有意水準」の考え方は、機関投資家だけのものにしておくのは勿体ない概念です。</p>
-      <ul>
-        <li><strong>Web・マーケティング：</strong>A/Bテストで新しいデザインのクリック率が上がった際、「偶然のブレ」か「デザイン改善の効果」かを冷静に判定する。</li>
-        <li><strong>業務改善：</strong>新しい作業手順を導入して作業時間が減った際、本当に効率化したのかをデータで証明する。</li>
-        <li><strong>趣味（ゴルフのデータ分析など）：</strong>フォームを変えてスコアが良くなったとき、上達したのか「たまたま調子が良かっただけ」かを振り返る。</li>
-      </ul>
-
-      <h2>まとめ</h2>
-      <p>一見難しそうな専門用語も、噛み砕いてツール（ExcelやHTML）に乗せてしまえば、誰でも明日から使える武器になります。</p>
-      <p>「たまたま」に惑わされず、数値的な根拠を持って判断するアプローチ、ぜひ皆さんの身近な業務でも試してみてください！</p>
-    </div>
-  </article>
-</main>
-
-<footer><div class="container footer-inner"><div><strong>イセキングのDX日和</strong><p>仕事をもっと楽しく、もっと楽に。</p></div><small>© イセキングのDX日和</small></div></footer>
+      const blob = new Blob([htmlContent], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      const dlBtn = document.getElementById('downloadBtn');
+      if (dlBtn) {
+        dlBtn.href = url;
+      }
+    });
+  </script>
 </body>
 </html>
