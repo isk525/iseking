@@ -10,6 +10,73 @@
   overflow: hidden;
 }
 
+/* 浮遊要素のコンテナ */
+.hero-floating-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none; /* マウス操作を邪魔しない */
+  z-index: 0;
+}
+
+/* モジュールの共通デザイン */
+.float-item {
+  position: absolute;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 12px;
+  font-weight: 600;
+  opacity: 0.45; /* 絶妙な薄さで配置 */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+  animation: floatAnim 12s infinite ease-in-out;
+}
+
+/* カラーバリエーション */
+.float-item.tag-code {
+  background: #eff6ff;
+  color: #2563eb;
+  border: 1px solid #bfdbfe;
+}
+
+.float-item.tag-excel {
+  background: #dcfce7;
+  color: #16a34a;
+  border: 1px solid #bbf7d0;
+}
+
+.float-item.tag-logic {
+  background: #f3e8ff;
+  color: #9333ea;
+  border: 1px solid #e9d5ff;
+}
+
+.float-item.tag-accent {
+  background: #ffedd5;
+  color: #ea580c;
+  border: 1px solid #fed7aa;
+}
+
+/* 画面上の配置位置とアニメーションのタイミング */
+.pos-1 { top: 12%; left: 8%; animation-delay: 0s; }
+.pos-2 { top: 65%; left: 5%; animation-delay: -3s; }
+.pos-3 { top: 20%; right: 38%; animation-delay: -6s; }
+.pos-4 { top: 75%; left: 42%; animation-delay: -2s; }
+.pos-5 { top: 15%; right: 8%; animation-delay: -8s; }
+.pos-6 { top: 70%; right: 6%; animation-delay: -4s; }
+
+/* 上下にゆったり揺れるアニメーション */
+@keyframes floatAnim {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-18px) rotate(2deg);
+  }
+}
+
 /* 横はみ出し防止用のグローバル保護 */
 body, html {
   overflow-x: hidden;
@@ -17,6 +84,8 @@ body, html {
 
 /* 2. ヒーローエリアのグリッドレイアウト */
 .hero-grid {
+  position: relative;
+  z-index: 1; /* コンテンツを浮遊背景より手前に配置 */
   display: grid;
   grid-template-columns: 1fr 380px; /* 右パネル幅を380pxに固定し圧迫を防止 */
   align-items: center;
@@ -292,12 +361,18 @@ body, html {
   }
 }
 
-
-
 /* スマホ表示時（640px以下）のスタイル調整 */
 @media (max-width: 640px) {
+  .float-item {
+    font-size: 10px;
+    padding: 4px 10px;
+    opacity: 0.3;
+  }
+  .pos-3 { display: none; } /* スマホでは中央の要素を消して可読性を確保 */
+  .pos-4 { display: none; }
+
   .hero-copy h1 {
-    font-size: 28px; /* 22px → 28px へ拡大して視認性をアップ */
+    font-size: 28px; /* 視認性を確保したサイズ */
     line-height: 1.3;
   }
   .hero-copy .lead {
