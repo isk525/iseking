@@ -415,3 +415,29 @@ body, html {
     padding: 20px;
   }
 }
+/* ==========================================================================
+   PC表示時の横幅拡張（トップページ用）
+   ========================================================================== */
+
+/* 1. コンテナの最大幅を拡張（1280pxへ広げる） */
+.container {
+  max-width: 1280px !important;
+  width: 92%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* 2. ヒーローエリアのグリッドレイアウト調整 */
+@media (min-width: 1024px) {
+  .hero-grid {
+    grid-template-columns: 1fr 400px;
+    gap: 60px;
+  }
+}
+
+/* 3. 記事一覧カードのグリッド調整 */
+.article-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 28px;
+}
