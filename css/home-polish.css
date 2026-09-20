@@ -85,3 +85,33 @@
     font-size: 19px;
   }
 }
+
+/* カテゴリフィルターボタンのスタイル */
+.category-filter {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.filter-btn {
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  color: #475569;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filter-btn:hover {
+  border-color: #f97316;
+  color: #f97316;
+}
+
+.filter-btn.active {
+  border-color: #f97316;
+  background: #f97316;
+  color: #fff;
+}
