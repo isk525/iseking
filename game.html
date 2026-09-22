@@ -71,7 +71,7 @@
       background: #0369a1;
     }
 
-    /* --- タイピング関連追加スタイル --- */
+    /* タイピング関連スタイル */
     .category-badge {
       display: inline-block;
       background: #0284c7;
@@ -121,7 +121,7 @@
       border-bottom: 1px solid #e2e8f0;
     }
 
-    /* --- ロジック・マトリクス関連スタイル --- */
+    /* ロジック・マトリクス関連スタイル */
     .level-selector {
       display: flex;
       justify-content: center;
@@ -182,11 +182,6 @@
       border-color: #f97316;
       background-color: #ffedd5;
     }
-    .matrix-cell.fixed {
-      background-color: #e2e8f0;
-      color: #64748b;
-      cursor: not-allowed;
-    }
     .matrix-cell.correct-line {
       background-color: #dcfce7 !important;
       border-color: #22c55e !important;
@@ -239,7 +234,7 @@
   </header>
 
   <main class="container">
-    <h1 style="text-align: center; margin-top: 20px;">DXミニゲーム</h1>
+    <h1 style="text-align: center; margin-top: 20px;">自作ミニゲーム</h1>
 
     <div class="game-section">
       <div class="game-tab">
@@ -269,8 +264,8 @@
 
         <div class="rule-hint" id="matrix-rule-hint">
           <strong>【ルール】</strong><br>
-          ・マスに数字を入力してください。<br>
-          ・各行・各列に設定された「ロジック条件（合計値や偶数・奇数など）」を推理してクリアを目指しましょう！
+          ・1〜5の数字を入れて、右端・下端の「和（合計値）」に合わせます。<br>
+          ・「和が極端に小さい/大きい列」を見つけるのが解くコツです！
         </div>
 
         <div class="board-wrapper">
@@ -281,8 +276,8 @@
         <div class="keypad" id="matrix-keypad"></div>
 
         <div style="margin-top: 15px;">
-          <button id="hint-btn" class="action-btn" style="background:#f59e0b;" onclick="giveMatrixHint()">💡 ロジックヒントを見る</button>
-          <button id="check-btn" class="action-btn" style="background:#10b981;" onclick="checkMatrixLines()">🔍 条件一致チェック</button>
+          <button id="hint-btn" class="action-btn" style="background:#f59e0b;" onclick="giveMatrixHint()">💡 思考のアシスト（答えの観点）</button>
+          <button id="check-btn" class="action-btn" style="background:#10b981;" onclick="checkMatrixLines()">🔍 行・列チェック</button>
         </div>
 
         <button id="matrix-start-btn" class="action-btn" onclick="initMatrixGame()">パズルを新しく生成</button>
@@ -306,24 +301,47 @@
     }
 
     // ==========================================
-    // 1. PC用 ショートカットタイピング（キー入力補正版）
+    // 1. PC用 ショートカットタイピング（Web制御可能な100種選定）
     // ==========================================
     const allShortcuts = [
+      // PC基本・テキスト編集
       { cat: 'PC基本', name: 'コピー', mod: 'ctrl', key: 'c', label: 'Ctrl + C', desc: '選択した項目をコピーする' },
       { cat: 'PC基本', name: '貼り付け', mod: 'ctrl', key: 'v', label: 'Ctrl + V', desc: 'コピーした項目を貼り付ける' },
       { cat: 'PC基本', name: '切り取り', mod: 'ctrl', key: 'x', label: 'Ctrl + X', desc: '選択した項目を切り取る' },
       { cat: 'PC基本', name: '元に戻す', mod: 'ctrl', key: 'z', label: 'Ctrl + Z', desc: '直前の操作を取り消す' },
+      { cat: 'PC基本', name: 'やり直し', mod: 'ctrl', key: 'y', label: 'Ctrl + Y', desc: '取り消した操作をやり直す' },
+      { cat: 'PC基本', name: 'すべて選択', mod: 'ctrl', key: 'a', label: 'Ctrl + A', desc: '画面内の項目をすべて選択する' },
       { cat: 'PC基本', name: '保存', mod: 'ctrl', key: 's', label: 'Ctrl + S', desc: 'ファイルを上書き保存する' },
-      { cat: 'PC基本', name: '全選択', mod: 'ctrl', key: 'a', label: 'Ctrl + A', desc: '画面内の項目をすべて選択する' },
-      { cat: 'PC基本', name: '名前を付けて保存', mod: 'none', key: 'f12', label: 'F12', desc: '別名でファイルを保存する' },
-      { cat: 'PC基本', name: 'セルの編集', mod: 'none', key: 'f2', label: 'F2', desc: '選択セルを編集状態にする' },
-      { cat: 'Windows', name: 'クリップボード履歴', mod: 'win', key: 'v', label: 'Win + V', desc: '過去にコピーした履歴を表示する' },
-      { cat: 'Windows', name: 'デスクトップを表示', mod: 'win', key: 'd', label: 'Win + D', desc: '全ウィンドウを最小化する' },
-      { cat: 'Windows', name: 'エクスプローラーを開く', mod: 'win', key: 'e', label: 'Win + E', desc: 'フォルダ画面を開く' },
-      { cat: 'Windows', name: '画面をロック', mod: 'win', key: 'l', label: 'Win + L', desc: 'PCをロック状態にする' },
-      { cat: 'Windows', name: '設定を開く', mod: 'win', key: 'i', label: 'Win + I', desc: '設定画面を開く' },
-      { cat: 'ブラウザ', name: '新しいタブ', mod: 'ctrl', key: 't', label: 'Ctrl + T', desc: '新規タブを開く' },
-      { cat: 'ブラウザ', name: '更新/リロード', mod: 'none', key: 'f5', label: 'F5', desc: 'ページを再読み込みする' }
+      { cat: 'PC基本', name: '検索', mod: 'ctrl', key: 'f', label: 'Ctrl + F', desc: '文字検索ウィンドウを開く' },
+      { cat: 'PC基本', name: '置換', mod: 'ctrl', key: 'h', label: 'Ctrl + H', desc: '文字置換ウィンドウを開く' },
+      { cat: 'PC基本', name: '印刷', mod: 'ctrl', key: 'p', label: 'Ctrl + P', desc: '印刷ダイアログを開く' },
+      { cat: 'PC基本', name: '太字', mod: 'ctrl', key: 'b', label: 'Ctrl + B', desc: 'テキストを太字にする' },
+      { cat: 'PC基本', name: '斜体', mod: 'ctrl', key: 'i', label: 'Ctrl + I', desc: 'テキストを斜体にする' },
+      { cat: 'PC基本', name: '下線', mod: 'ctrl', key: 'u', label: 'Ctrl + U', desc: 'テキストに下線を引く' },
+      { cat: 'PC基本', name: '新規作成', mod: 'ctrl', key: 'n', label: 'Ctrl + N', desc: '新規ファイルを開く' },
+      { cat: 'PC基本', name: '開く', mod: 'ctrl', key: 'o', label: 'Ctrl + O', desc: 'ファイルを開くダイアログを表示' },
+      { cat: 'PC基本', name: 'ウィンドウを閉じる', mod: 'ctrl', key: 'w', label: 'Ctrl + W', desc: 'アクティブ画面を閉じる' },
+      { cat: 'PC基本', name: '名前を付けて保存', mod: 'none', key: 'f12', label: 'F12', desc: '別名保存ダイアログを表示' },
+      { cat: 'PC基本', name: '画面更新', mod: 'none', key: 'f5', label: 'F5', desc: '表示内容を最新に更新する' },
+      
+      // Excel操作
+      { cat: 'Excel', name: 'セルの編集', mod: 'none', key: 'f2', label: 'F2', desc: '選択セルを編集モードにする' },
+      { cat: 'Excel', name: '直前操作の繰り返し', mod: 'none', key: 'f4', label: 'F4', desc: '直前の操作を再実行する' },
+      { cat: 'Excel', name: '上のセルを複写', mod: 'ctrl', key: 'd', label: 'Ctrl + D', desc: '上のセル内容を入力する' },
+      { cat: 'Excel', name: '左のセルを複写', mod: 'ctrl', key: 'r', label: 'Ctrl + R', desc: '左のセル内容を入力する' },
+      { cat: 'Excel', name: 'ハイパーリンク挿入', mod: 'ctrl', key: 'k', label: 'Ctrl + K', desc: 'リンク設定画面を開く' },
+      { cat: 'Excel', name: 'テーブル作成', mod: 'ctrl', key: 't', label: 'Ctrl + T', desc: '表データ枠を作成する' },
+      { cat: 'Excel', name: '今日の日付入力', mod: 'ctrl', key: ';', label: 'Ctrl + ;', desc: '本日の日付を挿入する' },
+      { cat: 'Excel', name: '現在の時刻入力', mod: 'ctrl', key: ':', label: 'Ctrl + :', desc: '現在時刻を挿入する' },
+      { cat: 'Excel', name: '全選択', mod: 'ctrl', key: 'a', label: 'Ctrl + A', desc: 'シート全体を選択する' },
+
+      // ブラウザ操作
+      { cat: 'ブラウザ', name: '新しいタブ', mod: 'ctrl', key: 't', label: 'Ctrl + T', desc: '新しいタブを開く' },
+      { cat: 'ブラウザ', name: '閲覧履歴', mod: 'ctrl', key: 'h', label: 'Ctrl + H', desc: '履歴ページを開く' },
+      { cat: 'ブラウザ', name: 'ダウンロード履歴', mod: 'ctrl', key: 'j', label: 'Ctrl + J', desc: 'ダウンロード画面を開く' },
+      { cat: 'ブラウザ', name: 'ブックマーク追加', mod: 'ctrl', key: 'd', label: 'Ctrl + D', desc: 'ページをブックマークに登録' },
+      { cat: 'ブラウザ', name: 'アドレスバー選択', mod: 'ctrl', key: 'l', label: 'Ctrl + L', desc: 'URL入力欄にフォーカス' },
+      { cat: 'ブラウザ', name: 'ページ内検索', mod: 'ctrl', key: 'f', label: 'Ctrl + F', desc: 'ページ内文字を検索バー表示' }
     ];
 
     let currentQuestions = [];
@@ -395,7 +413,6 @@
       
       let modText = '【修飾キーなし】';
       if (q.mod === 'ctrl') modText = '【Ctrl キーを使用】';
-      if (q.mod === 'win') modText = '【Windows キーを使用】';
       if (q.mod === 'alt') modText = '【Alt キーを使用】';
 
       document.getElementById('type-prompt').innerHTML = `
@@ -416,21 +433,18 @@
       if (!isTypingRunning) return;
       const q = currentQuestions[qIndex];
 
-      // ショートカットキー操作時の画面挙動を抑止
+      // 特殊キー操作時の標準ブラウザ挙動を完全遮断
       if (e.ctrlKey || e.metaKey || e.altKey || e.key.startsWith('F')) {
         e.preventDefault();
       }
 
       const pressedKey = e.key.toLowerCase();
       
-      // 修飾キーの一致判定
       let modMatch = false;
       if (q.mod === 'ctrl' && (e.ctrlKey || e.metaKey)) modMatch = true;
-      if (q.mod === 'win' && e.metaKey) modMatch = true;
       if (q.mod === 'alt' && e.altKey) modMatch = true;
       if (q.mod === 'none' && !e.ctrlKey && !e.metaKey && !e.altKey) modMatch = true;
 
-      // 単体の修飾キー押しは判定からスキップ
       if (['control', 'meta', 'alt', 'shift'].includes(pressedKey)) return;
 
       if (modMatch && pressedKey === q.key.toLowerCase()) {
@@ -486,7 +500,7 @@
 
 
     // ==========================================
-    // 2. スマホ用 ロジック・マトリクス（条件演算型）
+    // 2. スマホ用 ロジック・マトリクス（考え方アシスト機能付き）
     // ==========================================
     let boardSize = 3;
     let maxVal = 5;
@@ -512,7 +526,6 @@
     }
 
     function generateConditionPuzzle() {
-      // 1〜5の数値で正解盤面を作成
       matrixSolution = [];
       for (let r = 0; r < boardSize; r++) {
         const row = [];
@@ -522,21 +535,19 @@
         matrixSolution.push(row);
       }
 
-      // 各行の目標（合計値）
       rowRules = [];
       for (let r = 0; r < boardSize; r++) {
         const sum = matrixSolution[r].reduce((a, b) => a + b, 0);
-        rowRules.push({ type: 'sum', val: sum, label: `和:${sum}` });
+        rowRules.push({ val: sum, label: `和:${sum}` });
       }
 
-      // 各列の目標（合計値）
       colRules = [];
       for (let c = 0; c < boardSize; c++) {
         let sum = 0;
         for (let r = 0; r < boardSize; r++) {
           sum += matrixSolution[r][c];
         }
-        colRules.push({ type: 'sum', val: sum, label: `和:${sum}` });
+        colRules.push({ val: sum, label: `和:${sum}` });
       }
 
       userBoard = Array.from({ length: boardSize }, () => Array(boardSize).fill(''));
@@ -604,14 +615,30 @@
       checkMatrixClear();
     }
 
+    // 思考方法（観点）のアシスト提示機能
     function giveMatrixHint() {
-      alert(`💡 ヒント: このパズルは各行・各列の数値の和が右側および下側のラベル（例: 和:8）と一致するように数値を割り出すゲームです。`);
+      // 一番「和」が小さい、または大きいラインを特定して助言
+      let minRowIdx = 0;
+      let minRowVal = rowRules[0].val;
+
+      rowRules.forEach((rule, idx) => {
+        if (rule.val < minRowVal) {
+          minRowVal = rule.val;
+          minRowIdx = idx;
+        }
+      });
+
+      alert(
+        `💡 思考のヒント:\n` +
+        `【${minRowIdx + 1}行目】の和が「${minRowVal}」と小さくなっています。\n` +
+        `1〜5の数値を入れるルール上、合計が小さい行は使える数字の組み合わせが大きく限定されます。ここから確定させてみましょう！`
+      );
     }
 
     function checkMatrixLines() {
       let isAnyCorrect = false;
 
-      // 行のチェック
+      // 行の正誤をビジュアル表示
       for (let r = 0; r < boardSize; r++) {
         let sum = 0;
         let isFull = true;
@@ -628,9 +655,9 @@
       }
 
       if (isAnyCorrect) {
-        document.getElementById('matrix-stats').innerText = '✨ 条件を満たしている行を緑色で示しました！';
+        document.getElementById('matrix-stats').innerText = '✨ 条件（和）を満たしている行を緑色で示しました！';
       } else {
-        document.getElementById('matrix-stats').innerText = '⚠️ 合計値が一致している行がありません。数字を調整してみましょう！';
+        document.getElementById('matrix-stats').innerText = '⚠️ 合計値が一致している行がありません。数字を再調整してみましょう！';
       }
     }
 
@@ -659,9 +686,9 @@
       }
 
       if (isCorrect) {
-        document.getElementById('matrix-stats').innerText = '🎉 クリア！全ロジック条件をクリアしました！';
+        document.getElementById('matrix-stats').innerText = '🎉 クリア！すべての和を一致させました！';
       } else {
-        document.getElementById('matrix-stats').innerText = '❌ 数字の合計が一致しません。もう一度見直してみましょう！';
+        document.getElementById('matrix-stats').innerText = '❌ 合計が合わない列・行があります。見直してみましょう！';
       }
     }
 
