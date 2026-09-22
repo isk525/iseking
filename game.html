@@ -182,6 +182,11 @@
       border-color: #f97316;
       background-color: #ffedd5;
     }
+    .matrix-cell.fixed {
+      background-color: #e2e8f0;
+      color: #475569;
+      cursor: not-allowed;
+    }
     .matrix-cell.correct-line {
       background-color: #dcfce7 !important;
       border-color: #22c55e !important;
@@ -194,14 +199,27 @@
       padding: 2px;
     }
     .matrix-cell.corner {
-      background: transparent;
-      border: none;
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      font-size: 0.75rem;
+      color: #0284c7;
+      font-weight: bold;
+    }
+    .candidate-box {
+      background: #e0f2fe;
+      border: 1px solid #0284c7;
+      color: #0369a1;
+      padding: 8px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      margin-top: 10px;
+      font-weight: bold;
     }
     .keypad {
       display: flex;
       justify-content: center;
       gap: 6px;
-      margin-top: 15px;
+      margin-top: 10px;
       flex-wrap: wrap;
     }
     .key-btn {
@@ -234,7 +252,7 @@
   </header>
 
   <main class="container">
-    <h1 style="text-align: center; margin-top: 20px;">自作ミニゲーム</h1>
+    <h1 style="text-align: center; margin-top: 20px;">DXミニゲーム</h1>
 
     <div class="game-section">
       <div class="game-tab">
@@ -263,21 +281,24 @@
         </div>
 
         <div class="rule-hint" id="matrix-rule-hint">
-          <strong>【ルール】</strong><br>
-          ・1〜5の数字を入れて、右端・下端の「和（合計値）」に合わせます。<br>
-          ・「和が極端に小さい/大きい列」を見つけるのが解くコツです！
+          <strong>【ルールと解くヒント】</strong><br>
+          ・1〜5の数字を入れて、各行・列・<b>斜め（右下枠）</b>の合計値に合わせます。<br>
+          ・マスを選択すると、入力可能な<b>候補数字</b>が画面下に自動表示されます！
         </div>
 
         <div class="board-wrapper">
           <div class="matrix-board" id="matrix-board"></div>
         </div>
 
+        <!-- 候補数字アシスト表示領域 -->
+        <div id="candidate-info" class="candidate-box">マスをタップすると、入力候補の数字が表示されます</div>
+
         <!-- テンキーパッド -->
         <div class="keypad" id="matrix-keypad"></div>
 
         <div style="margin-top: 15px;">
-          <button id="hint-btn" class="action-btn" style="background:#f59e0b;" onclick="giveMatrixHint()">💡 思考のアシスト（答えの観点）</button>
-          <button id="check-btn" class="action-btn" style="background:#10b981;" onclick="checkMatrixLines()">🔍 行・列チェック</button>
+          <button id="hint-btn" class="action-btn" style="background:#f59e0b;" onclick="giveMatrixHint()">💡 思考のアシストを見る</button>
+          <button id="check-btn" class="action-btn" style="background:#10b981;" onclick="checkMatrixLines()">🔍 行・列のチェック</button>
         </div>
 
         <button id="matrix-start-btn" class="action-btn" onclick="initMatrixGame()">パズルを新しく生成</button>
@@ -301,10 +322,9 @@
     }
 
     // ==========================================
-    // 1. PC用 ショートカットタイピング（Web制御可能な100種選定）
+    // 1. PC用 ショートカットタイピング（誤操作完全防止強化）
     // ==========================================
     const allShortcuts = [
-      // PC基本・テキスト編集
       { cat: 'PC基本', name: 'コピー', mod: 'ctrl', key: 'c', label: 'Ctrl + C', desc: '選択した項目をコピーする' },
       { cat: 'PC基本', name: '貼り付け', mod: 'ctrl', key: 'v', label: 'Ctrl + V', desc: 'コピーした項目を貼り付ける' },
       { cat: 'PC基本', name: '切り取り', mod: 'ctrl', key: 'x', label: 'Ctrl + X', desc: '選択した項目を切り取る' },
@@ -323,8 +343,6 @@
       { cat: 'PC基本', name: 'ウィンドウを閉じる', mod: 'ctrl', key: 'w', label: 'Ctrl + W', desc: 'アクティブ画面を閉じる' },
       { cat: 'PC基本', name: '名前を付けて保存', mod: 'none', key: 'f12', label: 'F12', desc: '別名保存ダイアログを表示' },
       { cat: 'PC基本', name: '画面更新', mod: 'none', key: 'f5', label: 'F5', desc: '表示内容を最新に更新する' },
-      
-      // Excel操作
       { cat: 'Excel', name: 'セルの編集', mod: 'none', key: 'f2', label: 'F2', desc: '選択セルを編集モードにする' },
       { cat: 'Excel', name: '直前操作の繰り返し', mod: 'none', key: 'f4', label: 'F4', desc: '直前の操作を再実行する' },
       { cat: 'Excel', name: '上のセルを複写', mod: 'ctrl', key: 'd', label: 'Ctrl + D', desc: '上のセル内容を入力する' },
@@ -333,15 +351,11 @@
       { cat: 'Excel', name: 'テーブル作成', mod: 'ctrl', key: 't', label: 'Ctrl + T', desc: '表データ枠を作成する' },
       { cat: 'Excel', name: '今日の日付入力', mod: 'ctrl', key: ';', label: 'Ctrl + ;', desc: '本日の日付を挿入する' },
       { cat: 'Excel', name: '現在の時刻入力', mod: 'ctrl', key: ':', label: 'Ctrl + :', desc: '現在時刻を挿入する' },
-      { cat: 'Excel', name: '全選択', mod: 'ctrl', key: 'a', label: 'Ctrl + A', desc: 'シート全体を選択する' },
-
-      // ブラウザ操作
       { cat: 'ブラウザ', name: '新しいタブ', mod: 'ctrl', key: 't', label: 'Ctrl + T', desc: '新しいタブを開く' },
       { cat: 'ブラウザ', name: '閲覧履歴', mod: 'ctrl', key: 'h', label: 'Ctrl + H', desc: '履歴ページを開く' },
       { cat: 'ブラウザ', name: 'ダウンロード履歴', mod: 'ctrl', key: 'j', label: 'Ctrl + J', desc: 'ダウンロード画面を開く' },
       { cat: 'ブラウザ', name: 'ブックマーク追加', mod: 'ctrl', key: 'd', label: 'Ctrl + D', desc: 'ページをブックマークに登録' },
-      { cat: 'ブラウザ', name: 'アドレスバー選択', mod: 'ctrl', key: 'l', label: 'Ctrl + L', desc: 'URL入力欄にフォーカス' },
-      { cat: 'ブラウザ', name: 'ページ内検索', mod: 'ctrl', key: 'f', label: 'Ctrl + F', desc: 'ページ内文字を検索バー表示' }
+      { cat: 'ブラウザ', name: 'アドレスバー選択', mod: 'ctrl', key: 'l', label: 'Ctrl + L', desc: 'URL入力欄にフォーカス' }
     ];
 
     let currentQuestions = [];
@@ -429,17 +443,20 @@
       setTimeout(() => box.classList.remove('miss'), 300);
     }
 
-    window.addEventListener('keydown', (e) => {
+    // イベント捕捉の共通関数（keydown, keyupともにブラウザショートカットを徹底停止）
+    function handleKeyEvent(e) {
       if (!isTypingRunning) return;
-      const q = currentQuestions[qIndex];
 
-      // 特殊キー操作時の標準ブラウザ挙動を完全遮断
       if (e.ctrlKey || e.metaKey || e.altKey || e.key.startsWith('F')) {
         e.preventDefault();
+        e.stopPropagation();
       }
 
+      if (e.type !== 'keydown') return;
+
+      const q = currentQuestions[qIndex];
       const pressedKey = e.key.toLowerCase();
-      
+
       let modMatch = false;
       if (q.mod === 'ctrl' && (e.ctrlKey || e.metaKey)) modMatch = true;
       if (q.mod === 'alt' && e.altKey) modMatch = true;
@@ -457,7 +474,10 @@
         showMissEffect();
         document.getElementById('type-stats').innerText = `進捗: ${qIndex + 1} / ${currentQuestions.length} | ミス: ${missCount}`;
       }
-    });
+    }
+
+    window.addEventListener('keydown', handleKeyEvent, true);
+    window.addEventListener('keyup', handleKeyEvent, true);
 
     function finishTypingGame(reason) {
       isTypingRunning = false;
@@ -500,14 +520,16 @@
 
 
     // ==========================================
-    // 2. スマホ用 ロジック・マトリクス（考え方アシスト機能付き）
+    // 2. スマホ用 ロジック・マトリクス（候補アシスト＋斜め合計追加版）
     // ==========================================
     let boardSize = 3;
     let maxVal = 5;
     let matrixSolution = [];
     let userBoard = [];
+    let fixedCells = [];
     let rowRules = [];
     let colRules = [];
+    let diagRule = 0; // 斜め（左上から右下）の和
     let selectedCell = null;
 
     function changeLevelWithConfirm(size, btn) {
@@ -521,6 +543,7 @@
       generateConditionPuzzle();
       selectedCell = null;
       document.getElementById('matrix-stats').innerText = '';
+      document.getElementById('candidate-info').innerText = 'マスをタップすると、入力候補の数字が表示されます';
       renderKeypad();
       renderMatrixBoard();
     }
@@ -535,6 +558,7 @@
         matrixSolution.push(row);
       }
 
+      // 各行・列の和
       rowRules = [];
       for (let r = 0; r < boardSize; r++) {
         const sum = matrixSolution[r].reduce((a, b) => a + b, 0);
@@ -550,7 +574,25 @@
         colRules.push({ val: sum, label: `和:${sum}` });
       }
 
+      // 斜め（左上→右下）の和
+      diagRule = 0;
+      for (let i = 0; i < boardSize; i++) {
+        diagRule += matrixSolution[i][i];
+      }
+
       userBoard = Array.from({ length: boardSize }, () => Array(boardSize).fill(''));
+      fixedCells = [];
+
+      // 最初のヒントとして1〜2マス固定枠を配置して思考の起点を作る
+      const hintCount = boardSize === 3 ? 1 : 2;
+      while (fixedCells.length < hintCount) {
+        const r = Math.floor(Math.random() * boardSize);
+        const c = Math.floor(Math.random() * boardSize);
+        if (!fixedCells.some(f => f.r === r && f.c === c)) {
+          fixedCells.push({ r, c, val: matrixSolution[r][c] });
+          userBoard[r][c] = matrixSolution[r][c];
+        }
+      }
     }
 
     function renderKeypad() {
@@ -584,10 +626,16 @@
 
           if (r < boardSize && c < boardSize) {
             cell.innerText = userBoard[r][c];
-            if (selectedCell && selectedCell.r === r && selectedCell.c === c) {
-              cell.classList.add('selected');
+            
+            const isFixed = fixedCells.some(f => f.r === r && f.c === c);
+            if (isFixed) {
+              cell.classList.add('fixed');
+            } else {
+              if (selectedCell && selectedCell.r === r && selectedCell.c === c) {
+                cell.classList.add('selected');
+              }
+              cell.onclick = () => selectCell(r, c);
             }
-            cell.onclick = () => selectCell(r, c);
           } else if (r < boardSize && c === boardSize) {
             cell.classList.add('target-header');
             cell.innerText = rowRules[r].label;
@@ -596,6 +644,7 @@
             cell.innerText = colRules[c].label;
           } else {
             cell.classList.add('corner');
+            cell.innerHTML = `斜め<br>${diagRule}`;
           }
 
           board.appendChild(cell);
@@ -606,39 +655,52 @@
     function selectCell(r, c) {
       selectedCell = { r, c };
       renderMatrixBoard();
+      updateCandidateInfo(r, c);
+    }
+
+    // 選択マスの入力可能範囲（アシスト）をリアルタイム計算
+    function updateCandidateInfo(r, c) {
+      let currentNum = userBoard[r][c] !== '' ? Number(userBoard[r][c]) : 0;
+
+      // 行の残り必要数
+      let rowSum = 0;
+      for (let i = 0; i < boardSize; i++) {
+        if (i !== c && userBoard[r][i] !== '') rowSum += Number(userBoard[r][i]);
+      }
+      let rowMaxPossible = rowRules[r].val - rowSum;
+
+      // 列の残り必要数
+      let colSum = 0;
+      for (let i = 0; i < boardSize; i++) {
+        if (i !== r && userBoard[i][c] !== '') colSum += Number(userBoard[i][c]);
+      }
+      let colMaxPossible = colRules[c].val - colSum;
+
+      let maxAllowed = Math.min(rowMaxPossible, colMaxPossible, maxVal);
+      let minAllowed = 1;
+
+      if (maxAllowed < 1) {
+        document.getElementById('candidate-info').innerText = `⚠️ 選択中のマス: 行または列の合計を超算しています！数を減らしてください。`;
+      } else {
+        document.getElementById('candidate-info').innerText = `💡 選択中 (${r + 1}行 ${c + 1}列): 入力可能な候補は 【 ${minAllowed} 〜 ${maxAllowed} 】 です`;
+      }
     }
 
     function inputMatrixNum(num) {
       if (!selectedCell) return;
       userBoard[selectedCell.r][selectedCell.c] = num;
       renderMatrixBoard();
+      updateCandidateInfo(selectedCell.r, selectedCell.c);
       checkMatrixClear();
     }
 
-    // 思考方法（観点）のアシスト提示機能
     function giveMatrixHint() {
-      // 一番「和」が小さい、または大きいラインを特定して助言
-      let minRowIdx = 0;
-      let minRowVal = rowRules[0].val;
-
-      rowRules.forEach((rule, idx) => {
-        if (rule.val < minRowVal) {
-          minRowVal = rule.val;
-          minRowIdx = idx;
-        }
-      });
-
-      alert(
-        `💡 思考のヒント:\n` +
-        `【${minRowIdx + 1}行目】の和が「${minRowVal}」と小さくなっています。\n` +
-        `1〜5の数値を入れるルール上、合計が小さい行は使える数字の組み合わせが大きく限定されます。ここから確定させてみましょう！`
-      );
+      alert(`💡 思考の観点:\n・グレー枠の初期数字を起点に、その行・列の残り必要数（和 - 既に入力された値）を計算するのが第一歩です。\n・マスを選択すると画面下に候補範囲が表示されるので参考にしてください！`);
     }
 
     function checkMatrixLines() {
       let isAnyCorrect = false;
 
-      // 行の正誤をビジュアル表示
       for (let r = 0; r < boardSize; r++) {
         let sum = 0;
         let isFull = true;
@@ -655,9 +717,9 @@
       }
 
       if (isAnyCorrect) {
-        document.getElementById('matrix-stats').innerText = '✨ 条件（和）を満たしている行を緑色で示しました！';
+        document.getElementById('matrix-stats').innerText = '✨ 合計が合っている行を緑色でハイライトしました！';
       } else {
-        document.getElementById('matrix-stats').innerText = '⚠️ 合計値が一致している行がありません。数字を再調整してみましょう！';
+        document.getElementById('matrix-stats').innerText = '⚠️ 合計が一致している完全な行がまだありません。';
       }
     }
 
@@ -669,6 +731,8 @@
       }
 
       let isCorrect = true;
+
+      // 行チェック
       for (let r = 0; r < boardSize; r++) {
         let sum = 0;
         for (let c = 0; c < boardSize; c++) {
@@ -677,6 +741,7 @@
         if (sum !== rowRules[r].val) isCorrect = false;
       }
 
+      // 列チェック
       for (let c = 0; c < boardSize; c++) {
         let sum = 0;
         for (let r = 0; r < boardSize; r++) {
@@ -685,10 +750,17 @@
         if (sum !== colRules[c].val) isCorrect = false;
       }
 
+      // 斜めチェック
+      let currentDiag = 0;
+      for (let i = 0; i < boardSize; i++) {
+        currentDiag += Number(userBoard[i][i]);
+      }
+      if (currentDiag !== diagRule) isCorrect = false;
+
       if (isCorrect) {
-        document.getElementById('matrix-stats').innerText = '🎉 クリア！すべての和を一致させました！';
+        document.getElementById('matrix-stats').innerText = '🎉 クリア！すべての和を正確に一致させました！';
       } else {
-        document.getElementById('matrix-stats').innerText = '❌ 合計が合わない列・行があります。見直してみましょう！';
+        document.getElementById('matrix-stats').innerText = '❌ 合計が一致しない場所があります。候補数字を参考に直してみましょう！';
       }
     }
 
