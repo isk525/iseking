@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="PC向けタイピング練習とスマホ向けロジック・マトリクスの脳トレミニゲームです。">
+  <meta name="theme-color" content="#f97316">
+  <title>ミニゲームコーナー | イセキングのDX日和</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .game-section {
+      max-width: 600px;
+      margin: 20px auto;
+      padding: 20px;
+      background: #f8fafc;
+      border: 2px solid #cbd5e1;
+      border-radius: 8px;
+    }
+    .game-tab {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 10px;
+      background: #e2e8f0;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .tab-btn.active {
+      background: #f97316;
+      color: #fff;
+    }
+    .game-container {
+      display: none;
+      text-align: center;
+    }
+    .game-container.active {
+      display: block;
+    }
+    .display-box {
+      font-size: 1.5rem;
+      font-weight: bold;
+      padding: 20px;
+      background: #fff;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      margin-bottom: 15px;
+    }
+    .action-btn {
+      background: #0284c7;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .action-btn:hover {
+      background: #0369a1;
+    }
+    /* ロジック・マトリクス用グリッド */
+    .matrix-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      max-width: 300px;
+      margin: 15px auto;
+    }
+    .matrix-cell {
+      aspect-ratio: 1;
+      background: #fff;
+      border: 2px solid #94a3b8;
+      border-radius: 6px;
+      font-size: 1.5rem;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      user-select: none;
+    }
+    .matrix-cell:active {
+      background: #e2e8f0;
+    }
+    .stats {
+      margin-top: 15px;
+      font-size: 0.95rem;
+      color: #475569;
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <a class="article-back" href="index.html">← トップへ戻る</a>
+    </div>
+  </header>
+
+  <main class="container">
+    <h1 style="text-align: center; margin-top: 20px;">DXミニゲーム</h1>
+
+    <div class="game-section">
+      <div class="game-tab">
+        <button class="tab-btn active" onclick="switchGame('typing')">PC: ショートカットタイピング</button>
+        <button class="tab-btn" onclick="switchGame('matrix')">スマホ: ロジック・マトリクス</button>
+      </div>
+
+      <!-- タイピングゲーム -->
+      <div id="typing-game" class="game-container active">
+        <p style="font-size: 0.9rem; color: #64748b;">指定されたショートカットキーを入力してください</p>
+        <div id="type-prompt" class="display-box">「スタート」を押してください</div>
+        <button id="type-start-btn" class="action-btn" onclick="startTypingGame()">ゲームスタート</button>
+        <div id="type-stats" class="stats"></div>
+      </div>
+
+      <!-- ロジック・マトリクス -->
+      <div id="matrix-game" class="game-container">
+        <p style="font-size: 0.9rem; color: #64748b;">1〜9のマスを昇順（1 → 2 → 3...）で素早くタップ！</p>
+        <div id="matrix-status" class="display-box">「スタート」を押してください</div>
+        
+        <div class="matrix-grid" id="matrix-grid">
+          <!-- JSでマスを動的生成 -->
+        </div>
+
+        <button id="matrix-start-btn" class="action-btn" onclick="startMatrixGame()">ゲームスタート</button>
+        <div id="matrix-stats" class="stats"></div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // タブ切り替え
+    function switchGame(type) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.game-container').forEach(c => c.classList.remove('active'));
+
+      if (type === 'typing') {
+        document.querySelectorAll('.tab-btn')[0].classList.add('active');
+        document.getElementById('typing-game').classList.add('active');
+      } else {
+        document.querySelectorAll('.tab-btn')[1].classList.add('active');
+        document.getElementById('matrix-game').classList.add('active');
+      }
+    }
+
+    // --- タイピングゲーム処理 ---
+    const shortcutQuestions = [
+      { name: 'コピー', keys: ['Control', 'c'] },
+      { name: '貼り付け', keys: ['Control', 'v'] },
+      { name: '切り取り', keys: ['Control', 'x'] },
+      { name: '元に戻す', keys: ['Control', 'z'] },
+      { name: '保存', keys: ['Control', 's'] },
+      { name: '全選択', keys: ['Control', 'a'] }
+    ];
+    let typeIndex = 0;
+    let typeStartTime = 0;
+    let isTypingRunning = false;
+
+    function startTypingGame() {
+      shortcutQuestions.sort(() => Math.random() - 0.5);
+      typeIndex = 0;
+      isTypingRunning = true;
+      typeStartTime = Date.now();
+      document.getElementById('type-start-btn').style.display = 'none';
+      nextTypingQuestion();
+    }
+
+    function nextTypingQuestion() {
+      if (typeIndex >= shortcutQuestions.length) {
+        const totalTime = ((Date.now() - typeStartTime) / 1000).toFixed(2);
+        document.getElementById('type-prompt').innerText = 'クリア！';
+        document.getElementById('type-stats').innerText = `タイム: ${totalTime}秒`;
+        document.getElementById('type-start-btn').style.display = 'inline-block';
+        document.getElementById('type-start-btn').innerText = 'もう一度挑戦';
+        isTypingRunning = false;
+        return;
+      }
+      const q = shortcutQuestions[typeIndex];
+      document.getElementById('type-prompt').innerText = `【${q.name}】を押してください`;
+      document.getElementById('type-stats').innerText = `進捗: ${typeIndex + 1} / ${shortcutQuestions.length}`;
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (!isTypingRunning) return;
+      const q = shortcutQuestions[typeIndex];
+      
+      // Ctrl + Key の判定処理
+      if (e.ctrlKey && e.key.toLowerCase() === q.keys[1]) {
+        e.preventDefault();
+        typeIndex++;
+        nextTypingQuestion();
+      }
+    });
+
+    // --- ロジック・マトリクス処理 ---
+    let currentTargetNum = 1;
+    let matrixStartTime = 0;
+    let isMatrixRunning = false;
+
+    function startMatrixGame() {
+      currentTargetNum = 1;
+      isMatrixRunning = true;
+      matrixStartTime = Date.now();
+      document.getElementById('matrix-start-btn').style.display = 'none';
+      document.getElementById('matrix-status').innerText = '1 をタップ！';
+      document.getElementById('matrix-stats').innerText = '';
+
+      renderMatrix();
+    }
+
+    function renderMatrix() {
+      const grid = document.getElementById('matrix-grid');
+      grid.innerHTML = '';
+      
+      // 1〜9の数字をランダム配置
+      const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9].sort(() => Math.random() - 0.5);
+
+      numbers.forEach(num => {
+        const cell = document.createElement('div');
+        cell.className = 'matrix-cell';
+        cell.innerText = num;
+        cell.onclick = () => handleCellClick(num, cell);
+        grid.appendChild(cell);
+      });
+    }
+
+    function handleCellClick(num, cell) {
+      if (!isMatrixRunning) return;
+
+      if (num === currentTargetNum) {
+        cell.style.visibility = 'hidden'; // 正解したマスを消す
+        currentTargetNum++;
+
+        if (currentTargetNum > 9) {
+          const totalTime = ((Date.now() - matrixStartTime) / 1000).toFixed(2);
+          document.getElementById('matrix-status').innerText = 'クリア！';
+          document.getElementById('matrix-stats').innerText = `タイム: ${totalTime}秒`;
+          document.getElementById('matrix-start-btn').style.display = 'inline-block';
+          document.getElementById('matrix-start-btn').innerText = 'もう一度挑戦';
+          isMatrixRunning = false;
+        } else {
+          document.getElementById('matrix-status').innerText = `${currentTargetNum} をタップ！`;
+        }
+      }
+    }
+  </script>
+</body>
+</html>
