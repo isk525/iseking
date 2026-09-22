@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="css/style.css">
   <style>
     .game-section {
-      max-width: 600px;
+      max-width: 650px;
       margin: 20px auto;
       padding: 20px;
       background: #f8fafc;
@@ -47,9 +47,14 @@
       font-weight: bold;
       padding: 15px;
       background: #fff;
-      border: 1px solid #cbd5e1;
+      border: 2px solid #cbd5e1;
       border-radius: 6px;
       margin-bottom: 15px;
+      transition: background-color 0.2s;
+    }
+    .display-box.miss {
+      background-color: #fecdd3 !important;
+      border-color: #f43f5e !important;
     }
     .action-btn {
       background: #0284c7;
@@ -66,7 +71,43 @@
       background: #0369a1;
     }
 
-    /* --- ロジック・マトリクス用スタイル --- */
+    /* --- タイピング関連追加スタイル --- */
+    .timer-bar-container {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      font-size: 0.9rem;
+      color: #475569;
+      font-weight: bold;
+    }
+    .rank-badge {
+      font-size: 3rem;
+      font-weight: bold;
+      color: #f97316;
+      margin: 10px 0;
+    }
+
+    /* --- ロジック・マトリクス関連スタイル --- */
+    .level-selector {
+      display: flex;
+      justify-content: center;
+      gap: 5px;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+    }
+    .level-btn {
+      padding: 6px 12px;
+      background: #cbd5e1;
+      border: none;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .level-btn.active {
+      background: #0284c7;
+      color: #fff;
+    }
     .rule-hint {
       background: #fef3c7;
       border: 1px solid #f59e0b;
@@ -77,26 +118,31 @@
       margin-bottom: 15px;
       text-align: left;
     }
+    .board-wrapper {
+      max-width: 100%;
+      overflow-x: auto;
+      padding-bottom: 10px;
+    }
     .matrix-board {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 6px;
-      max-width: 320px;
+      gap: 4px;
       margin: 0 auto;
+      user-select: none;
     }
     .matrix-cell {
       aspect-ratio: 1;
       background: #fff;
       border: 2px solid #94a3b8;
-      border-radius: 6px;
-      font-size: 1.3rem;
+      border-radius: 4px;
+      font-size: 1.1rem;
       font-weight: bold;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      user-select: none;
       color: #0f172a;
+      min-width: 32px;
+      min-height: 32px;
     }
     .matrix-cell.selected {
       border-color: #f97316;
@@ -107,28 +153,27 @@
       color: #64748b;
       cursor: not-allowed;
     }
-    /* 集計ターゲット表示マス */
     .matrix-cell.target-header {
       background: #334155;
       color: #fff;
       border-color: #1e293b;
-      font-size: 1.1rem;
+      font-size: 0.9rem;
     }
     .matrix-cell.corner {
       background: transparent;
       border: none;
     }
-    /* 入力キーパッド */
     .keypad {
       display: flex;
       justify-content: center;
-      gap: 10px;
+      gap: 6px;
       margin-top: 15px;
+      flex-wrap: wrap;
     }
     .key-btn {
-      width: 50px;
-      height: 50px;
-      font-size: 1.2rem;
+      min-width: 38px;
+      height: 42px;
+      font-size: 1.1rem;
       font-weight: bold;
       background: #fff;
       border: 2px solid #0284c7;
@@ -165,41 +210,45 @@
 
       <!-- PC向けタイピングゲーム -->
       <div id="typing-game" class="game-container active">
-        <p style="font-size: 0.9rem; color: #64748b;">指定されたショートカットキーを入力してください</p>
-        <div id="type-prompt" class="display-box">「スタート」を押してください</div>
+        <div class="timer-bar-container">
+          <span>全体残り時間: <span id="global-timer">50</span>s</span>
+          <span>1問残り時間: <span id="question-timer">10</span>s</span>
+        </div>
+        <div id="type-prompt" class="display-box">「ゲームスタート」を押してください</div>
         <button id="type-start-btn" class="action-btn" onclick="startTypingGame()">ゲームスタート</button>
         <div id="type-stats" class="stats"></div>
       </div>
 
       <!-- スマホ向けロジック・マトリクス -->
       <div id="matrix-game" class="game-container">
-        <div class="rule-hint">
-          <strong>【隠された法則のヒント】</strong><br>
-          ・マスには <strong>1〜3</strong> の数値が入ります。<br>
-          ・各行・各列で同じ数字の重複はありません。<br>
-          ・<strong>特定の列の数字は「2倍」されて集計されています。</strong>右端と下端の目標数値（黒マス）と合致させてください！
+        <!-- 難易度選択 -->
+        <div class="level-selector">
+          <button class="level-btn active" onclick="setLevel(3, this)">初級 (3x3)</button>
+          <button class="level-btn" onclick="setLevel(4, this)">中級 (4x4)</button>
+          <button class="level-btn" onclick="setLevel(5, this)">上級 (5x5)</button>
+          <button class="level-btn" onclick="setLevel(10, this)">超上級 (10x10)</button>
         </div>
 
-        <div class="matrix-board" id="matrix-board">
-          <!-- JSで4x4の盤面を生成 -->
+        <div class="rule-hint" id="matrix-rule-hint">
+          <strong>【ルール】</strong><br>
+          ・マスに数字を入力してください。<br>
+          ・特定列に「倍率（2倍や3倍）」の隠された法則が働いています。右端・下端の目標値に一致させてください！
+        </div>
+
+        <div class="board-wrapper">
+          <div class="matrix-board" id="matrix-board"></div>
         </div>
 
         <!-- テンキーパッド -->
-        <div class="keypad">
-          <button class="key-btn" onclick="inputMatrixNum(1)">1</button>
-          <button class="key-btn" onclick="inputMatrixNum(2)">2</button>
-          <button class="key-btn" onclick="inputMatrixNum(3)">3</button>
-          <button class="key-btn" style="border-color:#ef4444; color:#ef4444;" onclick="inputMatrixNum('')">消</button>
-        </div>
+        <div class="keypad" id="matrix-keypad"></div>
 
-        <button id="matrix-start-btn" class="action-btn" onclick="startMatrixGame()">パズルを初期化する</button>
+        <button id="matrix-start-btn" class="action-btn" onclick="initMatrixGame()">パズルを新しく生成</button>
         <div id="matrix-stats" class="stats"></div>
       </div>
     </div>
   </main>
 
   <script>
-    // タブ切り替え処理
     function switchGame(type) {
       document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
       document.querySelectorAll('.game-container').forEach(c => c.classList.remove('active'));
@@ -213,124 +262,264 @@
       }
     }
 
-    // --- PC用タイピングゲーム処理 ---
-    const shortcutQuestions = [
-      { name: 'コピー', keys: ['Control', 'c'] },
-      { name: '貼り付け', keys: ['Control', 'v'] },
-      { name: '切り取り', keys: ['Control', 'x'] },
-      { name: '元に戻す', keys: ['Control', 'z'] },
-      { name: '保存', keys: ['Control', 's'] },
-      { name: '全選択', keys: ['Control', 'a'] }
+    // ==========================================
+    // 1. PC用 ショートカットタイピング
+    // ==========================================
+    const allShortcuts = [
+      { name: 'コピー', keys: ['c'] },
+      { name: '貼り付け', keys: ['v'] },
+      { name: '切り取り', keys: ['x'] },
+      { name: '元に戻す', keys: ['z'] },
+      { name: '保存', keys: ['s'] },
+      { name: '全選択', keys: ['a'] },
+      { name: '検索', keys: ['f'] },
+      { name: '印刷', keys: ['p'] },
+      { name: '新しいタブ/ウィンドウ', keys: ['n'] },
+      { name: '太字切り替え', keys: ['b'] },
+      { name: '再実行/やり直し', keys: ['y'] },
+      { name: '置換', keys: ['h'] },
+      { name: '更新/リロード', keys: ['r'] },
+      { name: '新規作成', keys: ['m'] },
+      { name: '閉じる', keys: ['w'] }
     ];
-    let typeIndex = 0;
-    let typeStartTime = 0;
+
+    let currentQuestions = [];
+    let qIndex = 0;
+    let globalTimeLeft = 50;
+    let questionTimeLeft = 10;
+    let globalTimerId = null;
+    let questionTimerId = null;
     let isTypingRunning = false;
+    let missCount = 0;
+    let correctCount = 0;
 
     function startTypingGame() {
-      shortcutQuestions.sort(() => Math.random() - 0.5);
-      typeIndex = 0;
+      // 10問ランダム抽出
+      currentQuestions = [...allShortcuts].sort(() => Math.random() - 0.5).slice(0, 10);
+      qIndex = 0;
+      missCount = 0;
+      correctCount = 0;
+      globalTimeLeft = 50;
       isTypingRunning = true;
-      typeStartTime = Date.now();
+
       document.getElementById('type-start-btn').style.display = 'none';
+      document.getElementById('type-stats').innerText = '';
+
+      startTimers();
       nextTypingQuestion();
     }
 
+    function startTimers() {
+      clearInterval(globalTimerId);
+      clearInterval(questionTimerId);
+
+      document.getElementById('global-timer').innerText = globalTimeLeft;
+      globalTimerId = setInterval(() => {
+        globalTimeLeft--;
+        document.getElementById('global-timer').innerText = globalTimeLeft;
+        if (globalTimeLeft <= 0) {
+          finishTypingGame('時間切れ！');
+        }
+      }, 1000);
+    }
+
+    function resetQuestionTimer() {
+      clearInterval(questionTimerId);
+      questionTimeLeft = 10;
+      document.getElementById('question-timer').innerText = questionTimeLeft;
+
+      questionTimerId = setInterval(() => {
+        questionTimeLeft--;
+        document.getElementById('question-timer').innerText = questionTimeLeft;
+        if (questionTimeLeft <= 0) {
+          // 1問タイムオーバー時
+          missCount++;
+          showMissEffect();
+          qIndex++;
+          nextTypingQuestion();
+        }
+      }, 1000);
+    }
+
     function nextTypingQuestion() {
-      if (typeIndex >= shortcutQuestions.length) {
-        const totalTime = ((Date.now() - typeStartTime) / 1000).toFixed(2);
-        document.getElementById('type-prompt').innerText = 'クリア！';
-        document.getElementById('type-stats').innerText = `タイム: ${totalTime}秒`;
-        document.getElementById('type-start-btn').style.display = 'inline-block';
-        document.getElementById('type-start-btn').innerText = 'もう一度挑戦';
-        isTypingRunning = false;
+      if (qIndex >= currentQuestions.length) {
+        finishTypingGame('全問終了！');
         return;
       }
-      const q = shortcutQuestions[typeIndex];
-      document.getElementById('type-prompt').innerText = `【${q.name}】を押してください`;
-      document.getElementById('type-stats').innerText = `進捗: ${typeIndex + 1} / ${shortcutQuestions.length}`;
+      resetQuestionTimer();
+      const q = currentQuestions[qIndex];
+      document.getElementById('type-prompt').innerText = `【${q.name}】 (Ctrl / Cmd + ${q.keys[0].toUpperCase()})`;
+      document.getElementById('type-stats').innerText = `進捗: ${qIndex + 1} / ${currentQuestions.length} | ミス: ${missCount}`;
+    }
+
+    function showMissEffect() {
+      const box = document.getElementById('type-prompt');
+      box.classList.add('miss');
+      setTimeout(() => box.classList.remove('miss'), 300);
     }
 
     window.addEventListener('keydown', (e) => {
       if (!isTypingRunning) return;
-      const q = shortcutQuestions[typeIndex];
-      if (e.ctrlKey && e.key.toLowerCase() === q.keys[1]) {
-        e.preventDefault();
-        typeIndex++;
-        nextTypingQuestion();
+      const q = currentQuestions[qIndex];
+
+      // Ctrl または Cmd (Mac) キーの組み合わせチェック
+      if (e.ctrlKey || e.metaKey) {
+        if (e.key.toLowerCase() === q.keys[0]) {
+          e.preventDefault();
+          correctCount++;
+          qIndex++;
+          nextTypingQuestion();
+        } else if (e.key !== 'Control' && e.key !== 'Meta') {
+          e.preventDefault();
+          missCount++;
+          showMissEffect();
+          document.getElementById('type-stats').innerText = `進捗: ${qIndex + 1} / ${currentQuestions.length} | ミス: ${missCount}`;
+        }
       }
     });
 
-    // --- スマホ用ロジック・マトリクス処理 ---
-    // 正解盤面（ラテン方陣: 1〜3の数字が重複しない）
-    const solution = [
-      [1, 2, 3],
-      [2, 3, 1],
-      [3, 1, 2]
-    ];
-    
-    // 隠された法則：2列目(インデックス1)の数字は「2倍」して集計する
-    const colWeights = [1, 2, 1];
+    function finishTypingGame(reason) {
+      isTypingRunning = false;
+      clearInterval(globalTimerId);
+      clearInterval(questionTimerId);
 
-    // 初期開示マス (行, 列) -> 値
-    const initialRevealed = [
-      { r: 0, c: 0, val: 1 },
-      { r: 1, c: 1, val: 3 }
-    ];
+      const timeUsed = 50 - globalTimeLeft;
+      
+      // ランク計算（正解数・タイム・ミス数）
+      let score = (correctCount * 10) - (missCount * 3) + (globalTimeLeft * 0.5);
+      let rank = 'D';
+      if (score >= 90) rank = 'S';
+      else if (score >= 75) rank = 'A';
+      else if (score >= 55) rank = 'B';
+      else if (score >= 35) rank = 'C';
 
-    let userBoard = [
-      ['', '', ''],
-      ['', '', ''],
-      ['', '', '']
-    ];
+      document.getElementById('type-prompt').innerHTML = `
+        ${reason}<br>
+        <div class="rank-badge">ランク: ${rank}</div>
+        正解数: ${correctCount} / 10 | ミス: ${missCount}回<br>
+        かかった時間: ${timeUsed}秒
+      `;
 
-    let selectedCell = null; // {r, c}
+      document.getElementById('type-start-btn').style.display = 'inline-block';
+      document.getElementById('type-start-btn').innerText = 'もう一度挑戦';
+    }
+
+
+    // ==========================================
+    // 2. スマホ用 ロジック・マトリクス
+    // ==========================================
+    let boardSize = 3;
+    let maxVal = 3;
+    let matrixSolution = [];
+    let colWeights = [];
+    let userBoard = [];
+    let initialRevealed = [];
+    let selectedCell = null;
     let rowTargets = [];
     let colTargets = [];
 
-    // 目標数値（計算結果）を算出
-    function calculateTargets() {
-      rowTargets = [0, 0, 0];
-      colTargets = [0, 0, 0];
+    function setLevel(size, btn) {
+      document.querySelectorAll('.level-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      boardSize = size;
+      maxVal = size === 10 ? 9 : size; // 10x10のみ数値は1〜9を使用
+      initMatrixGame();
+    }
 
-      for (let r = 0; r < 3; r++) {
-        for (let c = 0; c < 3; c++) {
-          const val = solution[r][c] * colWeights[c];
+    function initMatrixGame() {
+      generateRandomPuzzle();
+      selectedCell = null;
+      document.getElementById('matrix-stats').innerText = '';
+      renderKeypad();
+      renderMatrixBoard();
+    }
+
+    // ランダムパズル（ラテン方陣＆重み付け）生成
+    function generateRandomPuzzle() {
+      matrixSolution = [];
+      // 各行をシフトしてラテン方陣の解を生成
+      const basePattern = Array.from({ length: boardSize }, (_, i) => (i % maxVal) + 1);
+      basePattern.sort(() => Math.random() - 0.5);
+
+      for (let r = 0; r < boardSize; r++) {
+        const row = [];
+        for (let c = 0; c < boardSize; c++) {
+          row.push(basePattern[(c + r) % boardSize]);
+        }
+        matrixSolution.push(row);
+      }
+
+      // ランダムに重み付け（列ごとに 1倍, 2倍, 3倍を適当に割り振り）
+      colWeights = Array.from({ length: boardSize }, () => {
+        const r = Math.random();
+        return r > 0.7 ? 3 : (r > 0.3 ? 2 : 1);
+      });
+
+      // 目標数値の算出
+      rowTargets = Array(boardSize).fill(0);
+      colTargets = Array(boardSize).fill(0);
+      for (let r = 0; r < boardSize; r++) {
+        for (let c = 0; c < boardSize; c++) {
+          const val = matrixSolution[r][c] * colWeights[c];
           rowTargets[r] += val;
           colTargets[c] += val;
         }
       }
+
+      // 盤面の初期状態生成（全体の約25%を開示）
+      userBoard = Array.from({ length: boardSize }, () => Array(boardSize).fill(''));
+      initialRevealed = [];
+
+      const totalCells = boardSize * boardSize;
+      const revealCount = Math.max(1, Math.floor(totalCells * 0.25));
+
+      while (initialRevealed.length < revealCount) {
+        const r = Math.floor(Math.random() * boardSize);
+        const c = Math.floor(Math.random() * boardSize);
+        if (!userBoard[r][c]) {
+          userBoard[r][c] = matrixSolution[r][c];
+          initialRevealed.push({ r, c });
+        }
+      }
+
+      // ヒントテキスト更新
+      document.getElementById('matrix-rule-hint').innerHTML = `
+        <strong>【${boardSize}x${boardSize} パズルルール】</strong><br>
+        ・マスには <strong>1〜${maxVal}</strong> の数値を入れます。<br>
+        ・各列には隠された計算倍率（1倍〜3倍）が存在します。<br>
+        ・右端と下端の目標合計数値に一致させてください！
+      `;
     }
 
-    function startMatrixGame() {
-      calculateTargets();
-      
-      // ユーザー盤面の初期化
-      userBoard = [
-        ['', '', ''],
-        ['', '', ''],
-        ['', '', '']
-      ];
-      initialRevealed.forEach(item => {
-        userBoard[item.r][item.c] = item.val;
-      });
-
-      selectedCell = null;
-      document.getElementById('matrix-stats').innerText = '';
-      renderMatrixBoard();
+    function renderKeypad() {
+      const keypad = document.getElementById('matrix-keypad');
+      keypad.innerHTML = '';
+      for (let i = 1; i <= maxVal; i++) {
+        const btn = document.createElement('button');
+        btn.className = 'key-btn';
+        btn.innerText = i;
+        btn.onclick = () => inputMatrixNum(i);
+        keypad.appendChild(btn);
+      }
+      const delBtn = document.createElement('button');
+      delBtn.className = 'key-btn';
+      delBtn.style.cssText = 'border-color:#ef4444; color:#ef4444;';
+      delBtn.innerText = '消';
+      delBtn.onclick = () => inputMatrixNum('');
+      keypad.appendChild(delBtn);
     }
 
     function renderMatrixBoard() {
       const board = document.getElementById('matrix-board');
       board.innerHTML = '';
+      board.style.gridTemplateColumns = `repeat(${boardSize + 1}, 1fr)`;
 
-      // 4x4 グリッド生成（3x3数値マス + 集計ヘッダー）
-      for (let r = 0; r < 4; r++) {
-        for (let c = 0; c < 4; c++) {
+      for (let r = 0; r <= boardSize; r++) {
+        for (let c = 0; c <= boardSize; c++) {
           const cell = document.createElement('div');
           cell.className = 'matrix-cell';
 
-          if (r < 3 && c < 3) {
-            // パズル入力マス
+          if (r < boardSize && c < boardSize) {
             const val = userBoard[r][c];
             cell.innerText = val;
 
@@ -343,16 +532,13 @@
               }
               cell.onclick = () => selectCell(r, c);
             }
-          } else if (r < 3 && c === 3) {
-            // 行の目標集計値
+          } else if (r < boardSize && c === boardSize) {
             cell.classList.add('target-header');
             cell.innerText = rowTargets[r];
-          } else if (r === 3 && c < 3) {
-            // 列の目標集計値
+          } else if (r === boardSize && c < boardSize) {
             cell.classList.add('target-header');
             cell.innerText = colTargets[c];
           } else {
-            // 右下のコーナーマス
             cell.classList.add('corner');
           }
 
@@ -370,36 +556,33 @@
       if (!selectedCell) return;
       userBoard[selectedCell.r][selectedCell.c] = num;
       renderMatrixBoard();
-      checkClearCondition();
+      checkMatrixClear();
     }
 
-    function checkClearCondition() {
-      // 1. 全てのマスが埋まっているか確認
-      for (let r = 0; r < 3; r++) {
-        for (let c = 0; c < 3; c++) {
+    function checkMatrixClear() {
+      for (let r = 0; r < boardSize; r++) {
+        for (let c = 0; c < boardSize; c++) {
           if (userBoard[r][c] === '') return;
         }
       }
 
-      // 2. 隠された法則に基づく現在の集計値を計算
       let isCorrect = true;
-      for (let r = 0; r < 3; r++) {
-        let currentSum = 0;
-        for (let c = 0; c < 3; c++) {
-          currentSum += Number(userBoard[r][c]) * colWeights[c];
+      for (let r = 0; r < boardSize; r++) {
+        let sum = 0;
+        for (let c = 0; c < boardSize; c++) {
+          sum += Number(userBoard[r][c]) * colWeights[c];
         }
-        if (currentSum !== rowTargets[r]) isCorrect = false;
+        if (sum !== rowTargets[r]) isCorrect = false;
       }
 
-      for (let c = 0; c < 3; c++) {
-        let currentSum = 0;
-        for (let r = 0; r < 3; r++) {
-          currentSum += Number(userBoard[r][c]) * colWeights[c];
+      for (let c = 0; c < boardSize; c++) {
+        let sum = 0;
+        for (let r = 0; r < boardSize; r++) {
+          sum += Number(userBoard[r][c]) * colWeights[c];
         }
-        if (currentSum !== colTargets[c]) isCorrect = false;
+        if (sum !== colTargets[c]) isCorrect = false;
       }
 
-      // 3. クリア判定
       if (isCorrect) {
         document.getElementById('matrix-stats').innerText = '🎉 クリア！隠されたロジックを見破りました！';
       } else {
@@ -407,8 +590,8 @@
       }
     }
 
-    // 初回読み込み時に初期化
-    startMatrixGame();
+    // 初期化実行
+    initMatrixGame();
   </script>
 </body>
 </html>
