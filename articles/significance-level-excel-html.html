@@ -240,7 +240,13 @@
   </footer>
 
   <script>
-function drawDistributionChart(tValue, isSignificant) {
+// 自由度(df)から有意水準5%（両側）のt分布臨界値を概算する関数
+function getCriticalT(df) {
+  if (!df || df <= 0) return 1.96;
+  return 1.96 + (2.38 / df) + (2.62 / (df * df));
+}
+
+function drawDistributionChart(tValue, df) {
   const canvas = document.getElementById('resultChart');
   if (!canvas || !canvas.getContext) return;
   const ctx = canvas.getContext('2d');
@@ -248,6 +254,9 @@ function drawDistributionChart(tValue, isSignificant) {
   const width = canvas.width;
   const height = canvas.height;
   ctx.clearRect(0, 0, width, height);
+
+  // 自由度に応じた境界値（臨界値）を算出
+  const criticalT = getCriticalT(df);
 
   // 上部マージンを広げて重なりを防止
   const margin = { top: 55, right: 35, bottom: 45, left: 35 };
@@ -265,41 +274,41 @@ function drawDistributionChart(tValue, isSignificant) {
   const maxY = pdf(0);
   const toCanvasY = (y) => basey - (y / maxY) * (plotHeight - 10);
 
-  // 1. メインタイトルの描画（固定位置）
+  // 1. メインタイトルの描画
   ctx.fillStyle = '#0f172a';
   ctx.font = 'bold 15px sans-serif';
   ctx.textAlign = 'center';
   ctx.fillText('データの偏りと確率分布', width / 2, 22);
 
-  // 2. 5%境界エリア (両端 2.5% ずつ, x = ±1.96) の塗りつぶし
+  // 2. 5%境界エリアの塗りつぶし（臨界値 criticalT を使用）
   ctx.fillStyle = 'rgba(239, 68, 68, 0.25)';
 
-  // 左側エリア (-4 ～ -1.96)
+  // 左側エリア (-4 ～ -criticalT)
   ctx.beginPath();
   ctx.moveTo(toCanvasX(-4), basey);
-  for (let x = -4; x <= -1.96; x += 0.05) {
+  for (let x = -4; x <= -criticalT; x += 0.05) {
     ctx.lineTo(toCanvasX(x), toCanvasY(pdf(x)));
   }
-  ctx.lineTo(toCanvasX(-1.96), basey);
+  ctx.lineTo(toCanvasX(-criticalT), basey);
   ctx.closePath();
   ctx.fill();
 
-  // 右側エリア (1.96 ～ 4)
+  // 右側エリア (criticalT ～ 4)
   ctx.beginPath();
-  ctx.moveTo(toCanvasX(1.96), basey);
-  for (let x = 1.96; x <= 4; x += 0.05) {
+  ctx.moveTo(toCanvasX(criticalT), basey);
+  for (let x = criticalT; x <= 4; x += 0.05) {
     ctx.lineTo(toCanvasX(x), toCanvasY(pdf(x)));
   }
   ctx.lineTo(toCanvasX(4), basey);
   ctx.closePath();
   ctx.fill();
 
-  // エリアの分かりやすいラベル
+  // エリアのラベル
   ctx.fillStyle = '#dc2626';
   ctx.font = '11px sans-serif';
   ctx.textAlign = 'center';
-  ctx.fillText('「効果あり」エリア', toCanvasX(-2.8), basey - 15);
-  ctx.fillText('「効果あり」エリア', toCanvasX(2.8), basey - 15);
+  ctx.fillText('「有意差あり」エリア', toCanvasX(-3.0), basey - 15);
+  ctx.fillText('「有意差あり」エリア', toCanvasX(3.0), basey - 15);
 
   // 3. 山型曲線の描画
   ctx.beginPath();
@@ -332,11 +341,11 @@ function drawDistributionChart(tValue, isSignificant) {
   ctx.font = '12px sans-serif';
   ctx.textAlign = 'center';
   ctx.fillText('0（差なし）', zeroX, basey + 18);
-  ctx.fillText('境界線 (-1.96)', toCanvasX(-1.96), basey + 18);
-  ctx.fillText('境界線 (1.96)', toCanvasX(1.96), basey + 18);
+  ctx.fillText(`境界 (-${criticalT.toFixed(2)})`, toCanvasX(-criticalT), basey + 18);
+  ctx.fillText(`境界 (${criticalT.toFixed(2)})`, toCanvasX(criticalT), basey + 18);
 
   // 5. 今回のデータ位置を示す矢印とテキスト
-  const clampedT = Math.max(-3.7, Math.min(3.7, tValue)); // キャンバス内枠に収める
+  const clampedT = Math.max(-3.7, Math.min(3.7, tValue));
   const tX = toCanvasX(clampedT);
   const arrowStartY = margin.top + 15;
 
@@ -356,7 +365,6 @@ function drawDistributionChart(tValue, isSignificant) {
   ctx.closePath();
   ctx.fill();
 
-  // 端での文字切れ防止：位置に応じてテキストのアライメントを変更
   ctx.font = 'bold 12px sans-serif';
   if (tX < margin.left + 60) {
     ctx.textAlign = 'left';
@@ -366,7 +374,7 @@ function drawDistributionChart(tValue, isSignificant) {
     ctx.textAlign = 'center';
   }
   ctx.fillText(`今回の位置 (t = ${tValue.toFixed(2)})`, tX, arrowStartY - 5);
-  ctx.textAlign = 'left'; // リセット
+  ctx.textAlign = 'left';
 }
 
     function getPValue(t, df) {
@@ -408,9 +416,9 @@ function drawDistributionChart(tValue, isSignificant) {
       document.getElementById('toolResult').innerHTML = 
         `<strong>平均値:</strong> 変更前 = ${mA.toFixed(2)}, 変更後 = ${mB.toFixed(2)}<br>` +
         `<strong>たまたま起きる確率（p値）:</strong> 約 <strong>${pPercent}%</strong> (p = ${pValue.toFixed(4)})<br>` +
-        `<strong>判定結果:</strong> ${isSignificant ? '<span style="color:#059669; font-weight:bold;">【有意差あり】偶然の確率が5%未満のため、明確な効果・変化があったと言えます。</span>' : '<span style="color:#d97706; font-weight:bold;">【有意差なし】偶然の確率が5%以上あるため、誤差の範囲内です。</span>'}`;
+        `<strong>判定結果:</strong> ${isSignificant ? '<span style="color:#059669; font-weight:bold;">p値が5％未満のため、統計的に有意な差が認められました。</span>' : '<span style="color:#d97706; font-weight:bold;">p値が5％以上のため、統計的に有意な差は認められませんでした。</span>'}`;
 
-      drawDistributionChart(t, isSignificant);
+      drawDistributionChart(t, df);
     }
 
     document.addEventListener('DOMContentLoaded', () => {
