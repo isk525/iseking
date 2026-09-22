@@ -70,10 +70,6 @@
     .action-btn:hover {
       background: #0369a1;
     }
-    .action-btn:disabled {
-      background: #94a3b8;
-      cursor: not-allowed;
-    }
 
     /* --- タイピング関連追加スタイル --- */
     .category-badge {
@@ -84,6 +80,16 @@
       padding: 2px 8px;
       border-radius: 4px;
       margin-bottom: 8px;
+    }
+    .modifier-hint {
+      display: inline-block;
+      background: #e2e8f0;
+      color: #0f172a;
+      font-size: 0.9rem;
+      padding: 4px 8px;
+      border-radius: 4px;
+      margin-top: 5px;
+      font-weight: bold;
     }
     .timer-bar-container {
       display: flex;
@@ -189,7 +195,8 @@
       background: #334155;
       color: #fff;
       border-color: #1e293b;
-      font-size: 0.9rem;
+      font-size: 0.8rem;
+      padding: 2px;
     }
     .matrix-cell.corner {
       background: transparent;
@@ -258,13 +265,12 @@
           <button class="level-btn active" onclick="changeLevelWithConfirm(3, this)">初級 (3x3)</button>
           <button class="level-btn" onclick="changeLevelWithConfirm(4, this)">中級 (4x4)</button>
           <button class="level-btn" onclick="changeLevelWithConfirm(5, this)">上級 (5x5)</button>
-          <button class="level-btn" onclick="changeLevelWithConfirm(10, this)">超上級 (10x10)</button>
         </div>
 
         <div class="rule-hint" id="matrix-rule-hint">
           <strong>【ルール】</strong><br>
           ・マスに数字を入力してください。<br>
-          ・特定列に「倍率（1.5〜2倍）」の隠された法則が働いています。目標値に一致させてください！
+          ・各行・各列に設定された「ロジック条件（合計値や偶数・奇数など）」を推理してクリアを目指しましょう！
         </div>
 
         <div class="board-wrapper">
@@ -275,8 +281,8 @@
         <div class="keypad" id="matrix-keypad"></div>
 
         <div style="margin-top: 15px;">
-          <button id="hint-btn" class="action-btn" style="background:#f59e0b;" onclick="giveMatrixHint()">💡 絶妙ヒントを見る</button>
-          <button id="check-btn" class="action-btn" style="background:#10b981;" onclick="checkMatrixLines()">🔍 行・列チェック (残り2回)</button>
+          <button id="hint-btn" class="action-btn" style="background:#f59e0b;" onclick="giveMatrixHint()">💡 ロジックヒントを見る</button>
+          <button id="check-btn" class="action-btn" style="background:#10b981;" onclick="checkMatrixLines()">🔍 条件一致チェック</button>
         </div>
 
         <button id="matrix-start-btn" class="action-btn" onclick="initMatrixGame()">パズルを新しく生成</button>
@@ -300,86 +306,24 @@
     }
 
     // ==========================================
-    // 1. PC用 ショートカットタイピング（Windows向け 100選）
+    // 1. PC用 ショートカットタイピング（キー入力補正版）
     // ==========================================
     const allShortcuts = [
-      // PC全般・基本操作
-      { cat: 'PC基本', name: 'コピー', keys: ['c'], desc: '選択した項目をコピーする' },
-      { cat: 'PC基本', name: '貼り付け', keys: ['v'], desc: 'コピーした項目を貼り付ける' },
-      { cat: 'PC基本', name: '切り取り', keys: ['x'], desc: '選択した項目を切り取る' },
-      { cat: 'PC基本', name: '元に戻す', keys: ['z'], desc: '直前の操作を取り消す' },
-      { cat: 'PC基本', name: 'やり直し', keys: ['y'], desc: '取り消した操作をやり直す' },
-      { cat: 'PC基本', name: 'すべて選択', keys: ['a'], desc: '画面内の項目をすべて選択する' },
-      { cat: 'PC基本', name: '保存', keys: ['s'], desc: 'ファイルを上書き保存する' },
-      { cat: 'PC基本', name: '名前を付けて保存', keys: ['f12'], desc: '別名でファイルを保存する' },
-      { cat: 'PC基本', name: '印刷', keys: ['p'], desc: '印刷ダイアログを開く' },
-      { cat: 'PC基本', name: '検索', keys: ['f'], desc: '文字検索ウィンドウを開く' },
-      { cat: 'PC基本', name: '置換', keys: ['h'], desc: '文字の置換ウィンドウを開く' },
-      { cat: 'PC基本', name: '新規作成', keys: ['n'], desc: '新しいファイルやウィンドウを開く' },
-      { cat: 'PC基本', name: '開く', keys: ['o'], desc: 'ファイルを開く' },
-      { cat: 'PC基本', name: 'ウィンドウを閉じる', keys: ['w'], desc: 'アクティブな画面を閉じる' },
-      { cat: 'PC基本', name: '画面の更新', keys: ['r'], desc: '表示内容を最新に更新する' },
-      { cat: 'PC基本', name: '全画面表示切り替え', keys: ['f11'], desc: '全画面表示を切り替える' },
-      { cat: 'PC基本', name: '太字にする', keys: ['b'], desc: '選択テキストを太字にする' },
-      { cat: 'PC基本', name: '斜体にする', keys: ['i'], desc: '選択テキストを斜体にする' },
-      { cat: 'PC基本', name: '下線を引く', keys: ['u'], desc: '選択テキストに下線を引く' },
-      { cat: 'PC基本', name: 'ゴミ箱をスキップして削除', keys: ['shift', 'delete'], desc: 'ファイルを永久削除する' },
-      
-      // ブラウザ操作
-      { cat: 'ブラウザ', name: '新しいタブを開く', keys: ['t'], desc: '新規タブを開く' },
-      { cat: 'ブラウザ', name: '閉じたタブを復元', keys: ['shift', 't'], desc: '最後に閉じたタブを再表示する' },
-      { cat: 'ブラウザ', name: '次のタブへ移動', keys: ['tab'], desc: '右側のタブに切り替える' },
-      { cat: 'ブラウザ', name: '閲覧履歴を開く', keys: ['h'], desc: 'ブラウザの履歴画面を開く' },
-      { cat: 'ブラウザ', name: 'ダウンロード履歴を開く', keys: ['j'], desc: 'ダウンロード画面を開く' },
-      { cat: 'ブラウザ', name: 'ブックマークに追加', keys: ['d'], desc: '現在のページを保存する' },
-      { cat: 'ブラウザ', name: 'アドレスバーを選択', keys: ['l'], desc: 'URL入力欄へカーソルを移動する' },
-      { cat: 'ブラウザ', name: '開発者ツールを開く', keys: ['shift', 'i'], desc: 'デベロッパーツールを表示する' },
-      { cat: 'ブラウザ', name: 'キャッシュをクリアして再読み込み', keys: ['f5'], desc: '強力なリロードを行う' },
-      { cat: 'ブラウザ', name: 'シークレットウィンドウを開く', keys: ['shift', 'n'], desc: 'プライベートモードで開く' },
-
-      // Excel操作
-      { cat: 'Excel', name: 'セルの編集', keys: ['f2'], desc: '選択したセルを編集状態にする' },
-      { cat: 'Excel', name: '直前操作の繰り返す', keys: ['f4'], desc: '最後の操作を再実行する' },
-      { cat: 'Excel', name: '行全体を選択', keys: ['shift', 'space'], desc: '横一行を選択する' },
-      { cat: 'Excel', name: '列全体を選択', keys: ['ctrl', 'space'], desc: '縦一列を選択する' },
-      { cat: 'Excel', name: '上のセルをコピーして入力', keys: ['d'], desc: 'すぐ上のセル内容を複製する' },
-      { cat: 'Excel', name: '左のセルをコピーして入力', keys: ['r'], desc: 'すぐ左のセル内容を複製する' },
-      { cat: 'Excel', name: '今日の日付を入力', keys: [';'], desc: '本日の日付をセルに挿入する' },
-      { cat: 'Excel', name: '現在の時刻を入力', keys: [':'], desc: '現在の時刻をセルに挿入する' },
-      { cat: 'Excel', name: 'セルの書式設定を開く', keys: ['1'], desc: '詳細な書式設定画面を開く' },
-      { cat: 'Excel', name: 'ハイパーリンクの挿入', keys: ['k'], desc: 'リンク設定画面を開く' },
-      { cat: 'Excel', name: 'テーブル化', keys: ['t'], desc: 'データを表（テーブル）にする' },
-      { cat: 'Excel', name: 'フィルターを設定', keys: ['shift', 'l'], desc: '絞り込みフィルターをON/OFFする' },
-      { cat: 'Excel', name: 'オートSUM（合計）', keys: ['alt', '='], desc: '自動でSUM関数を入力する' },
-      { cat: 'Excel', name: '新しいワークシートの挿入', keys: ['shift', 'f11'], desc: 'シートを追加する' },
-      { cat: 'Excel', name: '次のワークシートへ移動', keys: ['pagedown'], desc: '右のシートに切り替える' },
-      { cat: 'Excel', name: '前のワークシートへ移動', keys: ['pageup'], desc: '左のシートに切り替える' },
-      { cat: 'Excel', name: '端のセルまで一気に移動', keys: ['arrowdown'], desc: 'データ領域の末尾へ移動する' },
-      { cat: 'Excel', name: '数式と値を切り替えて表示', keys: ['^'], desc: 'セル内の数式を表示する' },
-      { cat: 'Excel', name: 'セル内改行', keys: ['alt', 'enter'], desc: 'セルの中で改行する' },
-      { cat: 'Excel', name: '行の挿入・削除ダイアログ', keys: ['-'], desc: 'セルや行を削除する' },
-
-      // Word・テキスト編集
-      { cat: 'Word', name: '中央揃え', keys: ['e'], desc: '段落を中央に配置する' },
-      { cat: 'Word', name: '左揃え', keys: ['l'], desc: '段落を左寄せにする' },
-      { cat: 'Word', name: '右揃え', keys: ['r'], desc: '段落を右寄せにする' },
-      { cat: 'Word', name: '改ページ', keys: ['enter'], desc: '次のページへ文章を送る' },
-      { cat: 'Word', name: 'フォントサイズの拡大', keys: [']'], desc: '文字サイズを1pt大きくする' },
-      { cat: 'Word', name: 'フォントサイズの縮小', keys: ['['], desc: '文字サイズを1pt小さくする' },
-      { cat: 'Word', name: '文字カウントの表示', keys: ['shift', 'g'], desc: '単語数・文字数を表示する' },
-      { cat: 'Word', name: 'ルビ（ふりがな）の設定', keys: ['alt', 'q'], desc: 'ふりがなを設定する' },
-
-      // Windows機能
-      { cat: 'Windows', name: 'デスクトップを表示', keys: ['win', 'd'], desc: '全ウィンドウを最小化する' },
-      { cat: 'Windows', name: 'ファイルエクスプローラーを開く', keys: ['win', 'e'], desc: 'フォルダ画面を開く' },
-      { cat: 'Windows', name: '画面をロックする', keys: ['win', 'l'], desc: 'PCをロック状態にする' },
-      { cat: 'Windows', name: 'クリップボード履歴を開く', keys: ['win', 'v'], desc: '過去にコピーした履歴を表示する' },
-      { cat: 'Windows', name: 'スクリーンショット範囲選択', keys: ['win', 'shift', 's'], desc: '画面を切り取って保存する' },
-      { cat: 'Windows', name: '設定画面を開く', keys: ['win', 'i'], desc: 'Windowsの各種設定を開く' },
-      { cat: 'Windows', name: 'ウィンドウの左寄せ配置', keys: ['win', 'arrowleft'], desc: '画面の左半分に配置する' },
-      { cat: 'Windows', name: 'ウィンドウの右寄せ配置', keys: ['win', 'arrowright'], desc: '画面の右半分に配置する' },
-      { cat: 'Windows', name: '絵文字パネルを開く', keys: ['win', '.'], desc: '絵文字入力画面を呼び出す' },
-      { cat: 'Windows', name: 'タスクマネージャーを開く', keys: ['shift', 'escape'], desc: 'アプリの強制度終了画面を開く' }
+      { cat: 'PC基本', name: 'コピー', mod: 'ctrl', key: 'c', label: 'Ctrl + C', desc: '選択した項目をコピーする' },
+      { cat: 'PC基本', name: '貼り付け', mod: 'ctrl', key: 'v', label: 'Ctrl + V', desc: 'コピーした項目を貼り付ける' },
+      { cat: 'PC基本', name: '切り取り', mod: 'ctrl', key: 'x', label: 'Ctrl + X', desc: '選択した項目を切り取る' },
+      { cat: 'PC基本', name: '元に戻す', mod: 'ctrl', key: 'z', label: 'Ctrl + Z', desc: '直前の操作を取り消す' },
+      { cat: 'PC基本', name: '保存', mod: 'ctrl', key: 's', label: 'Ctrl + S', desc: 'ファイルを上書き保存する' },
+      { cat: 'PC基本', name: '全選択', mod: 'ctrl', key: 'a', label: 'Ctrl + A', desc: '画面内の項目をすべて選択する' },
+      { cat: 'PC基本', name: '名前を付けて保存', mod: 'none', key: 'f12', label: 'F12', desc: '別名でファイルを保存する' },
+      { cat: 'PC基本', name: 'セルの編集', mod: 'none', key: 'f2', label: 'F2', desc: '選択セルを編集状態にする' },
+      { cat: 'Windows', name: 'クリップボード履歴', mod: 'win', key: 'v', label: 'Win + V', desc: '過去にコピーした履歴を表示する' },
+      { cat: 'Windows', name: 'デスクトップを表示', mod: 'win', key: 'd', label: 'Win + D', desc: '全ウィンドウを最小化する' },
+      { cat: 'Windows', name: 'エクスプローラーを開く', mod: 'win', key: 'e', label: 'Win + E', desc: 'フォルダ画面を開く' },
+      { cat: 'Windows', name: '画面をロック', mod: 'win', key: 'l', label: 'Win + L', desc: 'PCをロック状態にする' },
+      { cat: 'Windows', name: '設定を開く', mod: 'win', key: 'i', label: 'Win + I', desc: '設定画面を開く' },
+      { cat: 'ブラウザ', name: '新しいタブ', mod: 'ctrl', key: 't', label: 'Ctrl + T', desc: '新規タブを開く' },
+      { cat: 'ブラウザ', name: '更新/リロード', mod: 'none', key: 'f5', label: 'F5', desc: 'ページを再読み込みする' }
     ];
 
     let currentQuestions = [];
@@ -449,9 +393,15 @@
       resetQuestionTimer();
       const q = currentQuestions[qIndex];
       
+      let modText = '【修飾キーなし】';
+      if (q.mod === 'ctrl') modText = '【Ctrl キーを使用】';
+      if (q.mod === 'win') modText = '【Windows キーを使用】';
+      if (q.mod === 'alt') modText = '【Alt キーを使用】';
+
       document.getElementById('type-prompt').innerHTML = `
         <span class="category-badge">${q.cat}</span><br>
-        【${q.name}】を実行するキーを押してください
+        【${q.name}】のショートカットを入力<br>
+        <span class="modifier-hint">${modText}</span>
       `;
       document.getElementById('type-stats').innerText = `進捗: ${qIndex + 1} / ${currentQuestions.length} | ミス: ${missCount}`;
     }
@@ -462,30 +412,36 @@
       setTimeout(() => box.classList.remove('miss'), 300);
     }
 
-    // キー入力横取り判定（ブラウザの標準機能をキャンセル）
     window.addEventListener('keydown', (e) => {
       if (!isTypingRunning) return;
       const q = currentQuestions[qIndex];
 
-      // 特殊キーや組み合わせの無効化処理
+      // ショートカットキー操作時の画面挙動を抑止
       if (e.ctrlKey || e.metaKey || e.altKey || e.key.startsWith('F')) {
-        e.preventDefault(); // ブラウザ標準機能を停止
+        e.preventDefault();
       }
 
       const pressedKey = e.key.toLowerCase();
-      const targetKey = q.keys[q.keys.length - 1]; // 判定メインキー
+      
+      // 修飾キーの一致判定
+      let modMatch = false;
+      if (q.mod === 'ctrl' && (e.ctrlKey || e.metaKey)) modMatch = true;
+      if (q.mod === 'win' && e.metaKey) modMatch = true;
+      if (q.mod === 'alt' && e.altKey) modMatch = true;
+      if (q.mod === 'none' && !e.ctrlKey && !e.metaKey && !e.altKey) modMatch = true;
 
-      if (e.ctrlKey || e.metaKey) {
-        if (pressedKey === targetKey) {
-          correctCount++;
-          playedHistory.push({ q: q, success: true });
-          qIndex++;
-          nextTypingQuestion();
-        } else if (pressedKey !== 'control' && pressedKey !== 'meta') {
-          missCount++;
-          showMissEffect();
-          document.getElementById('type-stats').innerText = `進捗: ${qIndex + 1} / ${currentQuestions.length} | ミス: ${missCount}`;
-        }
+      // 単体の修飾キー押しは判定からスキップ
+      if (['control', 'meta', 'alt', 'shift'].includes(pressedKey)) return;
+
+      if (modMatch && pressedKey === q.key.toLowerCase()) {
+        correctCount++;
+        playedHistory.push({ q: q, success: true });
+        qIndex++;
+        nextTypingQuestion();
+      } else {
+        missCount++;
+        showMissEffect();
+        document.getElementById('type-stats').innerText = `進捗: ${qIndex + 1} / ${currentQuestions.length} | ミス: ${missCount}`;
       }
     });
 
@@ -513,10 +469,9 @@
       `;
 
       playedHistory.forEach(item => {
-        const keyName = item.q.keys.map(k => k.toUpperCase()).join(' + ');
         resultHtml += `
           <div class="result-item">
-            ${item.success ? '✅' : '❌'} <strong>Ctrl + ${keyName}</strong> : ${item.q.name}<br>
+            ${item.success ? '✅' : '❌'} <strong>${item.q.label}</strong> : ${item.q.name}<br>
             <span style="color:#64748b; font-size:0.8rem;">${item.q.desc}</span>
           </div>
         `;
@@ -531,108 +486,60 @@
 
 
     // ==========================================
-    // 2. スマホ用 ロジック・マトリクス
+    // 2. スマホ用 ロジック・マトリクス（条件演算型）
     // ==========================================
     let boardSize = 3;
-    let maxVal = 3;
+    let maxVal = 5;
     let matrixSolution = [];
-    let colWeights = [];
     let userBoard = [];
-    let initialRevealed = [];
+    let rowRules = [];
+    let colRules = [];
     let selectedCell = null;
-    let rowTargets = [];
-    let colTargets = [];
-    let checkCountLeft = 2;
 
     function changeLevelWithConfirm(size, btn) {
-      // すでに入力がある場合は確認
-      let hasInput = false;
-      for (let r = 0; r < boardSize; r++) {
-        for (let c = 0; c < boardSize; c++) {
-          const isFixed = initialRevealed.some(item => item.r === r && item.c === c);
-          if (!isFixed && userBoard[r][c] !== '') {
-            hasInput = true;
-            break;
-          }
-        }
-      }
-
-      if (hasInput) {
-        if (!confirm('入力中のデータがあります。難易度を変更してリセットしてもよろしいですか？')) {
-          return;
-        }
-      }
-
       document.querySelectorAll('.level-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       boardSize = size;
-      maxVal = size === 10 ? 9 : size;
       initMatrixGame();
     }
 
     function initMatrixGame() {
-      checkCountLeft = 2;
-      document.getElementById('check-btn').innerText = `🔍 行・列チェック (残り${checkCountLeft}回)`;
-      document.getElementById('check-btn').disabled = false;
-
-      generateRandomPuzzle();
+      generateConditionPuzzle();
       selectedCell = null;
       document.getElementById('matrix-stats').innerText = '';
       renderKeypad();
       renderMatrixBoard();
     }
 
-    function generateRandomPuzzle() {
+    function generateConditionPuzzle() {
+      // 1〜5の数値で正解盤面を作成
       matrixSolution = [];
-      const basePattern = Array.from({ length: boardSize }, (_, i) => (i % maxVal) + 1);
-      basePattern.sort(() => Math.random() - 0.5);
-
       for (let r = 0; r < boardSize; r++) {
         const row = [];
         for (let c = 0; c < boardSize; c++) {
-          row.push(basePattern[(c + r) % boardSize]);
+          row.push(Math.floor(Math.random() * maxVal) + 1);
         }
         matrixSolution.push(row);
       }
 
-      // 倍率をマイルド化（1.5倍や2倍）
-      colWeights = Array.from({ length: boardSize }, () => {
-        const r = Math.random();
-        return r > 0.6 ? 2 : (r > 0.3 ? 1.5 : 1);
-      });
-
-      rowTargets = Array(boardSize).fill(0);
-      colTargets = Array(boardSize).fill(0);
+      // 各行の目標（合計値）
+      rowRules = [];
       for (let r = 0; r < boardSize; r++) {
-        for (let c = 0; c < boardSize; c++) {
-          const val = matrixSolution[r][c] * colWeights[c];
-          rowTargets[r] += val;
-          colTargets[c] += val;
+        const sum = matrixSolution[r].reduce((a, b) => a + b, 0);
+        rowRules.push({ type: 'sum', val: sum, label: `和:${sum}` });
+      }
+
+      // 各列の目標（合計値）
+      colRules = [];
+      for (let c = 0; c < boardSize; c++) {
+        let sum = 0;
+        for (let r = 0; r < boardSize; r++) {
+          sum += matrixSolution[r][c];
         }
+        colRules.push({ type: 'sum', val: sum, label: `和:${sum}` });
       }
 
       userBoard = Array.from({ length: boardSize }, () => Array(boardSize).fill(''));
-      initialRevealed = [];
-
-      // 初期開示マスを増やして難易度緩和（全体の約35%）
-      const totalCells = boardSize * boardSize;
-      const revealCount = Math.max(2, Math.floor(totalCells * 0.35));
-
-      while (initialRevealed.length < revealCount) {
-        const r = Math.floor(Math.random() * boardSize);
-        const c = Math.floor(Math.random() * boardSize);
-        if (!userBoard[r][c]) {
-          userBoard[r][c] = matrixSolution[r][c];
-          initialRevealed.push({ r, c });
-        }
-      }
-
-      document.getElementById('matrix-rule-hint').innerHTML = `
-        <strong>【${boardSize}x${boardSize} パズルルール】</strong><br>
-        ・マスに <strong>1〜${maxVal}</strong> を入力します。<br>
-        ・特定の列には「1.5倍」や「2倍」の隠された計算倍率が含まれています。<br>
-        ・右端と下端の目標合計値と一致させてください！
-      `;
     }
 
     function renderKeypad() {
@@ -665,24 +572,17 @@
           cell.id = `cell-${r}-${c}`;
 
           if (r < boardSize && c < boardSize) {
-            const val = userBoard[r][c];
-            cell.innerText = val;
-
-            const isFixed = initialRevealed.some(item => item.r === r && item.c === c);
-            if (isFixed) {
-              cell.classList.add('fixed');
-            } else {
-              if (selectedCell && selectedCell.r === r && selectedCell.c === c) {
-                cell.classList.add('selected');
-              }
-              cell.onclick = () => selectCell(r, c);
+            cell.innerText = userBoard[r][c];
+            if (selectedCell && selectedCell.r === r && selectedCell.c === c) {
+              cell.classList.add('selected');
             }
+            cell.onclick = () => selectCell(r, c);
           } else if (r < boardSize && c === boardSize) {
             cell.classList.add('target-header');
-            cell.innerText = rowTargets[r];
+            cell.innerText = rowRules[r].label;
           } else if (r === boardSize && c < boardSize) {
             cell.classList.add('target-header');
-            cell.innerText = colTargets[c];
+            cell.innerText = colRules[c].label;
           } else {
             cell.classList.add('corner');
           }
@@ -704,70 +604,33 @@
       checkMatrixClear();
     }
 
-    // 絶妙なヒント機能（列の倍率情報を開示）
     function giveMatrixHint() {
-      const multiCols = [];
-      colWeights.forEach((w, idx) => {
-        if (w > 1) multiCols.push(idx + 1);
-      });
-
-      if (multiCols.length === 0) {
-        alert('💡 ヒント: このステージはすべての列が通常（1倍）計算です！');
-      } else {
-        alert(`💡 ヒント: 【${multiCols.join('列目, ')}列目】に計算倍率（1.5倍または2倍）が隠されています！`);
-      }
+      alert(`💡 ヒント: このパズルは各行・各列の数値の和が右側および下側のラベル（例: 和:8）と一致するように数値を割り出すゲームです。`);
     }
 
-    // 行・列のチェック機能（1ゲーム2回まで）
     function checkMatrixLines() {
-      if (checkCountLeft <= 0) return;
+      let isAnyCorrect = false;
 
-      let correctLinesFound = 0;
-
-      // 行のチェック（完全に埋まっている行のみ）
+      // 行のチェック
       for (let r = 0; r < boardSize; r++) {
-        let isFull = true;
         let sum = 0;
+        let isFull = true;
         for (let c = 0; c < boardSize; c++) {
           if (userBoard[r][c] === '') { isFull = false; break; }
-          sum += Number(userBoard[r][c]) * colWeights[c];
+          sum += Number(userBoard[r][c]);
         }
-        if (isFull && sum === rowTargets[r]) {
-          correctLinesFound++;
+        if (isFull && sum === rowRules[r].val) {
+          isAnyCorrect = true;
           for (let c = 0; c < boardSize; c++) {
-            const el = document.getElementById(`cell-${r}-${c}`);
-            if (el) el.classList.add('correct-line');
+            document.getElementById(`cell-${r}-${c}`).classList.add('correct-line');
           }
         }
       }
 
-      // 列のチェック（完全に埋まっている列のみ）
-      for (let c = 0; c < boardSize; c++) {
-        let isFull = true;
-        let sum = 0;
-        for (let r = 0; r < boardSize; r++) {
-          if (userBoard[r][c] === '') { isFull = false; break; }
-          sum += Number(userBoard[r][c]) * colWeights[c];
-        }
-        if (isFull && sum === colTargets[c]) {
-          correctLinesFound++;
-          for (let r = 0; r < boardSize; r++) {
-            const el = document.getElementById(`cell-${r}-${c}`);
-            if (el) el.classList.add('correct-line');
-          }
-        }
-      }
-
-      checkCountLeft--;
-      document.getElementById('check-btn').innerText = `🔍 行・列チェック (残り${checkCountLeft}回)`;
-      if (checkCountLeft <= 0) {
-        document.getElementById('check-btn').disabled = true;
-      }
-
-      if (correctLinesFound > 0) {
-        document.getElementById('matrix-stats').innerText = `✨ 正しい行・列を緑色でマークしました！`;
+      if (isAnyCorrect) {
+        document.getElementById('matrix-stats').innerText = '✨ 条件を満たしている行を緑色で示しました！';
       } else {
-        document.getElementById('matrix-stats').innerText = `⚠️ 現在一致している完全な行・列はありません。（マスを埋めてから実行してください）`;
+        document.getElementById('matrix-stats').innerText = '⚠️ 合計値が一致している行がありません。数字を調整してみましょう！';
       }
     }
 
@@ -782,27 +645,27 @@
       for (let r = 0; r < boardSize; r++) {
         let sum = 0;
         for (let c = 0; c < boardSize; c++) {
-          sum += Number(userBoard[r][c]) * colWeights[c];
+          sum += Number(userBoard[r][c]);
         }
-        if (sum !== rowTargets[r]) isCorrect = false;
+        if (sum !== rowRules[r].val) isCorrect = false;
       }
 
       for (let c = 0; c < boardSize; c++) {
         let sum = 0;
         for (let r = 0; r < boardSize; r++) {
-          sum += Number(userBoard[r][c]) * colWeights[c];
+          sum += Number(userBoard[r][c]);
         }
-        if (sum !== colTargets[c]) isCorrect = false;
+        if (sum !== colRules[c].val) isCorrect = false;
       }
 
       if (isCorrect) {
-        document.getElementById('matrix-stats').innerText = '🎉 クリア！隠されたロジックを見破りました！';
+        document.getElementById('matrix-stats').innerText = '🎉 クリア！全ロジック条件をクリアしました！';
       } else {
-        document.getElementById('matrix-stats').innerText = '❌ 集計結果が合いません。計算ロジックを見直してみましょう！';
+        document.getElementById('matrix-stats').innerText = '❌ 数字の合計が一致しません。もう一度見直してみましょう！';
       }
     }
 
-    // 初回初期化
+    // 初期化
     initMatrixGame();
   </script>
 </body>
